@@ -1,0 +1,53 @@
+import { getDOM, SourceData } from '../../modules';
+import { SourceChecker } from '../SourceChecker';
+import { type SourceCheckQueueItem } from '../SourceCheckerManager';
+
+export default class CollectionPicsSourceChecker extends SourceChecker {
+  constructor() {
+    super('CollectionPics');
+
+    this.supported = [
+      /^https?:\/\/co\.llection\.pics\/post\/view\/(\d+).*/,
+    ];
+  }
+
+  async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
+    try {
+      const res = await fetch(source);
+
+      if (!res.ok) {
+        return {
+          unknown: true,
+          error: true
+        };
+      }
+
+      const html = await res.text();
+
+      const dom = getDOM(html);
+      const document = dom.window.document;
+
+      const url = document.getElementById('main_image')?.getAttribute('src');
+
+      if (!url) {
+        return {
+          unknown: true,
+          error: true,
+          md5Match: false,
+          dimensionMatch: false,
+          fileTypeMatch: false
+        };
+      }
+
+      return await SourceChecker.processDirectLink(post, url.startsWith('/') ? `https://co.llection.pics${url}` : url);
+    } catch (e) {
+      console.error(e);
+    }
+
+    return {
+      unknown: true,
+      error: true,
+    };
+  }
+
+}

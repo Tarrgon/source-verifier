@@ -1,0 +1,46 @@
+type Dimensions = {
+  width: number
+  height: number
+}
+
+export type SourceDataMap = { [source: string]: SourceData };
+
+export type BaseSourceData = {
+  _id: number
+  sources?: SourceDataMap
+}
+
+export type SourceData = {
+  md5Match?: boolean
+  unsupported?: boolean
+  unknown?: boolean
+  error?: boolean
+  dimensionMatch?: boolean
+  fileTypeMatch?: boolean
+  fileType?: string
+  phash?: string
+  phashDistance?: number
+  url?: string
+  originalUrl?: string
+  dimensions?: Dimensions
+  isPreview?: boolean
+}
+
+export type ScoredSourceData = SourceData & { score?: number };
+
+export type DatabasePost = {
+  _id: number
+  sources: string[]
+  isPending: boolean
+  isDeleted: boolean
+  md5: string
+  dimensions: Dimensions
+  fileType: string
+  fileSize: number
+  updatedAt: Date
+  phash?: string
+};
+
+export type MainSchema = {
+  latestId: number
+}

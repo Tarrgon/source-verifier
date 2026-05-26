@@ -1,0 +1,56 @@
+{
+  "name": "ib-helper",
+  "version": "1.0.5",
+  "description": "Makes accessing the Inkbunny API just a little bit easier. Complete with TypeScript support!",
+  "keywords": [
+    "inkbunny",
+    "api",
+    "helper",
+    "typescript",
+    "ts",
+    "ib",
+    "furry"
+  ],
+  "homepage": "https://github.com/FurSuperscripts/ib-helper#readme",
+  "bugs": {
+    "url": "https://github.com/FurSuperscripts/ib-helper/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "email": "anonymous.superscripts@gmail.com",
+    "name": "Superscripts",
+    "url": "https://twitter.com/FurSuperscripts"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FurSuperscripts/ib-helper.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "test": "jest",
+    "release": "standard-version"
+  },
+  "dependencies": {
+    "debug": "^4.3.3",
+    "node-fetch": "^2.6.6"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.0.0",
+    "@types/node-fetch": "^2.5.8",
+    "jest": "^27.4.5",
+    "prettier": "^2.5.1",
+    "standard-version": "^9.3.2",
+    "ts-jest": "^27.1.2",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  },
+  "packageManager": "yarn@3.1.1"
+}

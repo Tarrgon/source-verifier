@@ -1,0 +1,7 @@
+services:
+  sourceverifier:
+    restart: unless-stopped
+    build: .
+    env_file: '.env'
+    ports:
+      - "5817:5817"

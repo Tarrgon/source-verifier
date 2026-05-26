@@ -1,0 +1,25 @@
+import express, { Response } from 'express';
+import { BaseSourceData, Database, E621Handler, replaceId } from '../../modules';
+import SourceCheckerManager, { type Result } from '../../checkers/SourceCheckerManager';
+const router = express.Router();
+
+router.post('/', async (req, res) => {
+  try {
+    if (!Array.isArray(req.body)) {
+      return res.sendStatus(400);
+    }
+
+    const anySupported = SourceCheckerManager.anyLinksSupported(req.body);
+    res.json({ supported: anySupported });
+  } catch (e) {
+    console.error(e);
+    res.sendStatus(500);
+  }
+});
+
+export default () => {
+  return {
+    router,
+    path: '/checksupported'
+  };
+};
