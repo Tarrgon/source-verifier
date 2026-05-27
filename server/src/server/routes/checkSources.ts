@@ -13,7 +13,7 @@ router.get('/bulk', async (req, res: Response<ServerResponse[]>) => {
 
     const ids = req.query.ids.split(',').map(id => parseInt(id));
 
-    const posts = await Database.getManyPosts(ids)
+    const posts = await Database.getManyPosts(ids);
     const data = await Database.getManySources(ids);
     if (!data) return res.sendStatus(500);
 
@@ -39,7 +39,7 @@ router.get('/update/:id', async (req, res: Response<ServerResponse>) => {
     const post = await Database.getPost(id);
     const data = await SourceCheckerManager.update(id, req.query.waitfordata == 'true', req.query.forceupdate == 'true');
     if (!data || !post) return res.sendStatus(500);
-    
+
     res.json(getServerResponse(post, data));
   } catch (e) {
     console.error(e);

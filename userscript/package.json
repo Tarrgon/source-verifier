@@ -8,11 +8,14 @@
   "version": "1.0.0",
   "description": "A userscript which shows post source information for e621 staff.",
   "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "@stylistic/eslint-plugin": "^4.2.0",
     "rimraf": "^6.0.1",
     "tsc-alias": "^1.8.17",
     "tsx": "^4.22.3",
     "webpack": "^5.107.2",
-    "webpack-cli": "^7.0.2"
+    "webpack-cli": "^7.0.2",
+    "typescript-eslint": "^8.32.1"
   },
   "scripts": {
     "build": "npm run clean && npm run compile && npm run webpack:dev && npm run clean:tmp && npm run inject-header",
