@@ -1,6 +1,5 @@
-import express, { Response } from 'express';
-import { BaseSourceData, Database, E621Handler, replaceId } from '../../modules';
-import SourceCheckerManager, { type Result } from '../../checkers/SourceCheckerManager';
+import express from 'express';
+import SourceCheckerManager from '../../checkers/SourceCheckerManager';
 const router = express.Router();
 
 router.post('/', async (req, res) => {
