@@ -1,6 +1,6 @@
 // ffprobe -v quiet -print_format json -show_streams -select_streams v:0 <filename>
 import { execFile } from 'child_process';
-import { Dimensions } from './database/types';
+import type { Dimensions } from './database/types';
 
 export function getVideoDimensions(filePath): Promise<Dimensions> {
   return new Promise((resolve) => {

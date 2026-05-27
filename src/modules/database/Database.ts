@@ -1,7 +1,7 @@
-import { Collection, Db, MongoClient, OrderedBulkOperation, UnorderedBulkOperation } from 'mongodb';
-import { config } from '../../config';
-import { type DatabasePost, type BaseSourceData, type SourceDataMap, type MainSchema } from './types';
+import { Collection, Db, MongoClient, UnorderedBulkOperation } from 'mongodb';
 import { type SourceCheckQueueItem } from '../../checkers';
+import { config } from '../../config';
+import type { BaseSourceData, DatabasePost, MainSchema, SourceDataMap } from './types';
 
 export class Database {
   private static _database: Db;

@@ -1,7 +1,7 @@
-import { DatabasePost } from './database';
-import { E621Post } from './e621';
 import { JSDOM, VirtualConsole } from 'jsdom';
-import { type Rename } from './types';
+import { type DatabasePost } from './database';
+import { type E621Post } from './e621';
+import type { Rename } from './types';
 
 export function wait(ms): Promise<void> {
   return new Promise(r => setTimeout(r, ms));
