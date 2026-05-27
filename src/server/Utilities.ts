@@ -1,4 +1,4 @@
-import type { Result, ResultExtras } from "../checkers";
+import type { Result } from "../checkers";
 import { replaceId, type DatabasePost } from "../modules";
 import type { CompleteResponse, IncompleteResponse, ServerResponse } from "./types";
 

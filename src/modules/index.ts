@@ -5,4 +5,3 @@ export * from './constants';
 export * from './Queue';
 export * from './types.d';
 export * from './Utilities';
-export * from './VideoDimensions';

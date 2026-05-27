@@ -1,7 +1,7 @@
 import express, { type Response } from 'express';
 import SourceCheckerManager from '../../checkers/SourceCheckerManager';
 import { Database, replaceId, type BaseSourceData } from '../../modules';
-import { getServerResponse } from '../common';
+import { getServerResponse } from '../Utilities';
 import type { ServerResponse } from '../types.d';
 const router = express.Router();
 

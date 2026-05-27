@@ -22,7 +22,7 @@ export default class RedditSourceChecker extends SourceChecker {
       const res = await fetch(source, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
-          'cookie': config.REDDIT_COOKIE
+          'cookie': config.REDDIT_COOKIE!
         }
       });
       const html = await res.text();
