@@ -1,0 +1,54 @@
+{
+  "version": "2.0.0",
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Server",
+        "type": "shell",
+        "isBackground": true,
+        "options": {
+          "cwd": "./server"
+        },
+        "runOptions": {
+          "runOn": "folderOpen"
+        },
+        "command": "C:\\WINDOWS\\System32\\cmd.exe",
+        "presentation": {
+          "echo": false,
+          "focus": true,
+          "panel": "dedicated",
+          "group": "dev"
+        }
+      },
+      {
+        "label": "Userscript",
+        "type": "shell",
+        "isBackground": true,
+        "options": {
+          "cwd": "./userscript"
+        },
+        "runOptions": {
+          "runOn": "folderOpen"
+        },
+        "command": "C:\\WINDOWS\\System32\\cmd.exe",
+        "presentation": {
+          "echo": false,
+          "focus": true,
+          "panel": "dedicated",
+          "group": "dev"
+        },
+      },
+      {
+        "label": "Open",
+        "dependsOn": [
+          "Server",
+          "Userscript"
+        ],
+        "runOptions": {
+          "runOn": "folderOpen"
+        }
+      }
+    ]
+  }
+}
