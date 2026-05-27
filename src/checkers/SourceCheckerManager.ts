@@ -1,10 +1,10 @@
-import { Database, BaseSourceData, DatabasePost, SourceDataMap, E621Handler, Rename } from '../modules';
 import fs from 'fs';
-import { SourceChecker } from './SourceChecker';
-import Queue, { Priority } from '../modules/Queue';
+import { dirname } from 'path';
 import calcPhash from 'sharp-phash';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { dirname } from 'path';
+import { type BaseSourceData, Database, type DatabasePost, E621Handler, type Rename, type SourceDataMap } from '../modules';
+import Queue, { Priority } from '../modules/Queue';
+import { SourceChecker } from './SourceChecker';
 
 type CallbackFunction = (data: Result) => void;
 

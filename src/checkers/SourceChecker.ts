@@ -1,11 +1,11 @@
 import sizeOf from 'buffer-image-size';
-import { BaseSourceData, DatabasePost, DetectFileType, Dimensions, SourceData, SourceDataMap, getVideoDimensions, wait } from '../modules';
+import { existsSync, rmSync, writeFileSync } from 'fs';
 import { md5 as jsmd5 } from 'js-md5';
 import puppeteer, { Browser, TimeoutError } from 'puppeteer';
-import { existsSync, rmSync, writeFileSync } from 'fs';
 import calcPhash from 'sharp-phash';
 import calcPhashDistance from 'sharp-phash/distance';
-import { type SourceCheckQueueItem  } from './SourceCheckerManager';
+import { type BaseSourceData, type DatabasePost, DetectFileType, type Dimensions, type SourceData, type SourceDataMap, getVideoDimensions, wait } from '../modules';
+import { type SourceCheckQueueItem } from './SourceCheckerManager';
 
 class NotImplementedError extends Error {
   message: string;
