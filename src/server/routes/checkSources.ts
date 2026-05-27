@@ -1,8 +1,8 @@
 import express, { type Response } from 'express';
-import { Database, replaceId, type BaseSourceData } from '../../modules';
 import SourceCheckerManager from '../../checkers/SourceCheckerManager';
-import type { ServerResponse } from '../types.d';
+import { Database, replaceId, type BaseSourceData } from '../../modules';
 import { getServerResponse } from '../common';
+import type { ServerResponse } from '../types.d';
 const router = express.Router();
 
 router.get('/bulk', async (req, res: Response<ServerResponse[]>) => {
@@ -39,7 +39,7 @@ router.get('/update/:id', async (req, res: Response<ServerResponse>) => {
     const post = await Database.getPost(id);
     const data = await SourceCheckerManager.update(id, req.query.waitfordata == 'true', req.query.forceupdate == 'true');
     if (!data || !post) return res.sendStatus(500);
-
+    
     res.json(getServerResponse(post, data));
   } catch (e) {
     console.error(e);

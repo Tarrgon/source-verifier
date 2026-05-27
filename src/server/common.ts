@@ -1,6 +1,6 @@
-import type { Result } from "../checkers";
+import type { Result, ResultExtras } from "../checkers";
 import { replaceId, type DatabasePost } from "../modules";
-import type { ServerResponse } from "./types";
+import type { CompleteResponse, IncompleteResponse, ServerResponse } from "./types";
 
 export function getServerResponse(post: Omit<DatabasePost, 'sources'>, result: Result): ServerResponse {
   const idReplacedPost = replaceId(post);
@@ -11,8 +11,10 @@ export function getServerResponse(post: Omit<DatabasePost, 'sources'>, result: R
   }
 }
 
-export function isComplete(response: ServerResponse): response is Required<Omit<ServerResponse, 'notIndexed' | 'queued' | 'notPending' | 'unsupported'>> {
-  if (response.notIndexed || response.queued || response.notPending || response.unsupported || !response.sources) return false;
+export function isCompleteResponse(response: ServerResponse): response is CompleteResponse {
+  const incompleteResponse = response as IncompleteResponse;
+  const completeResponse = response as CompleteResponse;
+  if (incompleteResponse.notPending || incompleteResponse.unsupported || incompleteResponse.queued || incompleteResponse.notIndexed || !completeResponse.sources) return false;
 
   return true;
 }

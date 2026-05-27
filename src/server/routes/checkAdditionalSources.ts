@@ -1,8 +1,8 @@
 import express, { type Response } from 'express';
-import { Database, E621Handler, replaceId, type DatabasePost } from '../../modules';
 import SourceCheckerManager, { type Result } from '../../checkers/SourceCheckerManager';
-import type { ServerResponse } from '../types.d';
+import { Database, E621Handler, type DatabasePost } from '../../modules';
 import { getServerResponse } from '../common';
+import type { ServerResponse } from '../types.d';
 const router = express.Router();
 
 router.post('/:id', async (req, res: Response<ServerResponse>) => {
