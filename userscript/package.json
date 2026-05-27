@@ -1,0 +1,28 @@
+{
+  "type": "module",
+  "name": "source-verifier-userscript",
+  "author": {
+    "name": "Tarrgon",
+    "url": "https://github.com/Tarrgon"
+  },
+  "version": "1.0.0",
+  "description": "A userscript which shows post source information for e621 staff.",
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "tsc-alias": "^1.8.17",
+    "tsx": "^4.22.3",
+    "webpack": "^5.107.2",
+    "webpack-cli": "^7.0.2"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile && npm run webpack:dev && npm run clean:tmp && npm run inject-header",
+    "build:prod": "npm run clean && npm run compile && npm run webpack:prod && npm run clean:tmp && npm run inject-header",
+    "compile": "tsc && npx tsc-alias",
+    "webpack:dev": "npx webpack --config webpack.config.js --mode=development",
+    "webpack:prod": "npx webpack --config webpack.config.js --mode=production",
+    "clean": "npm run clean:dist && npm run clean:tmp",
+    "clean:dist": "npx rimraf dist",
+    "clean:tmp": "npx rimraf tmp-dist",
+    "inject-header": "node ./bin/injectHeader.js"
+  }
+}
