@@ -13,7 +13,7 @@
         "runOptions": {
           "runOn": "folderOpen"
         },
-        "command": "C:\\WINDOWS\\System32\\cmd.exe",
+        "command": "cmd.exe",
         "presentation": {
           "echo": false,
           "focus": true,
@@ -31,7 +31,7 @@
         "runOptions": {
           "runOn": "folderOpen"
         },
-        "command": "C:\\WINDOWS\\System32\\cmd.exe",
+        "command": "cmd.exe",
         "presentation": {
           "echo": false,
           "focus": true,
