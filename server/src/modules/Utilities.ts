@@ -32,18 +32,18 @@ export function replaceId<T extends { _id: any }>(data: T): Rename<T, '_id', 'id
 
 export function getDOM(html: string, virtualConsole?: VirtualConsole): JSDOM {
   if (!virtualConsole) return new JSDOM(html);
-  else new JSDOM(html, {
+  else return new JSDOM(html, {
     virtualConsole
   });
 }
 
 // ffprobe -v quiet -print_format json -show_streams -select_streams v:0 <filename>
-export function getVideoDimensions(filePath): Promise<Dimensions> {
+export function getVideoDimensions(filePath: string): Promise<Dimensions> {
   return new Promise((resolve) => {
-    execFile('ffprobe', ['-v quiet', '-print_format json', '-show_streams', '-select_streams v:0', filePath], (error, stdout, stderr) => {
+    execFile('ffprobe', ['-v', 'quiet', '-print_format', 'json', '-show_streams', '-select_streams', 'v:0', filePath], (error, stdout, stderr) => {
       if (error) {
         console.error(`Error getting video dimensions:\n${error.message}`);
-        resolve({ width: -1, height: -1 });
+        return resolve({ width: -1, height: -1 });
       }
 
       try {

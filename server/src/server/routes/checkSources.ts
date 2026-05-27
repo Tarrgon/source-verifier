@@ -36,8 +36,8 @@ router.get('/update/:id', async (req, res: Response<ServerResponse>) => {
 
     const id = parseInt(req.params.id);
 
+    const data = await SourceCheckerManager.update(id, req.query.waitfordata == 'true', req.query.forcepostupdate == 'true');
     const post = await Database.getPost(id);
-    const data = await SourceCheckerManager.update(id, req.query.waitfordata == 'true', req.query.forceupdate == 'true');
     if (!data || !post) return res.sendStatus(500);
 
     res.json(getServerResponse(post, data));

@@ -62,7 +62,7 @@ export default class SourceCheckerManager {
       await Database.removeFromQueue(post._id);
       await Database.updateSourceData(post._id, data);
 
-      console.log(`[SourceCheckerManager] Processed post. Remaining: ${this.queue.length}`);
+      console.log(`[SourceCheckerManager] Processed post ${post._id}. Remaining: ${this.queue.length}`);
     } catch (e) {
       console.error(e);
     }

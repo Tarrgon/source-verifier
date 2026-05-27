@@ -63,11 +63,20 @@ export default class PixivSourceChecker extends SourceChecker {
         };
       }
 
-      const res = (await this.pixiv.illustDetail(id)).illust;
+      const res = await this.pixiv.illustDetail(id);
+
+      if (!res.illust) {
+        console.error('[PixivSourceChecker] res.illust is undefined:');
+        console.error(res);
+        return {
+          unknown: true,
+          error: true
+        };
+      }
 
       const matchData: ScoredSourceData[] = [];
 
-      for (const page of res.meta_pages) {
+      for (const page of res.illust.meta_pages) {
         for (const [key, src] of Object.entries(page.image_urls)) {
           const data = await SourceChecker.processDirectLink(post, src as string, key != 'original', { Referer: 'https://www.pixiv.net/' }) as ScoredSourceData;
 
@@ -83,7 +92,7 @@ export default class PixivSourceChecker extends SourceChecker {
         }
       }
 
-      const single = res.meta_single_page;
+      const single = res.illust.meta_single_page;
 
       if (single && single.original_image_url) {
         const src = single.original_image_url;

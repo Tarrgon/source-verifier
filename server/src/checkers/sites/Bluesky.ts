@@ -1,4 +1,4 @@
-import { Agent, AppBskyEmbedImages, AppBskyEmbedRecord, AppBskyEmbedRecordWithMedia, AppBskyEmbedVideo, CredentialSession } from '@atproto/api';
+import { Agent, AppBskyEmbedImages, AppBskyEmbedRecord, AppBskyEmbedRecordWithMedia, AppBskyEmbedVideo, AppBskyFeedPost, CredentialSession } from '@atproto/api';
 import { config } from '../../config';
 import { wait } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
@@ -56,17 +56,9 @@ export default class BlueskySourceChecker extends SourceChecker {
         };
       }
 
-      let images: AppBskyEmbedImages.Image[] = [];
+      const images: AppBskyEmbedImages.Image[] = res.value?.embed?.images;
 
-      if (AppBskyEmbedVideo.isMain(res) && AppBskyEmbedImages.isMain(res.value.embed)) {
-        images = res.value.embed.images;
-      } else if (AppBskyEmbedRecordWithMedia.isMain(res) && AppBskyEmbedImages.isMain(res.value.embed)) {
-        images = res.value.embed.images;
-      } else if (AppBskyEmbedRecord.isMain(res) && AppBskyEmbedImages.isMain(res.value.embed)) {
-        images = res.value.embed.images;
-      }
-
-      if (images.length == 0) {
+      if (!images || images.length == 0) {
         return {
           md5Match: false,
           dimensionMatch: false,

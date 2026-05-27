@@ -25,51 +25,51 @@ export default class ItakuSourceChecker extends SourceChecker {
 
       const matchData: ScoredSourceData[] = [];
 
-      const images = (await res.json() as any).gallery_images;
+      const data = await res.json();
+      const result = data.results[0];
 
-      if (!images || images.length == 0) {
+      if (!result) {
         return {
           unknown: true,
-          error: true,
-          md5Match: false,
-          dimensionMatch: false,
-          fileTypeMatch: false
+          error: true
         };
       }
 
-      for (const image of images) {
-        const urls = [
-          {
-            url: image.image,
-            isPreview: false
-          },
-          {
-            url: image.image_lg,
-            isPreview: true
-          },
-          {
-            url: image.image_xl,
-            isPreview: true
-          }
-        ];
-
-        for (const urlData of urls) {
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
-
-          if (urlData.isPreview) {
-            data.originalUrl = urls[0].url;
-          }
-
-          if (!data || data.error || data.unknown || data.unsupported) {
-            data.score = 0;
-            matchData.push(data);
-            continue;
-          }
-
-          data.score = (Number(data.md5Match!) * 5000) + (1000 / (data.phashDistance! + 1)) + (Number(data.dimensionMatch!) * 200) + Number(data.fileTypeMatch) + (data.isPreview ? 0 : 5);
-
-          matchData.push(data);
+      const urls = [
+        {
+          url: result.image,
+          isPreview: false
+        },
+        {
+          url: result.image_lg,
+          isPreview: true
+        },
+        {
+          url: result.image_xl,
+          isPreview: true
+        },
+        {
+          url: result.image_sm,
+          isPreview: true
         }
+      ];
+
+      for (const urlData of urls) {
+        const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
+
+        if (urlData.isPreview) {
+          data.originalUrl = urls[0].url;
+        }
+
+        if (!data || data.error || data.unknown || data.unsupported) {
+          data.score = 0;
+          matchData.push(data);
+          continue;
+        }
+
+        data.score = (Number(data.md5Match!) * 5000) + (1000 / (data.phashDistance! + 1)) + (Number(data.dimensionMatch!) * 200) + Number(data.fileTypeMatch) + (data.isPreview ? 0 : 5);
+
+        matchData.push(data);
       }
 
       if (matchData.length > 0) {
