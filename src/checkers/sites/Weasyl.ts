@@ -24,7 +24,7 @@ export default class WeasylSourceChecker extends SourceChecker {
           const res = await fetch(`${API_URL_BASE}/submissions/${id}/view`, {
             headers: {
               'Accept': 'application/json',
-              'X-Weasyl-API-Key': config.WEASYL_API_KEY
+              'X-Weasyl-API-Key': config.WEASYL_API_KEY!
             }
           });
 

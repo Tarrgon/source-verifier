@@ -1,9 +1,11 @@
-import express from 'express';
-import { Database, E621Handler } from '../../modules';
-import SourceCheckerManager from '../../checkers/SourceCheckerManager';
+import express, { type Response } from 'express';
+import { Database, E621Handler, replaceId, type DatabasePost } from '../../modules';
+import SourceCheckerManager, { type Result } from '../../checkers/SourceCheckerManager';
+import type { ServerResponse } from '../types.d';
+import { getServerResponse } from '../common';
 const router = express.Router();
 
-router.post('/:id', async (req, res) => {
+router.post('/:id', async (req, res: Response<ServerResponse>) => {
   try {
     if (!req.params.id || !Array.isArray(req.body)) {
       return res.sendStatus(400);
@@ -18,15 +20,19 @@ router.post('/:id', async (req, res) => {
     }
 
     if (!post) {
-      return res.json({ notIndexed: true });
+      return res.json({ id, notIndexed: true });
     }
 
-    SourceCheckerManager.queuePosts([post], true, [res.json.bind(res)], req.body);
+    SourceCheckerManager.queuePosts([post], true, [callbackFunction.bind(null, res, post)], req.body);
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
   }
 });
+
+function callbackFunction(res: Response<ServerResponse>, post: DatabasePost, result: Result) {
+  res.json(getServerResponse(post, result));
+}
 
 export default () => {
   return {

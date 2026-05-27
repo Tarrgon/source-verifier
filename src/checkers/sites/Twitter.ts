@@ -1,5 +1,5 @@
 import { getDOM, type ScoredSourceData, type SourceData } from '../../modules';
-import { SourceChecker, UrlData } from '../SourceChecker';
+import { SourceChecker, type UrlData } from '../SourceChecker';
 import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
 const NAMES = ['orig', '4096x4096', 'large'];

@@ -45,7 +45,7 @@ export class SourceChecker {
   constructor(public name: string) { }
 
   static async initializePuppet() {
-    this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'], executablePath: '/usr/bin/chromium-browser' });
+    this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     this.puppetReady = true;
   }
 

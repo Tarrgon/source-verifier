@@ -1,8 +1,8 @@
-import express from 'express';
+import express, { type Response } from 'express';
 import SourceCheckerManager from '../../checkers/SourceCheckerManager';
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res: Response<{ supported: boolean }>) => {
   try {
     if (!Array.isArray(req.body)) {
       return res.sendStatus(400);

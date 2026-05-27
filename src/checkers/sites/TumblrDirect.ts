@@ -1,4 +1,4 @@
-import { SourceData } from '../../modules';
+import { type SourceData } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 

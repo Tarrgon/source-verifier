@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import { Express as ExpressServer } from 'express-serve-static-core';
+import type { Express as ExpressServer } from 'express-serve-static-core';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';

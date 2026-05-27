@@ -2,7 +2,7 @@ import SourceCheckerManager from '../../checkers/SourceCheckerManager';
 import { Database, type DatabasePost } from '../database';
 import Queue, { Priority } from '../Queue';
 import { transformE621Post } from '../Utilities';
-import { type E621Post } from './types';
+import { type E621Post } from './types.d';
 
 const BASE_URL = 'https://e621.net';
 const USER_AGENT = 'Janitor Source Verifier/2.0 (by Tarrgon)';

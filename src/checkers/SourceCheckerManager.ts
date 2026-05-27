@@ -24,6 +24,8 @@ export default class SourceCheckerManager {
   private static sourceCheckers: SourceChecker[] = [];
 
   static async start() {
+    await SourceChecker.initializePuppet();
+
     const __dirname = dirname(fileURLToPath(import.meta.url));
 
     const files = fs.readdirSync(`${__dirname}/sites`).filter(file => file.endsWith('.js') || file.endsWith('.ts'));
@@ -55,7 +57,8 @@ export default class SourceCheckerManager {
           try {
             const callbackData: Result = {
               id: post._id,
-              ...data
+              date: new Date(),
+              sources: { ...data }
             };
 
             callback(callbackData);
@@ -136,7 +139,7 @@ export default class SourceCheckerManager {
       itemsToQueue.push(toQueue);
     }
 
-    console.log(`Actually queued ${itemsToQueue.length} posts.`);
+    console.log(`[SourceCheckerManager] Actually queued ${itemsToQueue.length} posts.`);
 
     for (const item of itemsToQueue) {
       queueBulk.find({ _id: item._id }).upsert().replaceOne(item);
@@ -189,6 +192,7 @@ export default class SourceCheckerManager {
     if (!queueItem.sources) return combinedData;
 
     for (const sourceChecker of this.sourceCheckers) {
+      // console.log(`[SourceCheckerManager] Processing post ${queueItem._id} with ${sourceChecker.name}`);
       const data = await sourceChecker.processPost(queueItem, current);
       for (const [key, value] of Object.entries(data)) {
         combinedData[key] = value;

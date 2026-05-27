@@ -1,7 +1,7 @@
 import { Collection, Db, MongoClient, UnorderedBulkOperation } from 'mongodb';
 import { type SourceCheckQueueItem } from '../../checkers';
 import { config } from '../../config';
-import type { BaseSourceData, DatabasePost, MainSchema, SourceDataMap } from './types';
+import type { BaseSourceData, DatabasePost, MainSchema, SourceDataMap } from './types.d';
 
 export class Database {
   private static _database: Db;

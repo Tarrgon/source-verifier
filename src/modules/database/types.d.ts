@@ -1,12 +1,13 @@
-type Dimensions = {
+export type Dimensions = {
   width: number
   height: number
 }
 
-export type SourceDataMap = { [source: string]: SourceData };
+export type SourceDataMap = { [source: string]: SourceData | ScoredSourceData };
 
 export type BaseSourceData = {
   _id: number
+  date?: Date
   sources?: SourceDataMap
 }
 

@@ -1,4 +1,4 @@
-import { getDOM, SourceData } from '../../modules';
+import { getDOM, type SourceData } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
