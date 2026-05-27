@@ -2,21 +2,10 @@ import fs from 'fs';
 import { dirname } from 'path';
 import calcPhash from 'sharp-phash';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { type BaseSourceData, Database, type DatabasePost, E621Handler, type Rename, type SourceDataMap } from '../modules';
+import type { BaseSourceData, DatabasePost, SourceDataMap, SourceCheckQueueItem, CallbackFunction, Result } from '../../../shared';
 import Queue, { Priority } from '../modules/Queue';
 import { SourceChecker } from './SourceChecker';
-
-type CallbackFunction = (data: Result) => void;
-
-export type SourceCheckQueueItem = DatabasePost & { date: Date, callbacks: CallbackFunction[] | null, priority: number }
-
-export type Result = Rename<BaseSourceData, '_id', 'id'> & Partial<ResultExtras>
-export type ResultExtras = {
-  notPending: boolean
-  unsupported: boolean
-  queued: boolean
-  notIndexed: boolean
-}
+import { Database, E621Handler } from '../modules';
 
 export default class SourceCheckerManager {
   private static queue: Queue<SourceCheckQueueItem> = new Queue();

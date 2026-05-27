@@ -4,8 +4,8 @@ import { md5 as jsmd5 } from 'js-md5';
 import puppeteer, { Browser, TimeoutError } from 'puppeteer';
 import calcPhash from 'sharp-phash';
 import calcPhashDistance from 'sharp-phash/distance';
-import { type BaseSourceData, type DatabasePost, DetectFileType, type Dimensions, type SourceData, type SourceDataMap, getVideoDimensions, wait } from '../modules';
-import { type SourceCheckQueueItem } from './SourceCheckerManager';
+import { DetectFileType, getVideoDimensions, wait } from '../modules';
+import type { SourceCheckQueueItem, BaseSourceData, DatabasePost, Dimensions, SourceData, SourceDataMap, } from '../../../shared';
 
 class NotImplementedError extends Error {
   message: string;

@@ -1,6 +1,6 @@
-import { type SourceData, wait } from '../../modules';
+import type { SourceCheckQueueItem, SourceData } from '../../../../shared';
+import { wait } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
 export default class HentaiFoundrySourceChecker extends SourceChecker {
   constructor() {

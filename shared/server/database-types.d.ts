@@ -1,3 +1,5 @@
+import type { Dimensions } from "./types.d";
+
 export type SourceDataMap = { [source: string]: SourceData | ScoredSourceData };
 
 export type BaseSourceData = {
@@ -35,7 +37,7 @@ export type DatabasePost = {
   fileSize: number
   updatedAt: Date
   phash?: string
-};
+}
 
 export type MainSchema = {
   latestId: number

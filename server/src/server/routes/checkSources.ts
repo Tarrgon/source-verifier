@@ -1,8 +1,8 @@
 import express, { type Response } from 'express';
 import SourceCheckerManager from '../../checkers/SourceCheckerManager';
-import { Database, replaceId, type BaseSourceData } from '../../modules';
+import { Database, replaceId } from '../../modules';
 import { getServerResponse } from '../Utilities';
-import type { ServerResponse } from '../types.d';
+import type { BaseSourceData, ServerResponse } from '../../../../shared';
 const router = express.Router();
 
 router.get('/bulk', async (req, res: Response<ServerResponse[]>) => {

@@ -1,6 +1,6 @@
-import { getDOM, type ScoredSourceData, type SourceData } from '../../modules';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
+import { getDOM,} from '../../modules';
 import { SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
 export default class GelbooruSourceChecker extends SourceChecker {
   constructor() {

@@ -1,6 +1,5 @@
-import { type SourceData } from '../../modules';
+import type { SourceCheckQueueItem, SourceData } from '../../../../shared';
 import { SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
 export default class DirectSourceChecker extends SourceChecker {
   private previewRegex: RegExp[];

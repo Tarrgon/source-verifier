@@ -1,9 +1,9 @@
 import { VirtualConsole } from 'jsdom';
 import parseSrcset from 'parse-srcset';
 import { config } from '../../config';
-import { getDOM, type ScoredSourceData, type SourceData } from '../../modules';
+import { getDOM } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
 
 const con = new VirtualConsole();
 con.on('error', () => { });

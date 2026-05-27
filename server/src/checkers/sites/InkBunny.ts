@@ -1,8 +1,8 @@
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
 import { config } from '../../config';
 import { Helper as InkbunnyHelper } from '../../ib-helper/dist';
-import { type ScoredSourceData, type SourceData, wait } from '../../modules';
+import { wait } from '../../modules';
 import { MIME_TYPE_TO_FILE_EXTENSION, SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
 export default class InkbunnySourceChecker extends SourceChecker {
   private ready = false;

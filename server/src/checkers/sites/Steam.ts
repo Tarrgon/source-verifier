@@ -1,6 +1,6 @@
-import { getDOM, type SourceData } from '../../modules';
+import type { SourceCheckQueueItem, SourceData } from '../../../../shared';
+import { getDOM } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
 export default class SteamSourceChecker extends SourceChecker {
   constructor() {

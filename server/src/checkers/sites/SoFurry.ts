@@ -1,6 +1,5 @@
-import { type SourceData } from '../../modules';
+import type { SourceCheckQueueItem, SourceData } from '../../../../shared';
 import { SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
 const URL_BASE = 'https://sofurry.com/s';
 

@@ -1,7 +1,6 @@
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
 import { config } from '../../config';
-import { type ScoredSourceData, type SourceData } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
 const API_URL_BASE = 'https://www.weasyl.com/api';
 

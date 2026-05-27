@@ -1,9 +1,7 @@
 import { execFile } from 'child_process';
 import { JSDOM, VirtualConsole } from 'jsdom';
-import { type DatabasePost } from './database';
+import type { DatabasePost, Dimensions, Rename } from '../../../shared';
 import { type E621Post } from './e621';
-import type { Dimensions, Rename } from './types.d';
-
 
 export function wait(ms): Promise<void> {
   return new Promise(r => setTimeout(r, ms));

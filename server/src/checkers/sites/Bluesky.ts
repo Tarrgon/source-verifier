@@ -1,8 +1,8 @@
 import { Agent, AppBskyEmbedImages, AppBskyEmbedRecord, AppBskyEmbedRecordWithMedia, AppBskyEmbedVideo, CredentialSession } from '@atproto/api';
 import { config } from '../../config';
-import { type ScoredSourceData, type SourceData, wait } from '../../modules';
+import { wait } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
 
 export default class BlueskySourceChecker extends SourceChecker {
   private ready = false;

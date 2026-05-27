@@ -1,6 +1,5 @@
-import { type ScoredSourceData, type SourceData } from '../../modules';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
 import { SourceChecker } from '../SourceChecker';
-import { type SourceCheckQueueItem } from '../SourceCheckerManager';
 
 const API_URL_BASE = 'https://snootbooru.com/api/post/';
 const URL_BASE = 'https://snootbooru.com/';
