@@ -10,11 +10,12 @@
   "icon": "https://www.google.com/s2/favicons?sz=64&domain=e621.net",
   "connect": [
     "api.fluffle.xyz",
-    "search.yiff.today",
+    "source-verifier.tarrgon.gay",
     "static1.e621.net",
     "kemono.cr",
     "public.api.bsky.app",
-    "cdnjs.cloudflare.com"
+    "cdnjs.cloudflare.com",
+    "localhost"
   ],
   "grant": [
     "GM.xmlHttpRequest",

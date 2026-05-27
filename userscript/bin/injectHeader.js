@@ -9,7 +9,7 @@ const packageData = JSON.parse(fs.readFileSync(path.resolve(`${__dirname}/../pac
 const headerData = JSON.parse(fs.readFileSync(path.resolve(`${__dirname}/userscriptHeader.json`), { encoding: 'utf-8' }));
 
 const header = `// ==UserScript==
-// @name ${packageData.name}
+// @name Janitor Source Verifier
 // @version ${packageData.version}
 // @description ${packageData.description}
 // @author ${packageData.author.name}
