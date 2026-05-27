@@ -12,7 +12,7 @@ const RELOAD_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640
 
 export const addSourceSign = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'lime';
   i.title = 'Add source';
   i.style.marginRight = '0.25rem';
@@ -23,7 +23,7 @@ export const addSourceSign = (() => {
 
 export const md5Match = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'lime';
   i.title = 'MD5 match';
   if (window.location.pathname == '/posts') {
@@ -36,7 +36,7 @@ export const md5Match = (() => {
 
 export const dimensionAndFileTypeMatch = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'lime';
   i.title = 'Dimension and file type match';
   if (window.location.pathname == '/posts') {
@@ -49,7 +49,7 @@ export const dimensionAndFileTypeMatch = (() => {
 
 export const dimensionMatch = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'yellow';
   i.title = 'Dimension match';
   if (window.location.pathname == '/posts') {
@@ -62,7 +62,7 @@ export const dimensionMatch = (() => {
 
 export const aspectRatioMatch = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.title = 'Approx. aspect ratio match';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
@@ -74,7 +74,7 @@ export const aspectRatioMatch = (() => {
 
 export const fileTypeMatch = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'yellow';
   i.title = 'File type match';
   if (window.location.pathname == '/posts') {
@@ -87,7 +87,7 @@ export const fileTypeMatch = (() => {
 
 export const noMatches = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'red';
   i.title = 'No matches';
   if (window.location.pathname == '/posts') {
@@ -100,7 +100,7 @@ export const noMatches = (() => {
 
 export const spinner = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'fa-spin', 'jsv-icon');
+  i.classList.add('spin', 'jsv-icon');
   i.style.color = 'yellow';
   i.title = 'Queued';
   if (window.location.pathname == '/posts') {
@@ -113,7 +113,7 @@ export const spinner = (() => {
 
 export const unknown = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'yellow';
   i.title = 'Unknown';
   if (window.location.pathname == '/posts') {
@@ -126,7 +126,7 @@ export const unknown = (() => {
 
 export const bvas = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'lime';
   i.style.marginRight = '0.25rem';
   i.style.marginLeft = '0.25rem';
@@ -140,7 +140,7 @@ export const bvas = (() => {
 
 export const phashMatch = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'lime';
   i.title = 'Perceptually identical';
   i.style.marginRight = '0.25rem';
@@ -160,7 +160,7 @@ export const phashMatch = (() => {
 
 export const info = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'cyan';
   i.style.marginRight = '0.25rem';
   if (window.location.pathname == '/posts') {
@@ -173,10 +173,11 @@ export const info = (() => {
 
 export const force = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'green';
   i.style.cursor = 'pointer';
   i.title = 'Get source data';
+  i.style.marginLeft = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -187,10 +188,15 @@ export const force = (() => {
 
 export const reload = (() => {
   const i = document.createElement('i');
-  i.classList.add('fa', 'jsv-icon');
+  i.classList.add('jsv-icon');
   i.style.color = 'green';
   i.style.cursor = 'pointer';
   i.title = 'Update source data';
+  i.style.marginLeft = '0.25rem';
+  if (window.location.pathname == '/posts') {
+    i.style.lineHeight = 'inherit';
+    i.style.verticalAlign = 'middle';
+  }
   i.innerHTML = RELOAD_SVG;
   return i;
 })();
