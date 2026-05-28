@@ -6,6 +6,7 @@ import calcPhash from 'sharp-phash';
 import calcPhashDistance from 'sharp-phash/distance';
 import { DetectFileType, getVideoDimensions, wait } from '../modules';
 import type { SourceCheckQueueItem, BaseSourceData, DatabasePost, Dimensions, SourceData, SourceDataMap } from '../../../shared';
+import { config } from '../config';
 
 class NotImplementedError extends Error {
   message: string;
@@ -45,7 +46,7 @@ export class SourceChecker {
   constructor(public name: string) { }
 
   static async initializePuppet() {
-    this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+    this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'], executablePath: config.CHROME_EXECUTABLE_LOCATION });
     this.puppetReady = true;
   }
 
