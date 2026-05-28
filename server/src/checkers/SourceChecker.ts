@@ -62,6 +62,13 @@ export class SourceChecker {
         headers
       });
 
+      if (!res.ok) {
+        return {
+          unknown: true,
+          error: true
+        };
+      }
+
       const mimeType = res.headers.get('Content-Type') ?? '';
 
       if (!SUPPORTED_MIME_TYPES.includes(mimeType)) {
