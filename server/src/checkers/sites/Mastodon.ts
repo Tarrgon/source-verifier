@@ -28,10 +28,7 @@ export default class MastodonSourceChecker extends SourceChecker {
       if (!main) {
         return {
           unknown: true,
-          error: true,
-          md5Match: false,
-          dimensionMatch: false,
-          fileTypeMatch: false
+          error: true
         };
       }
 
