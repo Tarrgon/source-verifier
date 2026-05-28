@@ -66,7 +66,7 @@ export default class PixivSourceChecker extends SourceChecker {
       const res = await this.pixiv.illustDetail(id);
 
       if (!res.illust) {
-        console.error('[PixivSourceChecker] res.illust is undefined:');
+        console.error(`[PixivSourceChecker] res.illust is undefined (${post._id}):`);
         console.error(res);
         return {
           unknown: true,
