@@ -1,0 +1,36 @@
+name: Build and Release Userscript
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers on version tags, e.g., v1.0.0, v1.2.3-alpha
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create a release and upload assets
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/checkout@v4
+        with:
+          node-version: '20' # Matches modern environments required by packages like ESLint v9
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production script
+        run: npm run build:prod
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*
+          generate_release_notes: true
