@@ -26,6 +26,7 @@ export const md5Match = (() => {
   i.classList.add('jsv-icon');
   i.style.color = 'lime';
   i.title = 'MD5 match';
+  i.style.marginRight = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -39,6 +40,7 @@ export const dimensionAndFileTypeMatch = (() => {
   i.classList.add('jsv-icon');
   i.style.color = 'lime';
   i.title = 'Dimension and file type match';
+  i.style.marginRight = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -52,6 +54,7 @@ export const dimensionMatch = (() => {
   i.classList.add('jsv-icon');
   i.style.color = 'yellow';
   i.title = 'Dimension match';
+  i.style.marginRight = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -64,6 +67,7 @@ export const aspectRatioMatch = (() => {
   const i = document.createElement('i');
   i.classList.add('jsv-icon');
   i.title = 'Approx. aspect ratio match';
+  i.style.marginRight = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -77,6 +81,7 @@ export const fileTypeMatch = (() => {
   i.classList.add('jsv-icon');
   i.style.color = 'yellow';
   i.title = 'File type match';
+  i.style.marginRight = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -90,6 +95,7 @@ export const noMatches = (() => {
   i.classList.add('jsv-icon');
   i.style.color = 'red';
   i.title = 'No matches';
+  i.style.marginRight = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -103,6 +109,7 @@ export const spinner = (() => {
   i.classList.add('spin', 'jsv-icon');
   i.style.color = 'yellow';
   i.title = 'Queued';
+  i.style.marginLeft = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -116,6 +123,7 @@ export const unknown = (() => {
   i.classList.add('jsv-icon');
   i.style.color = 'yellow';
   i.title = 'Unknown';
+  i.style.marginRight = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -129,7 +137,6 @@ export const bvas = (() => {
   i.classList.add('jsv-icon');
   i.style.color = 'lime';
   i.style.marginRight = '0.25rem';
-  i.style.marginLeft = '0.25rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -143,13 +150,8 @@ export const phashMatch = (() => {
   i.classList.add('jsv-icon');
   i.style.color = 'lime';
   i.title = 'Perceptually identical';
-  i.style.marginRight = '0.25rem';
-  i.style.marginLeft = '0.25rem';
-  i.style.width = '10px';
-  i.style.display = 'inline-block';
-  i.style.textAlign = 'center';
-  i.style.fontStyle = 'normal';
-  i.style.fontWeight = '900';
+  i.style.marginRight = '0.125rem';
+  i.style.marginLeft = '-0.125rem';
   if (window.location.pathname == '/posts') {
     i.style.lineHeight = 'inherit';
     i.style.verticalAlign = 'middle';
@@ -205,5 +207,6 @@ export const kemonoIcon = (() => {
   const img = document.createElement('img');
   img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAACTUExURQAAAAQCAAMBABQKBGUxFBUKBAAAAAEAAEgjD2MwFCsVCKJPIYdBG1YqESAPBjocDJpLH4ZBG389GUskD2cyFW41FkAfDRkMBaJOIb9cJ0IgDQMBABAHAy4WCQgEApVJHno7GQAAAKpSIrRYJMZgKNJmK+RvLl4uE5tLHxIJAyQRB4pDHOdwLwEAAOpyMN9sLf////15I3UAAAAidFJOUwBGF4GvKQlUV8s35eBtmtvzt/u5jPf+/f30SGCuzW/GoMxWg8riAAAAAWJLR0Qwrtwt5AAAAAd0SU1FB+gHERUzDxJ/xp8AAAC+SURBVBjTTY9tE4IgEIQPjMNMJS0yU8sISwXx//+7sJcZ99PNzu3Os0AorEQIBBsGgIxzhgDhNoJoFyeIqRApxWSfIWCm8g0/PHQcHnN19LFES3kq8u6pz6/y4uPBvtedHEajHy9ZIZC6f1pr1TgVw1DUBCqhnTecmaZRKVEBafrZG1afRuNUw4FeG9ktztzNZxF4KEqq29JiXZly9gUOy89LRvG3ANulZoH4i+2cm1tcrUyMiaP1bFrfg+/1Bu2eEsMGhTxDAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDI0LTA3LTE3VDIxOjUxOjE1KzAwOjAwXKO44gAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyNC0wNy0xN1QyMTo1MToxNSswMDowMC3+AF4AAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjQtMDctMTdUMjE6NTE6MTUrMDA6MDB66yGBAAAAAElFTkSuQmCC';
   img.title = 'Found kemono match';
+  img.style.marginLeft = '0.25rem';
   return img;
 })();

@@ -151,6 +151,14 @@ export async function processData(data: ServerResponse, refreshable = true, cont
 
   if (!container) return;
 
+  if (container.firstChild?.nodeName == '#text') {
+    const span = document.createElement('span');
+    span.style.display = 'inline-flex';
+    span.innerText = container.firstChild.textContent!;
+    container.firstChild.remove();
+    container.insertBefore(span, container.firstElementChild);
+  }
+
   if (!_isCompleteResponse && data.notPending && refreshable) {
     const linkHrefs = Array.from(container.querySelectorAll('a')).map(a => a.href);
 
@@ -169,19 +177,19 @@ export async function processData(data: ServerResponse, refreshable = true, cont
         forceClone.remove();
 
         const spinny = spinner.cloneNode(true) as HTMLElement;
-        container.insertBefore(spinny, container.firstElementChild);
+        container.firstElementChild?.appendChild(spinny);
         const data = await getData(id, true, true);
         spinny.remove();
         processData(data);
       });
-      container.insertBefore(forceClone, container.firstElementChild);
+      container.firstElementChild?.appendChild(forceClone);
     }
 
     return supported;
   }
 
   if (!_isCompleteResponse && data.queued && refreshable) {
-    container.insertBefore(spinner.cloneNode(true), container.firstElementChild);
+    container.firstElementChild?.appendChild(spinner.cloneNode(true));
 
     getData(id, true, true).then((data) => {
       for (const ele of document.querySelectorAll('.jsv-icon')) {
@@ -205,18 +213,18 @@ export async function processData(data: ServerResponse, refreshable = true, cont
           forceClone.remove();
 
           const spinny = spinner.cloneNode(true) as HTMLElement;
-          container.insertBefore(spinny, container.firstElementChild);
+          container.firstElementChild?.appendChild(spinny);
           const data = await getData(id, true, true);
           spinny.remove();
           processData(data);
         });
-        container.insertBefore(forceClone, container.firstElementChild);
+        container.firstElementChild?.appendChild(forceClone);
       }
     }
 
     const noMatchesClone = noMatches.cloneNode(true) as HTMLElement;
     noMatchesClone.title = 'Unsupported';
-    container.insertBefore(noMatchesClone, container.firstElementChild);
+    container.firstElementChild?.appendChild(noMatchesClone);
     return true;
   }
 
@@ -229,7 +237,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
       reloadClone.remove();
 
       const spinny = spinner.cloneNode(true) as HTMLElement;
-      container.insertBefore(spinny, container.firstElementChild);
+      container.firstElementChild?.appendChild(spinny);
       try {
         const data = await getData(id, true, true);
         spinny.remove();
@@ -240,7 +248,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
         Danbooru.error('Error reloading post. Check console.');
       }
     });
-    container.insertBefore(reloadClone, container.firstElementChild);
+    container.firstElementChild?.appendChild(reloadClone);
   }
 
   const allSourceLinks = Array.from(container.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]'));
@@ -467,13 +475,21 @@ export async function addKemonoData(url: string | undefined) {
 
     if (!first || !container) return;
 
+    if (container.firstChild?.nodeName == '#text') {
+      const span = document.createElement('span');
+      span.style.display = 'inline-flex';
+      span.innerText = container.firstChild.textContent!;
+      container.firstChild.remove();
+      container.insertBefore(span, container.firstElementChild);
+    }
+
     const kemonoIconClone = kemonoIcon.cloneNode() as HTMLElement;
     kemonoIconClone.style.cursor = 'pointer';
     kemonoIconClone.addEventListener('click', () => {
       window.open(`https://kemono.cr/${first.service}/user/${first.user}/post/${first.id}`);
     });
 
-    container.insertBefore(kemonoIconClone, container.firstElementChild);
+    container.firstElementChild?.appendChild(kemonoIcon);
     return;
   }
 }
