@@ -23,6 +23,12 @@ export default class MastodonSourceChecker extends SourceChecker {
       page = await SourceChecker.browser!.newPage();
       await page.goto(source);
 
+      const contentWarning = await SourceChecker.waitForSelectorOrNull(page, '.content-warning > button', 1000);
+
+      if (contentWarning) {
+        await contentWarning.evaluate(b => b.click());
+      }
+
       const main = await SourceChecker.waitForSelectorOrNull(page, '.media-gallery', 5000);
 
       if (!main) {
