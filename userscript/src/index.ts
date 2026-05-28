@@ -1,6 +1,6 @@
 import { getData } from './Backend';
 import { checkFluffle, hasCachedFluffleData } from './Fluffle';
-import { processData, waitForSelector } from './Utilities';
+import { addKemonoData, processData, waitForSelector } from './Utilities';
 
 function addCSS() {
   document.head.append(Object.assign(document.createElement('style'), {
@@ -106,7 +106,11 @@ async function main() {
     return;
   }
 
-  const id = parseInt(document.querySelector('#image-container[data-id]')?.getAttribute('data-id') ?? '-1');
+  const container = document.querySelector('#image-container[data-id]');
+
+  if (!container) return;
+
+  const id = parseInt(container.getAttribute('data-id') ?? '-1');
 
   if (id == -1) {
     console.error('[SourceVerifier] Post ID not found.');
@@ -121,6 +125,7 @@ async function main() {
     const supported = await processData(data, links.length > 0);
 
     if (links.length == 0) {
+      addKemonoData(container.getAttribute('data-file-url')!);
       checkFluffle(id);
     } else if (!supported) {
       checkFluffle(id);

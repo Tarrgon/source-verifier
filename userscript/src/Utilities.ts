@@ -1,6 +1,7 @@
 import type { ServerResponse, CompleteResponse, IncompleteResponse } from '../../shared';
 import { anyLinksSupported, getData } from './Backend';
-import { force, spinner, noMatches, reload, info, phashMatch, md5Match, dimensionAndFileTypeMatch, dimensionMatch, aspectRatioMatch, fileTypeMatch, unknown, bvas } from './icons';
+import { force, spinner, noMatches, reload, info, phashMatch, md5Match, dimensionAndFileTypeMatch, dimensionMatch, aspectRatioMatch, fileTypeMatch, unknown, bvas, kemonoIcon } from './icons';
+import { getKemonoDataFromUrl } from './Kemono';
 
 export function getCSRFToken(): string {
   return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
@@ -453,4 +454,26 @@ export async function processData(data: ServerResponse, refreshable = true, cont
   }
 
   return anyMatches;
+}
+
+export async function addKemonoData(url: string | undefined) {
+  if (!url) return;
+
+  const kemonoData = await getKemonoDataFromUrl(url);
+
+  if (kemonoData?.posts) {
+    const first = kemonoData.posts[0];
+    const container = document.querySelector('.source-links');
+
+    if (!first || !container) return;
+
+    const kemonoIconClone = kemonoIcon.cloneNode() as HTMLElement;
+    kemonoIconClone.style.cursor = 'pointer';
+    kemonoIconClone.addEventListener('click', () => {
+      window.open(`https://kemono.cr/${first.service}/user/${first.user}/post/${first.id}`);
+    });
+
+    container.insertBefore(kemonoIconClone, container.firstElementChild);
+    return;
+  }
 }
