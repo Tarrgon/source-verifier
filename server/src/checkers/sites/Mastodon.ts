@@ -46,6 +46,8 @@ export default class MastodonSourceChecker extends SourceChecker {
       let allImages = (await main.$$('.media-gallery__item-thumbnail > img'));
 
       for (let i = 0; i < allImages.length; i++) {
+        const parentAnchorHref = await allImages[i].evaluate(e => e.parentElement.href);
+
         const srcset = await allImages[i].evaluate(e => e.getAttribute('srcset'));
         if (!srcset) {
           allImages[i] = [await allImages[i].evaluate(e => e.getAttribute('src'))];
@@ -53,6 +55,8 @@ export default class MastodonSourceChecker extends SourceChecker {
         }
         const parsed = parseSrcset(srcset);
         allImages[i] = parsed.map(p => p.url);
+
+        if (parentAnchorHref) allImages[i].push(parentAnchorHref);
       }
 
       allImages = allImages.flat();
