@@ -150,29 +150,34 @@ export default class SourceCheckerManager {
     if (current?.sources) combinedData = current.sources!;
 
     if (!queueItem.phash) {
-      // console.log(`[SourceChecker] Calculating phash of ${queueItem._id}`);
-      const e6Url = `https://static1.e621.net/data/${queueItem.md5.slice(0, 2)}/${queueItem.md5.slice(2, 4)}/${queueItem.md5}.${queueItem.fileType}`;
-      const res = await fetch(e6Url);
-      if (res.ok) {
-        if (res.headers.get('Content-Type')?.startsWith('image/')) {
-          let phash: string;
-          // console.log(`[SourceChecker] Fetched data of ${queueItem._id}`);
-          const data = await res.arrayBuffer();
-          // console.log(`[SourceChecker] Got arraybuffer data for ${queueItem._id}`);
-          try {
-            // console.log(`[SourceChecker] Doing phash calculation for ${queueItem._id}`);
-            phash = await calcPhash(data);
-          } catch (e) {
-            console.error('Error while calculating phash');
-            console.error(e);
-            phash = '9'.repeat(64);
+      try {
+        // console.log(`[SourceChecker] Calculating phash of ${queueItem._id}`);
+        const e6Url = `https://static1.e621.net/data/${queueItem.md5.slice(0, 2)}/${queueItem.md5.slice(2, 4)}/${queueItem.md5}.${queueItem.fileType}`;
+        const res = await fetch(e6Url);
+        if (res.ok) {
+          if (res.headers.get('Content-Type')?.startsWith('image/')) {
+            let phash: string;
+            // console.log(`[SourceChecker] Fetched data of ${queueItem._id}`);
+            const data = await res.arrayBuffer();
+            // console.log(`[SourceChecker] Got arraybuffer data for ${queueItem._id}`);
+            try {
+              // console.log(`[SourceChecker] Doing phash calculation for ${queueItem._id}`);
+              phash = await calcPhash(data);
+            } catch (e) {
+              console.error('Error while calculating phash');
+              console.error(e);
+              phash = '9'.repeat(64);
+            }
+            queueItem.phash = phash;
+          } else {
+            queueItem.phash = '9'.repeat(64);
           }
-          queueItem.phash = phash;
         } else {
+          console.error(`Failed to fetch e621 post image for ${queueItem._id}`);
           queueItem.phash = '9'.repeat(64);
         }
-      } else {
-        console.error(`Failed to fetch e621 post image for ${queueItem._id}`);
+      } catch (e) {
+        console.error(e);
         queueItem.phash = '9'.repeat(64);
       }
 
