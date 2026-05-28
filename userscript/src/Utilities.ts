@@ -285,7 +285,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
         }
 
 
-        if (!sourceData.md5Match && sourceData.phashDistance !== undefined) {
+        if (!sourceData.md5Match && sourceData.phashDistance !== undefined && sourceData.phashDistance != -1) {
           const phashClone = phashMatch.cloneNode(true) as HTMLElement;
 
           if (sourceData.phashDistance == 0) {
@@ -519,7 +519,7 @@ export function processDataOnPostView(data: ServerResponse) {
       previewMatched = true;
     }
 
-    if (closestPerceptually == null || sourceData.phashDistance! < closestPerceptually.phashDistance!) {
+    if (closestPerceptually == null || (sourceData.phashDistance! >= 0 && sourceData.phashDistance! < closestPerceptually.phashDistance!)) {
       closestPerceptually = sourceData;
     }
   }
@@ -538,7 +538,7 @@ export function processDataOnPostView(data: ServerResponse) {
     postInfo.appendChild(noMatches.cloneNode(true));
   }
 
-  if (!closestPerceptually!.md5Match && closestPerceptually!.phashDistance !== undefined) {
+  if (!closestPerceptually!.md5Match && closestPerceptually!.phashDistance !== undefined && closestPerceptually!.phashDistance != -1) {
     const phashClone = phashMatch.cloneNode(true) as HTMLElement;
 
     if (closestPerceptually!.phashDistance == 0) {
