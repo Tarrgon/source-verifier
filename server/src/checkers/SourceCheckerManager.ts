@@ -72,7 +72,7 @@ export default class SourceCheckerManager {
     }, 400);
   }
 
-  static async queuePosts(posts: DatabasePost[], force = false, callbacks: CallbackFunction[] | null = null, additionalSources: string[] = []) {
+  static async queuePosts(posts: DatabasePost[], force = false, checkActive = false, callbacks: CallbackFunction[] | null = null, additionalSources: string[] = []) {
     if (posts.length == 0) return;
     console.log(`[SourceCheckerManager] Attempting to queue ${posts.length} posts.`);
 
@@ -81,10 +81,12 @@ export default class SourceCheckerManager {
 
     const itemsToQueue: SourceCheckQueueItem[] = [];
 
+    const _checkActive = force || checkActive;
+
     for (const post of posts) {
       const combinedSources = post.sources.concat(additionalSources);
 
-      if ((!post.isPending && !force)
+      if ((!post.isPending && !_checkActive)
         || post.isDeleted
         || !this.anyLinksSupported(combinedSources)) {
         let index = -1;
@@ -263,7 +265,7 @@ export default class SourceCheckerManager {
           await this.queuePosts([post], true);
           return resolve({ id, queued: true });
         } else {
-          return this.queuePosts([post], true, [resolve]);
+          return this.queuePosts([post], true, true, [resolve]);
         }
       } else {
         if (!waitForData) {
@@ -274,7 +276,7 @@ export default class SourceCheckerManager {
 
           item.callbacks.push(resolve);
 
-          return this.queuePosts([post], true, item.callbacks);
+          return this.queuePosts([post], true, true, item.callbacks);
         }
       }
     });

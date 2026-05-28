@@ -23,7 +23,7 @@ router.post('/:id', async (req, res: Response<ServerResponse>) => {
       return res.json({ id, notIndexed: true });
     }
 
-    SourceCheckerManager.queuePosts([post], true, [callbackFunction.bind(null, res, post)], req.body);
+    SourceCheckerManager.queuePosts([post], false, true, [callbackFunction.bind(null, res, post)], req.body);
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
