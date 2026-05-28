@@ -9,15 +9,24 @@ const packageData = JSON.parse(fs.readFileSync(path.resolve(`${__dirname}/../pac
 const headerData = JSON.parse(fs.readFileSync(path.resolve(`${__dirname}/userscriptHeader.json`), { encoding: 'utf-8' }));
 
 const header = `// ==UserScript==
-// @name Janitor Source Verifier
-// @version ${packageData.version}
-// @description ${packageData.description}
-// @author ${packageData.author.name}
+// @name            Janitor Source Verifier
+// @version         ${packageData.version}
+// @description     ${packageData.description}
+// @author          ${packageData.author.name}
 ${Object.keys(headerData).map((key) => {
+  const padding = 20;
   if (Array.isArray(headerData[key])) {
-    return headerData[key].map(value => `// @${key} ${value}`).join('\n');
+    return headerData[key].map((value) => {
+      let header = `// @${key}`;
+      while (header.length < padding) header += ' ';
+      header += value;
+      return header;
+    }).join('\n');
   } else {
-    return `// @${key} ${headerData[key]}`;
+    let header = `// @${key}`;
+    while (header.length < padding) header += ' ';
+    header += headerData[key];
+    return header;
   }
 }).join('\n')}
 // ==/UserScript==`;

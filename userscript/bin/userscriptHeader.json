@@ -7,6 +7,7 @@
   ],
   "updateURL": "https://github.com/Tarrgon/source-verifier/releases/latest/download/source-verifier-userscript.meta.js",
   "downloadURL": "https://github.com/Tarrgon/source-verifier/releases/latest/download/source-verifier-userscript.user.js",
+  "homepageURL": "https://github.com/Tarrgon/source-verifier/tree/master/userscript",
   "icon": "https://www.google.com/s2/favicons?sz=64&domain=e621.net",
   "connect": [
     "api.fluffle.xyz",
