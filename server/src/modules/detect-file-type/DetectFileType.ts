@@ -3,9 +3,13 @@
 // ideally this should be properly converted in the future
 
 import fs from 'fs';
-import signatures from './signatures.json';
-import Jschardet from 'jschardet';
 import Iconv from 'iconv-lite';
+import Jschardet from 'jschardet';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const signatures = JSON.parse(fs.readFileSync(path.join(__dirname, 'signatures.json'), { encoding: 'utf-8' }));
 
 const customFunctions: any[] = [];
 

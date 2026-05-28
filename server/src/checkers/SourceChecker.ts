@@ -3,7 +3,7 @@ import { existsSync, rmSync, writeFileSync } from 'fs';
 import { md5 as jsmd5 } from 'js-md5';
 import puppeteer, { Browser, TimeoutError } from 'puppeteer';
 import calcPhash from 'sharp-phash';
-import calcPhashDistance from 'sharp-phash/distance';
+import calcPhashDistance from 'sharp-phash/distance.js';
 import { DetectFileType, getVideoDimensions, wait } from '../modules';
 import type { SourceCheckQueueItem, BaseSourceData, DatabasePost, Dimensions, SourceData, SourceDataMap } from '../../../shared';
 import { config } from '../config';

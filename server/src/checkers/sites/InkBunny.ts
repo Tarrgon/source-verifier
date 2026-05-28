@@ -1,6 +1,6 @@
 import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
 import { config } from '../../config';
-import { Helper as InkbunnyHelper } from '../../ib-helper/dist';
+import { Helper as InkbunnyHelper } from '../../ib-helper/dist/index.js';
 import { wait } from '../../modules';
 import { MIME_TYPE_TO_FILE_EXTENSION, SourceChecker } from '../SourceChecker';
 

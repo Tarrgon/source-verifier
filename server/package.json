@@ -42,9 +42,10 @@
   "scripts": {
     "dev": "tsx watch --enable-source-maps src/index.ts",
     "start": "node dist/index.js",
-    "build": "npm run clean && npm run compile && npm run copyfiles",
+    "build": "npm run clean && npm run compile && npm run copyfiles && npm run copyenv",
     "compile": "npx tsc && npx tsc-alias",
     "clean": "npx rimraf dist",
-    "copyfiles": "npx copyfiles -u 1 \"./src/**/*.html\" \"./src/**/*.js\" ./dist"
+    "copyfiles": "npx copyfiles -u 1 \"./src/**/*.html\" \"./src/**/*.js\" \"./src/**/*.json\" ./dist",
+    "copyenv": "npx copyfiles .env ./dist"
   }
 }

@@ -2,7 +2,7 @@ import SourceCheckerManager from '../../checkers/SourceCheckerManager';
 import { Database } from '../database';
 import Queue, { Priority } from '../Queue';
 import { transformE621Post } from '../Utilities';
-import { type E621Post } from './types.d';
+import type { E621Post } from './types.d';
 import type { DatabasePost } from '../../../../shared';
 
 const BASE_URL = 'https://e621.net';

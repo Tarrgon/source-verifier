@@ -1,4 +1,4 @@
-import { type Dimensions } from '../database';
+import type { Dimensions } from '../database';
 
 export type E621Post = {
   id: number

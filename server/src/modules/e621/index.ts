@@ -1,2 +1,2 @@
 export * from './E621Handler';
-export * from './types.d';
+export type * from './types.d';
