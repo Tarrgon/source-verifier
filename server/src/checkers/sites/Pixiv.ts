@@ -45,6 +45,7 @@ export default class PixivSourceChecker extends SourceChecker {
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string, retried: boolean = false): Promise<SourceData> {
     if (this.disabled) {
+      console.log('[PixivSourceChecker] Attempted to check pixiv post, but pixiv is disabled.');
       return {
         unknown: true,
         error: true
