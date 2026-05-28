@@ -3,23 +3,30 @@ name: Build and Release Userscript
 on:
   push:
     tags:
-      - 'v*' # Triggers on version tags, e.g., v1.0.0, v1.2.3-alpha
+      - 'v*'
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Required to create a release and upload assets
+      contents: write
+
+    # This sets the default directory for all 'run' steps in this job
+    defaults:
+      run:
+        working-directory: userscript
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/checkout@v4
+        uses: actions/setup-node@v4
         with:
-          node-version: '20' # Matches modern environments required by packages like ESLint v9
+          node-version: '20'
+          # Points the cacher to the package.json inside the subdirectory
           cache: 'npm'
+          cache-dependency-path: userscript/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -28,9 +35,10 @@ jobs:
         run: npm run build:prod
 
       - name: Create GitHub Release
-        id: create_release
         uses: softprops/action-gh-release@v2
         with:
+          # Note: The 'files' property is handled by the action itself, 
+          # which runs from the repository root, so we include the folder prefix here.
           files: |
-            dist/*
+            userscript/dist/*
           generate_release_notes: true
