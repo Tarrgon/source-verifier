@@ -4,7 +4,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY . .
+COPY . ./server
+COPY ../ .
+WORKDIR /app/server
 RUN npm run build
 
 # ----------
