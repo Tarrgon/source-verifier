@@ -4,4 +4,4 @@ services:
     build: .
     env_file: '.env'
     ports:
-      - "5817:5817"
+      - "${PORT}:${PORT}"
