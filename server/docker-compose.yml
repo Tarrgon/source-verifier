@@ -1,7 +1,0 @@
-services:
-  sourceverifier:
-    restart: unless-stopped
-    build: .
-    env_file: '.env'
-    ports:
-      - "${PORT}:${PORT}"
