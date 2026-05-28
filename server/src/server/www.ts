@@ -33,7 +33,7 @@ function onListening(server) {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
 
-  console.log('Listening on ' + bind);
+  console.log(`Listening on ${bind} ${config.SECURE ? 'using SSL' : ''}`);
 }
 
 export async function start() {
