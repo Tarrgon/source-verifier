@@ -11,7 +11,6 @@ jobs:
     permissions:
       contents: write
 
-    # This sets the default directory for all 'run' steps in this job
     defaults:
       run:
         working-directory: userscript
@@ -24,12 +23,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          # Points the cacher to the package.json inside the subdirectory
           cache: 'npm'
           cache-dependency-path: userscript/package-lock.json
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Get version from package.json
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "pkg_version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build production script
         run: npm run build:prod
@@ -37,8 +41,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          # Note: The 'files' property is handled by the action itself, 
-          # which runs from the repository root, so we include the folder prefix here.
+          name: "v${{ steps.get_version.outputs.pkg_version }}"
           files: |
             userscript/dist/*
           generate_release_notes: true
