@@ -140,7 +140,6 @@ export async function getReplacementUrl(id, sourceData, source, reason) {
 }
 
 export async function processData(data: ServerResponse, refreshable = true, containerSelector = '.source-links') {
-  console.log(data);
   const _isCompleteResponse = isCompleteResponse(data);
   if (!_isCompleteResponse && data.unsupported) return false;
 
@@ -274,7 +273,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
         let matchingAspectRatio = false;
 
         if (sourceData.dimensions) {
-          const sourceApproxAspectRatio = approximateAspectRatio(width / height, 50);
+          const sourceApproxAspectRatio = approximateAspectRatio(sourceData.dimensions.width / sourceData.dimensions.height, 50);
           matchingAspectRatio = approxAspectRatio[0] == sourceApproxAspectRatio[0] && approxAspectRatio[1] == sourceApproxAspectRatio[1];
 
           embeddedInfo.title = `${sourceData.dimensions.width}x${sourceData.dimensions.height} (${roundTo(sourceData.dimensions.width / width, 2)}:${roundTo(sourceData.dimensions.height / height, 2)}) ${sourceData.fileType!.toUpperCase()}`;
@@ -493,49 +492,26 @@ export function processDataOnPostView(data: ServerResponse) {
     return;
   }
 
-  let flags = 0;
-  let previewMatched = false;
-
   if (!_isCompleteResponse) return;
 
   let closestPerceptually: SourceData | null = null;
 
-  for (const [source, sourceData] of Object.entries(data.sources)) {
-    if (sourceData.md5Match) {
-      flags |= 1;
-    } else if (sourceData.dimensionMatch && sourceData.fileTypeMatch) {
-      flags |= 2;
-    } else if (sourceData.dimensionMatch) {
-      flags |= 4;
-    } else if (sourceData.fileTypeMatch) {
-      flags |= 8;
-    } else if (sourceData.unknown) {
-      flags |= 16;
-    } else {
-      flags |= 32;
-    }
-
-    if (sourceData.isPreview) {
-      previewMatched = true;
-    }
-
+  for (const sourceData of Object.values(data.sources)) {
     if (closestPerceptually == null || (sourceData.phashDistance! >= 0 && sourceData.phashDistance! < closestPerceptually.phashDistance!)) {
       closestPerceptually = sourceData;
     }
   }
 
-  if ((flags & 1) == 1) {
+  if (closestPerceptually!.md5Match) {
     postInfo.appendChild(md5Match.cloneNode(true));
-  } else if ((flags & 2) == 2) {
+  } else if (closestPerceptually!.dimensionMatch && closestPerceptually!.fileTypeMatch) {
     postInfo.appendChild(dimensionAndFileTypeMatch.cloneNode(true));
-  } else if ((flags & 4) == 4) {
+  } else if (closestPerceptually!.dimensionMatch) {
     postInfo.appendChild(dimensionMatch.cloneNode(true));
-  } else if ((flags & 8) == 8) {
+  } else if (closestPerceptually!.fileTypeMatch) {
     postInfo.appendChild(fileTypeMatch.cloneNode(true));
-  } else if ((flags & 16) == 16) {
+  } else if (closestPerceptually!.unknown) {
     postInfo.appendChild(unknown.cloneNode(true));
-  } else if ((flags & 32) == 32) {
-    postInfo.appendChild(noMatches.cloneNode(true));
   }
 
   if (!closestPerceptually!.md5Match && closestPerceptually!.phashDistance !== undefined && closestPerceptually!.phashDistance != -1) {
@@ -559,7 +535,7 @@ export function processDataOnPostView(data: ServerResponse) {
     phashClone.title += ` Similarity: ${Math.floor(pd)}%`;
   }
 
-  if (previewMatched) {
+  if (closestPerceptually?.isPreview) {
     const clone = bvas.cloneNode(true) as HTMLElement;
     clone.title = 'Matched version is preview image. Original version available.';
     clone.style.color = 'red';
