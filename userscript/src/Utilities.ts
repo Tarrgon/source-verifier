@@ -468,14 +468,20 @@ export async function processData(data: ServerResponse, refreshable = true, cont
 export function processDataOnPostView(data: ServerResponse) {
   const _isCompleteResponse = isCompleteResponse(data);
 
-  const post = document.getElementById(`entry_${data.id}`);
+  let post = document.getElementById(`entry_${data.id}`);
+  const isRe6 = !!post;
+
+  if (!isRe6) post = document.querySelector(`article[data-id='${data.id}']`);
 
   if (!post) return;
 
-  const postInfo = post.querySelector('post-info');
+  const postInfo = isRe6 ? post.querySelector('post-info') : post.querySelector('.thm-desc-a');
 
   if (!postInfo) return;
 
+  for (const element of postInfo.querySelectorAll<HTMLElement>('.jsv-icon')) {
+    element.remove();
+  }
 
   if (!_isCompleteResponse && data.queued) {
     postInfo.appendChild(spinner.cloneNode(true));
