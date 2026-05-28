@@ -1,4 +1,5 @@
 node_modules
-dist
-tmp-dist
+server/dist
+userscript/dist
+userscript/tmp-dist
 .env
