@@ -25,7 +25,7 @@ export function getData(id: number, force = false, updatePost = false): Promise<
   });
 }
 
-export function getDataBulk(ids: number[]): Promise<ServerResponse[]> {
+export function getDataBulk(ids: number[] | string[]): Promise<ServerResponse[]> {
   return new Promise((resolve, reject) => {
     GM.xmlHttpRequest({
       method: 'GET',

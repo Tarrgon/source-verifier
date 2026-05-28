@@ -1,4 +1,4 @@
-import type { ServerResponse, CompleteResponse, IncompleteResponse } from '../../shared';
+import type { ServerResponse, CompleteResponse, IncompleteResponse, SourceData } from '../../shared';
 import { anyLinksSupported, getData } from './Backend';
 import { force, spinner, noMatches, reload, info, phashMatch, md5Match, dimensionAndFileTypeMatch, dimensionMatch, aspectRatioMatch, fileTypeMatch, unknown, bvas, kemonoIcon } from './icons';
 import { getKemonoDataFromUrl } from './Kemono';
@@ -140,6 +140,7 @@ export async function getReplacementUrl(id, sourceData, source, reason) {
 }
 
 export async function processData(data: ServerResponse, refreshable = true, containerSelector = '.source-links') {
+  console.log(data);
   const _isCompleteResponse = isCompleteResponse(data);
   if (!_isCompleteResponse && data.unsupported) return false;
 
@@ -188,7 +189,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
     return supported;
   }
 
-  if (!_isCompleteResponse && data.queued && refreshable) {
+  if (!_isCompleteResponse && (data.queued || data.notIndexed) && refreshable) {
     container.firstElementChild?.appendChild(spinner.cloneNode(true));
 
     getData(id, true, true).then((data) => {
@@ -462,6 +463,102 @@ export async function processData(data: ServerResponse, refreshable = true, cont
   }
 
   return anyMatches;
+}
+
+export function processDataOnPostView(data: ServerResponse) {
+  const _isCompleteResponse = isCompleteResponse(data);
+
+  const post = document.getElementById(`entry_${data.id}`);
+
+  if (!post) return;
+
+  const postInfo = post.querySelector('post-info');
+
+  if (!postInfo) return;
+
+
+  if (!_isCompleteResponse && data.queued) {
+    postInfo.appendChild(spinner.cloneNode(true));
+    return;
+  } else if (!_isCompleteResponse && data.unsupported) {
+    const noMatchesClone = noMatches.cloneNode(true) as HTMLElement;
+    noMatchesClone.title = 'Unsupported';
+    postInfo.appendChild(noMatchesClone);
+    return;
+  }
+
+  let flags = 0;
+  let previewMatched = false;
+
+  if (!_isCompleteResponse) return;
+
+  let closestPerceptually: SourceData | null = null;
+
+  for (const [source, sourceData] of Object.entries(data.sources)) {
+    if (sourceData.md5Match) {
+      flags |= 1;
+    } else if (sourceData.dimensionMatch && sourceData.fileTypeMatch) {
+      flags |= 2;
+    } else if (sourceData.dimensionMatch) {
+      flags |= 4;
+    } else if (sourceData.fileTypeMatch) {
+      flags |= 8;
+    } else if (sourceData.unknown) {
+      flags |= 16;
+    } else {
+      flags |= 32;
+    }
+
+    if (sourceData.isPreview) {
+      previewMatched = true;
+    }
+
+    if (closestPerceptually == null || sourceData.phashDistance! < closestPerceptually.phashDistance!) {
+      closestPerceptually = sourceData;
+    }
+  }
+
+  if ((flags & 1) == 1) {
+    postInfo.appendChild(md5Match.cloneNode(true));
+  } else if ((flags & 2) == 2) {
+    postInfo.appendChild(dimensionAndFileTypeMatch.cloneNode(true));
+  } else if ((flags & 4) == 4) {
+    postInfo.appendChild(dimensionMatch.cloneNode(true));
+  } else if ((flags & 8) == 8) {
+    postInfo.appendChild(fileTypeMatch.cloneNode(true));
+  } else if ((flags & 16) == 16) {
+    postInfo.appendChild(unknown.cloneNode(true));
+  } else if ((flags & 32) == 32) {
+    postInfo.appendChild(noMatches.cloneNode(true));
+  }
+
+  if (!closestPerceptually!.md5Match && closestPerceptually!.phashDistance !== undefined) {
+    const phashClone = phashMatch.cloneNode(true) as HTMLElement;
+
+    if (closestPerceptually!.phashDistance == 0) {
+      postInfo.appendChild(phashClone);
+    } else if (closestPerceptually!.phashDistance < 7) {
+      phashClone.style.color = 'yellow';
+      // phashClone.style.outlineColor = colors["yellow"][colorIndex]
+      phashClone.title = 'Perceptually similar';
+      postInfo.appendChild(phashClone);
+    } else {
+      phashClone.style.color = 'red';
+      // phashClone.style.outlineColor = colors["red"][colorIndex]
+      phashClone.title = 'Perceptually dissimilar';
+      postInfo.appendChild(phashClone);
+    }
+
+    const pd = 100 - (closestPerceptually!.phashDistance / 64 * 100);
+    phashClone.title += ` Similarity: ${Math.floor(pd)}%`;
+  }
+
+  if (previewMatched) {
+    const clone = bvas.cloneNode(true) as HTMLElement;
+    clone.title = 'Matched version is preview image. Original version available.';
+    clone.style.color = 'red';
+    postInfo.appendChild(clone);
+  }
 }
 
 export async function addKemonoData(url: string | undefined) {

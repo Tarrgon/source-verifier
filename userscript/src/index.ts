@@ -1,6 +1,6 @@
-import { getData } from './Backend';
+import { getData, getDataBulk } from './Backend';
 import { checkFluffle, hasCachedFluffleData } from './Fluffle';
-import { addKemonoData, processData, waitForSelector } from './Utilities';
+import { addKemonoData, processData, processDataOnPostView, waitForSelector } from './Utilities';
 
 function addCSS() {
   document.head.append(Object.assign(document.createElement('style'), {
@@ -68,6 +68,43 @@ function addCSS() {
   }));
 }
 
+let timeOfMostRecentAddition = -1;
+let additions: HTMLElement[] = [];
+
+let interval;
+
+function checkForNewPosts(mutationList: MutationRecord[], observer: MutationObserver) {
+  for (const mutation of mutationList) {
+    if (mutation.type === 'childList') {
+      for (const addedNode of mutation.addedNodes) {
+        const addedElement = addedNode as HTMLElement;
+        if (addedElement.tagName == 'IMG-RIBBONS') {
+          timeOfMostRecentAddition = Date.now();
+          additions.push(mutation.target as HTMLElement);
+          if (!interval && additions.length > 0) {
+            interval = setInterval(async () => {
+              if (Date.now() - timeOfMostRecentAddition > 500) {
+                clearInterval(interval);
+                interval = null;
+
+                const ids = additions.map(p => p.id.slice(6));
+
+                additions = [];
+
+                const datas = await getDataBulk(ids);
+
+                for (const data of datas) {
+                  processDataOnPostView(data);
+                }
+              }
+            }, 300);
+          }
+        }
+      }
+    }
+  }
+}
+
 async function main() {
   addCSS();
 
@@ -103,6 +140,15 @@ async function main() {
       sourceInput.dispatchEvent(new Event('input'));
     }, 100);
 
+    return;
+  }
+
+  if (window.location.pathname == '/posts') {
+    const observer = new MutationObserver(checkForNewPosts);
+    const target = await waitForSelector('search-content');
+    if (!target) return;
+
+    observer.observe(target, { attributes: true, childList: true, subtree: true });
     return;
   }
 
