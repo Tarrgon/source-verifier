@@ -75,12 +75,8 @@ export class E621Handler {
         priority: queueSkip ? Priority.HIGH : Priority.LOW,
         date: new Date(),
         options: options ?? { method: 'GET' },
-        onResolve: function (...args) {
-          resolve(...args);
-        },
-        onReject: function (...args) {
-          reject(...args);
-        }
+        onResolve: resolve,
+        onReject: reject
       };
 
       this.queue.addItem(queueItem);
