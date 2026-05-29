@@ -1,5 +1,5 @@
 import type { SourceCheckQueueItem, SourceData } from '../../../../shared';
-import { getDOM } from '../../modules';
+import { getDOM, getFromFlareSolverr } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 
 const PROXY_URL_BASE = 'https://xfuraffinity.net/view';
@@ -26,7 +26,7 @@ export default class FurAffinitySourceChecker extends SourceChecker {
         const href = document.querySelector("meta[property='og:image']")?.getAttribute('content');
 
         if (href) {
-          return await SourceChecker.processDirectLink(post, href);
+          return await SourceChecker.processDirectLink(post, href, false, {}, getFromFlareSolverr);
         } else {
           return { unknown: true };
         }

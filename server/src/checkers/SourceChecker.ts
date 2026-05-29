@@ -51,19 +51,20 @@ export class SourceChecker {
     this.puppetReady = true;
   }
 
-  static async processDirectLink(post: DatabasePost, source: string, isPreview = false, headers: { [header: string]: string } = {}): Promise<SourceData> {
+  static async processDirectLink(post: DatabasePost, source: string, isPreview = false, headers: { [header: string]: string } = {}, customFetch: ((source: string) => Promise<Response | null>) | null = null): Promise<SourceData> {
     if (!source || !post) {
       return {
         unknown: true,
         error: true
       };
     }
+
     try {
-      const res = await fetch(source, {
+      const res = customFetch ? await customFetch(source) : await fetch(source, {
         headers
       });
 
-      if (!res.ok) {
+      if (!res || !res.ok) {
         return {
           unknown: true,
           error: true
