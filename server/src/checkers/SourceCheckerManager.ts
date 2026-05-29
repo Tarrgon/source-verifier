@@ -221,7 +221,7 @@ export default class SourceCheckerManager {
                 queueItem.sources.push(...urls);
               }
             } catch (e) {
-              console.error('[SourceCheckerManager] Error while getting fluffle data:');
+              console.error(`[SourceCheckerManager] Error while getting fluffle data (${queueItem._id}):`);
               console.error(e);
             }
 
@@ -229,7 +229,7 @@ export default class SourceCheckerManager {
               // console.log(`[SourceChecker] Doing phash calculation for ${queueItem._id}`);
               phash = await calcPhash(data);
             } catch (e) {
-              console.error('[SourceCheckerManager] Error while calculating phash:');
+              console.error(`[SourceCheckerManager] Error while calculating phash (${queueItem._id}):`);
               console.error(e);
               phash = '9'.repeat(64);
             }
@@ -242,7 +242,7 @@ export default class SourceCheckerManager {
           queueItem.phash = '9'.repeat(64);
         }
       } catch (e) {
-        console.error('[SourceCheckerManager] Error while calculating phash:');
+        console.error(`[SourceCheckerManager] Error while calculating phash (${queueItem._id}):`);
         console.error(e);
         queueItem.phash = '9'.repeat(64);
       }
