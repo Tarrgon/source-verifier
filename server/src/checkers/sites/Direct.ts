@@ -1,8 +1,10 @@
 import type { SourceCheckQueueItem, SourceData } from '../../../../shared';
+import { getFromFlareSolverr } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 
 export default class DirectSourceChecker extends SourceChecker {
   private previewRegex: RegExp[];
+  private useFlareSolverrRegex: RegExp[];
   private headersRegex: Map<RegExp, { [header: string]: string }>;
 
   constructor() {
@@ -64,6 +66,10 @@ export default class DirectSourceChecker extends SourceChecker {
     this.headersRegex = new Map();
 
     this.headersRegex.set(/^https?:\/\/i\.pximg\.net\/.*\.(png|jpg|jpeg|gif).*/, { Referer: 'https://www.pixiv.net/' });
+
+    this.useFlareSolverrRegex = [
+      /^https?:\/\/d\.furaffinity\.net\/art\/.*\.(png|jpg|jpeg|webp|gif).*/
+    ];
   }
 
   isPreview(source: string): boolean {
@@ -78,14 +84,15 @@ export default class DirectSourceChecker extends SourceChecker {
     let headers: { [header: string]: string } | undefined;
 
     for (const regex of this.headersRegex.keys()) {
-      regex.lastIndex = 0;
       if (regex.test(source)) {
         headers = this.headersRegex.get(regex);
         break;
       }
     }
 
-    return await SourceChecker.processDirectLink(post, source, this.isPreview(source), headers);
+    const useFlareSolverr = this.useFlareSolverrRegex.some(r => r.test(source));
+
+    return await SourceChecker.processDirectLink(post, source, this.isPreview(source), headers, useFlareSolverr ? getFromFlareSolverr : null);
   }
 
 }
