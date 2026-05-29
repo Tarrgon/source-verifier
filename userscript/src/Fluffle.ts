@@ -79,7 +79,7 @@ export async function checkFluffle(id: number) {
 
     spinny.remove();
 
-    await processData(data, false, '#fluffle-results .source-links');
+    await processData(data, links, false, '#fluffle-results .source-links');
   }
 }
 

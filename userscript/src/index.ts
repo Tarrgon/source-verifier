@@ -191,38 +191,7 @@ async function main() {
 
     const links = await Promise.all(Array.from(document.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(a => normalizeURL(a.href)));
 
-    const supported = await processData(data, links.length > 0);
-
-    const unusedSources: string[] = [];
-
-    if (isCompleteResponse(data)) {
-      for (const source of Object.keys(data.sources)) {
-        const hasMatchingSourceEntry = links.find(e => decodeURI(e) == source || e == source);
-
-        if (!hasMatchingSourceEntry) unusedSources.push(source);
-      }
-    }
-
-    if (unusedSources.length > 0) {
-      const existingList = document.querySelector('.post-sidebar-info');
-
-      document.getElementById('unused-results')?.remove();
-
-      const list = createSidebarList('unused-results', 'Potential Sources:');
-
-      const listItem = list.firstElementChild!;
-
-      for (const _url of unusedSources) {
-        const url = await normalizeURL(_url);
-        listItem.append(await createSourceItem({ url }, unusedSources.length == 1));
-      }
-
-      if (listItem.childElementCount > 0 && existingList != null) {
-        existingList.after(list);
-      }
-
-      await processData(data, false, '#unused-results .source-links');
-    }
+    const supported = await processData(data, links, links.length > 0);
 
     if (links.length == 0) {
       addKemonoData(container.getAttribute('data-file-url')!);

@@ -132,7 +132,40 @@ export async function getReplacementUrl(id: number | string, sourceData: SourceD
   return `https://e621.net/post_replacements/new?post_id=${id}&url=${encodeURIComponent(sourceData.originalUrl ? sourceData.originalUrl : sourceData.url!)}&reason=${encodeURIComponent(reason)}&source=${encodeURIComponent(source)}`;
 }
 
-export async function processData(data: ServerResponse, refreshable = true, containerSelector = '.source-links') {
+async function checkForUnusedSources(data: ServerResponse, links: string[]) {
+  const unusedSources: string[] = [];
+
+  if (isCompleteResponse(data)) {
+    for (const source of Object.keys(data.sources)) {
+      const hasMatchingSourceEntry = links.find(e => decodeURI(e) == source || e == source);
+
+      if (!hasMatchingSourceEntry) unusedSources.push(source);
+    }
+  }
+
+  if (unusedSources.length > 0) {
+    const existingList = document.querySelector('.post-sidebar-info');
+
+    document.getElementById('unused-results')?.remove();
+
+    const list = createSidebarList('unused-results', 'Potential Sources:');
+
+    const listItem = list.firstElementChild!;
+
+    for (const _url of unusedSources) {
+      const url = await normalizeURL(_url);
+      listItem.append(await createSourceItem({ url }, unusedSources.length == 1));
+    }
+
+    if (listItem.childElementCount > 0 && existingList != null) {
+      existingList.after(list);
+    }
+
+    await processData(data, links, false, '#unused-results .source-links');
+  }
+}
+
+export async function processData(data: ServerResponse, links: string[], refreshable = true, containerSelector = '.source-links') {
   const _isCompleteResponse = isCompleteResponse(data);
   if (!_isCompleteResponse && data.unsupported) return false;
 
@@ -142,7 +175,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
 
   const container = document.querySelector(containerSelector);
 
-  if (!container) return;
+  if (!container) return false;
 
   if (container.firstChild?.nodeName == '#text') {
     const span = document.createElement('span');
@@ -173,7 +206,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
         container.firstElementChild?.appendChild(spinny);
         const data = await getData(id, true, true);
         spinny.remove();
-        processData(data);
+        processData(data, links);
       });
       container.firstElementChild?.appendChild(forceClone);
     }
@@ -184,12 +217,12 @@ export async function processData(data: ServerResponse, refreshable = true, cont
   if (!_isCompleteResponse && (data.queued || data.notIndexed) && refreshable) {
     container.firstElementChild?.appendChild(spinner.cloneNode(true));
 
-    getData(id, true, true).then((data) => {
+    getData(id, true, true).then(async (data) => {
       for (const ele of container.querySelectorAll('.jsv-icon')) {
         ele.remove();
       }
 
-      processData(data, false);
+      await processData(data, links, false);
     });
 
     return true;
@@ -209,7 +242,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
           container.firstElementChild?.appendChild(spinny);
           const data = await getData(id, true, true);
           spinny.remove();
-          processData(data);
+          processData(data, links);
         });
         container.firstElementChild?.appendChild(forceClone);
       }
@@ -234,7 +267,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
       try {
         const data = await getData(id, true, true);
         spinny.remove();
-        processData(data);
+        processData(data, links);
       } catch (e) {
         spinny.remove();
         console.error(e);
@@ -453,6 +486,8 @@ export async function processData(data: ServerResponse, refreshable = true, cont
       }
     }
   }
+
+  if (containerSelector == '.source-links') checkForUnusedSources(data, links);
 
   return anyMatches;
 }
