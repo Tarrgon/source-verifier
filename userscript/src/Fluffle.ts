@@ -1,7 +1,7 @@
 import { anyLinksSupported, checkFluffleLinks, sendSources } from './Backend';
 import { FluffleFaces, FluffleMessages, UserAgent } from './Constants';
 import { addSourceSign, spinner } from './icons';
-import { getImageBlob, processData } from './Utilities';
+import { createSidebarList, createSourceItem, getImageBlob, processData, normalizeSourceLinks, normalizeURL } from './Utilities';
 
 type FluffleAuthor = {
   id: string
@@ -129,124 +129,32 @@ async function setFluffleCache(id: number, data: FluffleResult[]) {
   await GM.setValue('fluffleCache', JSON.stringify(fluffleCache));
 }
 
-let sourcesToAdd: string[] = [];
-let timeout;
-
-async function sendSourcesToVerifier() {
-  timeout = null;
-  await sendSources(sourcesToAdd);
-  sourcesToAdd = [];
-}
-
-function addSource(result: FluffleResult, immediate: boolean, event: PointerEvent) {
-  event.stopImmediatePropagation();
-  event.preventDefault();
-
-  if (sourcesToAdd.includes(result.url)) return;
-
-  sourcesToAdd.push(result.url);
-  if (immediate) {
-    sendSourcesToVerifier();
-    return;
-  }
-
-  if (!timeout) {
-    timeout = setTimeout(sendSources, 500);
-  } else {
-    clearTimeout(timeout);
-    timeout = setTimeout(sendSources, 500);
-  }
-}
-
-export function createFluffleSource(result: FluffleResult, immediate: boolean = false) {
-  const div = document.createElement('div');
-  div.classList.add('source-link', 'fluffle621-source-link');
-
-  const wrappedAnchor = document.createElement('a');
-
-  wrappedAnchor.onclick = addSource.bind(null, result, immediate);
-
-  wrappedAnchor.title = 'Add source';
-  wrappedAnchor.appendChild(addSourceSign.cloneNode(true));
-  div.appendChild(wrappedAnchor);
-
-  if (result.url.endsWith('/')) result.url = result.url.slice(0, -1);
-
-  const a = document.createElement('a');
-  a.classList.add('decorated', 'fluffle621-source');
-  a.target = '_blank';
-  a.rel = 'nofollow noreferrer noopener';
-  a.href = result.url;
-  a.innerText = result.url;
-
-  div.appendChild(a);
-
-  return div;
-}
-
 function addResults(results: FluffleResult[]): string[] {
   const urls: string[] = [];
-  const realSourceLinks = Array.from(document.querySelectorAll<HTMLElement | HTMLAnchorElement>('.source-link > *')).map((a) => {
-    let url;
-    if (a.tagName == 'S') {
-      try {
-        url = new URL(a.innerText);
-      } catch (e) {
-        return null;
-      }
-    } else {
-      const asAnchor = a as HTMLAnchorElement;
-      url = new URL(asAnchor.href);
-    }
-    if (url.hostname == 'twitter.com') url.hostname = 'x.com';
-    if (url.hostname.endsWith('weasyl.com')) {
-      if (!url.pathname.match(/\d+$/)) {
-        const id = /\/submissions?\/(\d+)/.exec(url.pathname)![1];
-        url = new URL(`https://www.weasyl.com/submission/${id}`);
-      }
-    }
-    const u = url.toString();
-    return u.endsWith('/') ? u.slice(0, -1) : u;
-  }).filter(a => a);
+  const realSourceLinks = Array.from(document.querySelectorAll<HTMLElement | HTMLAnchorElement>('.source-link > *')).map(normalizeSourceLinks).filter(a => a);
 
   const existingList = document.querySelector('.post-sidebar-info');
 
   document.getElementById('fluffle-results')?.remove();
 
-  const list = document.createElement('ul');
-  list.id = 'fluffle-results';
-  list.setAttribute('data-loaded', 'true');
-  list.classList.add('post-sidebar-info');
+  const list = createSidebarList('fluffle-results', 'Fluffle:');
 
-  const listItem = document.createElement('li');
-  listItem.classList.add('source-links');
-  listItem.append('Fluffle:');
+  const listItem = list.firstElementChild!;
 
   if (results.length == 0) {
     listItem.appendChild(document.createElement('br'));
     listItem.append(getRandomEmptyResultMessage());
   } else {
     for (const result of results) {
-      let url = new URL(result.url);
-      if (url.hostname == 'twitter.com') url.hostname = 'x.com';
-      if (url.hostname.endsWith('weasyl.com')) {
-        if (!url.pathname.match(/\d+$/)) {
-          const id = /\/submissions?\/(\d+)/.exec(url.pathname)![1];
-          url = new URL(`https://www.weasyl.com/submission/${id}`);
-        }
-      }
-      let u = url.toString();
-      u = u.endsWith('/') ? u.slice(0, -1) : u;
-      if (!realSourceLinks.includes(u)) {
-        listItem.append(createFluffleSource(result, results.length == 1));
-        urls.push(u);
+      const url = normalizeURL(result.url);
+      if (!realSourceLinks.includes(url)) {
+        listItem.append(createSourceItem(result, results.length == 1));
+        urls.push(url);
       }
     }
   }
 
   if (listItem.childElementCount > 0 && existingList != null) {
-    list.appendChild(listItem);
-
     existingList.after(list);
   }
 

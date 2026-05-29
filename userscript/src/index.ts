@@ -1,7 +1,7 @@
 import { getData, getDataBulk } from './Backend';
 import { Version } from './Constants';
 import { checkFluffle, hasCachedFluffleData } from './Fluffle';
-import { addKemonoData, processData, processDataOnPostView, wait, waitForSelector } from './Utilities';
+import { addKemonoData, createSidebarList, createSourceItem, isCompleteResponse, normalizeURL, processData, processDataOnPostView, wait, waitForSelector } from './Utilities';
 
 function addCSS() {
   document.head.append(Object.assign(document.createElement('style'), {
@@ -195,15 +195,43 @@ async function main() {
 
     const supported = await processData(data, links.length > 0);
 
+    const unusedSources: string[] = [];
+
+    if (isCompleteResponse(data)) {
+      for (const source of Object.keys(data.sources)) {
+        const hasMatchingSourceEntry = links.find(e => decodeURI(e) == source || e == source);
+
+        if (!hasMatchingSourceEntry) unusedSources.push(source);
+      }
+    }
+
+    if (unusedSources.length > 0) {
+      const existingList = document.querySelector('.post-sidebar-info');
+
+      document.getElementById('unused-results')?.remove();
+
+      const list = createSidebarList('unused-results', 'Potential Sources:');
+
+      const listItem = list.firstElementChild!;
+
+      for (const _url of unusedSources) {
+        const url = normalizeURL(_url);
+        listItem.append(createSourceItem({ url }, unusedSources.length == 1));
+      }
+
+      if (listItem.childElementCount > 0 && existingList != null) {
+        existingList.after(list);
+      }
+
+      await processData(data, false, '#unused-results .source-links');
+    }
+
     if (links.length == 0) {
       addKemonoData(container.getAttribute('data-file-url')!);
       checkFluffle(id);
-    } else if (!supported) {
-      checkFluffle(id);
-    } else if (await hasCachedFluffleData(id)) {
+    } else if (!supported || await hasCachedFluffleData(id)) {
       checkFluffle(id);
     }
-
   } catch (e) {
     console.error(e);
   }

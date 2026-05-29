@@ -1,6 +1,6 @@
 import type { ServerResponse, CompleteResponse, IncompleteResponse, SourceData } from '../../shared';
-import { anyLinksSupported, getData } from './Backend';
-import { force, spinner, noMatches, reload, info, phashMatch, md5Match, dimensionAndFileTypeMatch, dimensionMatch, aspectRatioMatch, fileTypeMatch, unknown, bvas, kemonoIcon } from './icons';
+import { anyLinksSupported, getData, sendSources } from './Backend';
+import { force, spinner, noMatches, reload, info, phashMatch, md5Match, dimensionAndFileTypeMatch, dimensionMatch, aspectRatioMatch, fileTypeMatch, unknown, bvas, kemonoIcon, addSourceSign } from './icons';
 import { getKemonoDataFromUrl } from './Kemono';
 
 export function getCSRFToken(): string {
@@ -571,4 +571,103 @@ export async function addKemonoData(url: string | undefined) {
     container.firstElementChild?.appendChild(kemonoIcon);
     return;
   }
+}
+
+let sourcesToAdd: string[] = [];
+let timeout;
+
+async function sendSourcesToVerifier() {
+  timeout = null;
+  await sendSources(sourcesToAdd);
+  sourcesToAdd = [];
+}
+
+function addSource(result: { url: string }, immediate: boolean, event: PointerEvent) {
+  event.stopImmediatePropagation();
+  event.preventDefault();
+
+  if (sourcesToAdd.includes(result.url)) return;
+
+  sourcesToAdd.push(result.url);
+  if (immediate) {
+    sendSourcesToVerifier();
+    return;
+  }
+
+  if (!timeout) {
+    timeout = setTimeout(sendSourcesToVerifier, 500);
+  } else {
+    clearTimeout(timeout);
+    timeout = setTimeout(sendSourcesToVerifier, 500);
+  }
+}
+
+export function createSidebarList(id: string, title: string): HTMLUListElement {
+  const list = document.createElement('ul');
+  list.id = id;
+  list.classList.add('post-sidebar-info');
+
+  const listItem = document.createElement('li');
+  listItem.classList.add('source-links');
+  listItem.append(title);
+
+  list.appendChild(listItem);
+
+  return list;
+}
+
+export function createSourceItem(result: { url: string }, immediate: boolean = false) {
+  const div = document.createElement('div');
+  div.classList.add('source-link');
+
+  const wrappedAnchor = document.createElement('a');
+
+  wrappedAnchor.onclick = addSource.bind(null, result, immediate);
+
+  wrappedAnchor.title = 'Add source';
+  wrappedAnchor.appendChild(addSourceSign.cloneNode(true));
+  div.appendChild(wrappedAnchor);
+
+  if (result.url.endsWith('/')) result.url = result.url.slice(0, -1);
+
+  const a = document.createElement('a');
+  a.classList.add('decorated');
+  a.target = '_blank';
+  a.rel = 'nofollow noreferrer noopener';
+  a.href = result.url;
+  a.innerText = result.url;
+
+  div.appendChild(a);
+
+  return div;
+}
+
+export function normalizeSourceLinks(a: HTMLElement): string {
+  let url;
+  if (a.tagName == 'S') {
+    try {
+      url = new URL(a.innerText);
+    } catch (e) {
+      return '';
+    }
+  } else {
+    const asAnchor = a as HTMLAnchorElement;
+    url = new URL(asAnchor.href);
+  }
+
+  return normalizeURL(url);
+}
+
+export function normalizeURL(url: URL | string) {
+  if (!(url instanceof URL)) url = new URL(url);
+
+  if (url.hostname == 'twitter.com') url.hostname = 'x.com';
+  else if (url.hostname.endsWith('weasyl.com')) {
+    if (!url.pathname.match(/\d+$/)) {
+      const id = /\/submissions?\/(\d+)/.exec(url.pathname)![1];
+      url = new URL(`https://www.weasyl.com/submission/${id}`);
+    }
+  }
+  const u = url.toString();
+  return u.endsWith('/') ? u.slice(0, -1) : u;
 }
