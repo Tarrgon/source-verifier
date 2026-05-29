@@ -58,7 +58,10 @@ router.get('/:id', async (req, res: Response<ServerResponse>) => {
     const post = await Database.getPost(id);
     const sourceData = await Database.getSource(id);
     if (!post) return res.json({ id, notIndexed: true });
-    if (!sourceData) return res.json({ id, queued: true });
+    if (!sourceData) {
+      SourceCheckerManager.update(id, false, true);
+      return res.json({ id, queued: true });
+    }
 
     res.json(getServerResponse(post, replaceId(sourceData)));
   } catch (e) {
