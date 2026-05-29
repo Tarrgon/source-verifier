@@ -497,7 +497,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
   return anyMatches;
 }
 
-export function processDataOnPostView(data: ServerResponse) {
+export function processDataOnPostsView(data: ServerResponse) {
   const _isCompleteResponse = isCompleteResponse(data);
 
   let post = document.getElementById(`entry_${data.id}`);

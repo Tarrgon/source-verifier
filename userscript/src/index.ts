@@ -1,7 +1,7 @@
 import { getData, getDataBulk } from './Backend';
 import { Version } from './Constants';
 import { checkFluffle, hasCachedFluffleData } from './Fluffle';
-import { addKemonoData, createSidebarList, createSourceItem, isCompleteResponse, normalizeURL, processData, processDataOnPostView, waitForSelector } from './Utilities';
+import { addKemonoData, createSidebarList, createSourceItem, isCompleteResponse, normalizeURL, processData, processDataOnPostsView, waitForSelector } from './Utilities';
 
 function addCSS() {
   document.head.append(Object.assign(document.createElement('style'), {
@@ -102,7 +102,7 @@ function checkForNewPosts(mutationList: MutationRecord[], observer: MutationObse
                 const datas = await getDataBulk(ids.filter(id => id != '-1'));
 
                 for (const data of datas) {
-                  processDataOnPostView(data);
+                  processDataOnPostsView(data);
                 }
               }
             }, 300);
@@ -170,7 +170,7 @@ async function main() {
     const datas = await getDataBulk(vanillaIds.concat(re6Ids).filter(id => id != '-1'));
 
     for (const data of datas) {
-      processDataOnPostView(data);
+      processDataOnPostsView(data);
     }
     return;
   }
