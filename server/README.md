@@ -24,3 +24,6 @@ After running the above commands, exit the mongo shell, initialize a new refresh
 
 # Reddit
 Login to reddit on your favorite browser. Use a cookie exporter extension to get the cookies. Remove the `g_state` cookie as this contains quotes which breaks yml stuff, and it's not needed anyways. You could likely remove a lot of the additional cookies as well, but I find the most success in leaving all of them. This may need to be refreshed at some point, but I'm not sure when. Not all reddit posts require authentication, this is mainly to bypass bot detection.
+
+# Puppet
+Some sites need to use a puppet browser to bypass some adult content restrictions. Depending on your OS and many other factors, you may need to manually tell puppet where chrome is. You can do so with the `CHROME_EXECUTABLE_LOCATION` variable in `.env`. But, you might not need anything there, either. It all depends on your setup
