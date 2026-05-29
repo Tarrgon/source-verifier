@@ -18,7 +18,7 @@ async function destroySession(): Promise<boolean> {
     const res = await fetch(URL_BASE, {
       ...OPTIONS,
       body: JSON.stringify({
-        command: 'sessions.destroy',
+        cmd: 'sessions.destroy',
         session: SESSION_ID
       })
     });
@@ -43,7 +43,7 @@ async function createSession(): Promise<boolean> {
     const res = await fetch(URL_BASE, {
       ...OPTIONS,
       body: JSON.stringify({
-        command: 'sessions.create',
+        cmd: 'sessions.create',
         session: SESSION_ID
       })
     });
