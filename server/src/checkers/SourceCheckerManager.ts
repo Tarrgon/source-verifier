@@ -117,6 +117,7 @@ export default class SourceCheckerManager {
 
       if (combinedSources.length == 0) {
         queueBulk.find({ _id: post._id }).deleteOne();
+
         if (callbacks && callbacks.length > 0) {
           for (const callback of callbacks) {
             try {
@@ -127,6 +128,7 @@ export default class SourceCheckerManager {
             }
           }
         }
+
         continue;
       }
 
@@ -138,18 +140,19 @@ export default class SourceCheckerManager {
         } else {
           const allSourcesChecked = combinedSources.every(s => !this.isSupportedSource(s) || current!.sources?.[s] != null);
 
-          if (callbacks && callbacks.length > 0) {
-            for (const callback of callbacks) {
-              try {
-                callback(callbackData);
-              } catch (e) {
-                console.error(`Error processing callback for ${post._id}`);
-                console.error(e);
+          if (allSourcesChecked) {
+            if (callbacks && callbacks.length > 0) {
+              for (const callback of callbacks) {
+                try {
+                  callback(callbackData);
+                } catch (e) {
+                  console.error(`Error processing callback for ${post._id}`);
+                  console.error(e);
+                }
               }
             }
+            continue;
           }
-
-          if (allSourcesChecked) continue;
         }
       }
 
