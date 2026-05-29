@@ -502,44 +502,46 @@ export function processDataOnPostView(data: ServerResponse) {
     }
   }
 
-  if (closestPerceptually!.md5Match) {
-    postInfo.appendChild(md5Match.cloneNode(true));
-  } else if (closestPerceptually!.dimensionMatch && closestPerceptually!.fileTypeMatch) {
-    postInfo.appendChild(dimensionAndFileTypeMatch.cloneNode(true));
-  } else if (closestPerceptually!.dimensionMatch) {
-    postInfo.appendChild(dimensionMatch.cloneNode(true));
-  } else if (closestPerceptually!.fileTypeMatch) {
-    postInfo.appendChild(fileTypeMatch.cloneNode(true));
-  } else if (closestPerceptually!.unknown) {
-    postInfo.appendChild(unknown.cloneNode(true));
-  }
-
-  if (!closestPerceptually!.md5Match && closestPerceptually!.phashDistance !== undefined && closestPerceptually!.phashDistance != -1) {
-    const phashClone = phashMatch.cloneNode(true) as HTMLElement;
-
-    if (closestPerceptually!.phashDistance == 0) {
-      postInfo.appendChild(phashClone);
-    } else if (closestPerceptually!.phashDistance < 7) {
-      phashClone.style.color = 'yellow';
-      // phashClone.style.outlineColor = colors["yellow"][colorIndex]
-      phashClone.title = 'Perceptually similar';
-      postInfo.appendChild(phashClone);
-    } else {
-      phashClone.style.color = 'red';
-      // phashClone.style.outlineColor = colors["red"][colorIndex]
-      phashClone.title = 'Perceptually dissimilar';
-      postInfo.appendChild(phashClone);
+  if (closestPerceptually) {
+    if (closestPerceptually.md5Match) {
+      postInfo.appendChild(md5Match.cloneNode(true));
+    } else if (closestPerceptually.dimensionMatch && closestPerceptually.fileTypeMatch) {
+      postInfo.appendChild(dimensionAndFileTypeMatch.cloneNode(true));
+    } else if (closestPerceptually.dimensionMatch) {
+      postInfo.appendChild(dimensionMatch.cloneNode(true));
+    } else if (closestPerceptually.fileTypeMatch) {
+      postInfo.appendChild(fileTypeMatch.cloneNode(true));
+    } else if (closestPerceptually.unknown) {
+      postInfo.appendChild(unknown.cloneNode(true));
     }
 
-    const pd = 100 - (closestPerceptually!.phashDistance / 64 * 100);
-    phashClone.title += ` Similarity: ${Math.floor(pd)}%`;
-  }
+    if (!closestPerceptually.md5Match && closestPerceptually.phashDistance !== undefined && closestPerceptually.phashDistance != -1) {
+      const phashClone = phashMatch.cloneNode(true) as HTMLElement;
 
-  if (closestPerceptually?.isPreview) {
-    const clone = bvas.cloneNode(true) as HTMLElement;
-    clone.title = 'Matched version is preview image. Original version available.';
-    clone.style.color = 'red';
-    postInfo.appendChild(clone);
+      if (closestPerceptually.phashDistance == 0) {
+        postInfo.appendChild(phashClone);
+      } else if (closestPerceptually.phashDistance < 7) {
+        phashClone.style.color = 'yellow';
+        // phashClone.style.outlineColor = colors["yellow"][colorIndex]
+        phashClone.title = 'Perceptually similar';
+        postInfo.appendChild(phashClone);
+      } else {
+        phashClone.style.color = 'red';
+        // phashClone.style.outlineColor = colors["red"][colorIndex]
+        phashClone.title = 'Perceptually dissimilar';
+        postInfo.appendChild(phashClone);
+      }
+
+      const pd = 100 - (closestPerceptually.phashDistance / 64 * 100);
+      phashClone.title += ` Similarity: ${Math.floor(pd)}%`;
+    }
+
+    if (closestPerceptually.isPreview) {
+      const clone = bvas.cloneNode(true) as HTMLElement;
+      clone.title = 'Matched version is preview image. Original version available.';
+      clone.style.color = 'red';
+      postInfo.appendChild(clone);
+    }
   }
 }
 

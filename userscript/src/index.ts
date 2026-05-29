@@ -167,8 +167,6 @@ async function main() {
     const vanillaIds = Array.from(document.querySelectorAll('.posts-container > article.thumbnail')).map(p => p.getAttribute('data-id') ?? '-1');
     const re6Ids = Array.from(document.querySelectorAll('post')).map(p => p.id.slice(6));
 
-    console.log(vanillaIds, re6Ids);
-
     const datas = await getDataBulk(vanillaIds.concat(re6Ids).filter(id => id != '-1'));
 
     for (const data of datas) {
