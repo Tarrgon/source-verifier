@@ -23,4 +23,4 @@ db.tokens.deleteOne({_id: 'pixiv'})
 After running the above commands, exit the mongo shell, initialize a new refresh token, and restart the server.
 
 # Reddit
-Log in to reddit on your favorite browser. Use a cookie exporter extension to get the cookies. Remove the `g_state` cookie as this contains quotes which breaks yml stuff, and it's not needed anyways. You could likely remove a lot of the additional cookies as well, but I find the most success in leaving all of them. This may need to be refreshed at some point, but I'm not sure when. Not all reddit posts require authentication, this is mainly to bypass bot detection.
+Login to reddit on your favorite browser. Use a cookie exporter extension to get the cookies. Remove the `g_state` cookie as this contains quotes which breaks yml stuff, and it's not needed anyways. You could likely remove a lot of the additional cookies as well, but I find the most success in leaving all of them. This may need to be refreshed at some point, but I'm not sure when. Not all reddit posts require authentication, this is mainly to bypass bot detection.
