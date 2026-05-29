@@ -100,7 +100,7 @@ export class E621Handler {
 
     setTimeout(() => {
       this.updateRoutine();
-    }, 1000 * 60 * 2);
+    }, 1000 * 30);
   }
 
   static async addNewPosts() {
