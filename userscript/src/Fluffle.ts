@@ -19,7 +19,8 @@ export function getFluffleData(blob: Blob): Promise<FluffleResponse> {
       },
       onload: function (response) {
         try {
-          resolve(JSON.parse(response.responseText));
+          if (response.status >= 200 && response.status < 300) resolve(JSON.parse(response.responseText));
+          else reject(JSON.parse(response.responseText));
         } catch (e) {
           reject(e);
         }

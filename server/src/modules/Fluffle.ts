@@ -15,5 +15,7 @@ export async function getFluffleData(blob: Blob): Promise<FluffleResponse> {
     body: formData
   });
 
-  return await res.json();
+
+  if (res.ok) return await res.json();
+  else throw await res.json();
 }

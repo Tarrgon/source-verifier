@@ -1,13 +1,13 @@
 import fs from 'fs';
 import { dirname } from 'path';
+import sharp from 'sharp';
 import calcPhash from 'sharp-phash';
 import { fileURLToPath, pathToFileURL } from 'url';
-import type { BaseSourceData, DatabasePost, SourceDataMap, SourceCheckQueueItem, CallbackFunction, Result } from '../../../shared';
-import Queue, { Priority } from '../modules/Queue';
-import { SourceChecker } from './SourceChecker';
+import type { BaseSourceData, CallbackFunction, DatabasePost, Result, SourceCheckQueueItem, SourceDataMap } from '../../../shared';
 import { Database, E621Handler, normalizeURL } from '../modules';
 import { getFluffleData } from '../modules/Fluffle';
-import sharp from 'sharp';
+import Queue, { Priority } from '../modules/Queue';
+import { SourceChecker } from './SourceChecker';
 
 export default class SourceCheckerManager {
   private static queue: Queue<SourceCheckQueueItem> = new Queue();

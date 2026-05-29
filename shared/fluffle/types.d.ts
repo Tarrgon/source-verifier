@@ -26,3 +26,12 @@ export type FluffleResponse = {
   id: string
   results: FluffleResult[]
 }
+
+export type FluffleError = {
+  code: string | null
+  message: strring
+}
+
+export type FluffleErrorResponse = {
+  errors: FluffleError[]
+}
