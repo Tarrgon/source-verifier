@@ -37,9 +37,13 @@ export default class PixivSourceChecker extends SourceChecker {
       this.ready = true;
       console.log('[PixivSourceChecker] Refreshed access token');
     } catch (e) {
-      console.error('[PixivSourceChecker] Failed to refresh access token. Disabling');
+      console.error('[PixivSourceChecker] Failed to refresh access token. Disabling. Retrying in 5 minutes.');
       console.error(e);
       this.disabled = true;
+
+      setTimeout(() => {
+        this.setup();
+      }, 1000 * 60 * 5);
     }
   }
 
