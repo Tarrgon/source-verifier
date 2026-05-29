@@ -58,7 +58,19 @@ export function getVideoDimensions(filePath: string): Promise<Dimensions> {
   });
 }
 
-export function normalizeURL(url: URL | string): string {
+export async function getBlueskyDid(handle: string): Promise<string | null> {
+  try {
+    const res = await fetch(`https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${handle}`);
+    const data = await res.json();
+    return data.did;
+  } catch (e) {
+    console.error(e);
+  }
+
+  return null;
+}
+
+export async function normalizeURL(url: URL | string): Promise<string> {
   if (url == '') return '';
   if (!(url instanceof URL)) url = new URL(url);
 
@@ -69,6 +81,19 @@ export function normalizeURL(url: URL | string): string {
       url = new URL(`https://www.weasyl.com/submission/${id}`);
     }
   }
+
+  let regexData: RegExpExecArray | null = null;
+  if ((regexData = /https:\/\/bsky\.app\/profile\/(.*)\/post/.exec(url.toString())) != null) {
+    if (!regexData[1].startsWith('did:plc:')) {
+      const did = await getBlueskyDid(regexData[1]);
+
+      if (did) {
+        const u = url.toString().replace(regexData[1], did);
+        url = new URL(u);
+      }
+    }
+  }
+
   const u = url.toString();
   return u.endsWith('/') ? u.slice(0, -1) : u;
 }

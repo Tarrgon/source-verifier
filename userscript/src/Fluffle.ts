@@ -64,7 +64,7 @@ export async function checkFluffle(id: number) {
 
   if (!cachedData && fluffleResults.length > 0) await setFluffleCache(id, fluffleResults);
 
-  const links = addResults(fluffleResults);
+  const links = await addResults(fluffleResults);
 
   if (await anyLinksSupported(links)) {
     const linkElement = document.querySelector('#fluffle-results .source-links');
@@ -102,9 +102,9 @@ async function setFluffleCache(id: number, data: FluffleResult[]) {
   await GM.setValue('fluffleCache', JSON.stringify(fluffleCache));
 }
 
-function addResults(results: FluffleResult[]): string[] {
+async function addResults(results: FluffleResult[]): Promise<string[]> {
   const urls: string[] = [];
-  const realSourceLinks = Array.from(document.querySelectorAll<HTMLElement | HTMLAnchorElement>('.source-link > *')).map(normalizeSourceLinks).filter(a => a);
+  const realSourceLinks = (await Promise.all(Array.from(document.querySelectorAll<HTMLElement | HTMLAnchorElement>('.source-link > *')).map(normalizeSourceLinks))).filter(a => a);
 
   const existingList = document.getElementById('unused-results') ?? document.querySelector('.post-sidebar-info');
 
@@ -119,9 +119,9 @@ function addResults(results: FluffleResult[]): string[] {
     listItem.append(getRandomEmptyResultMessage());
   } else {
     for (const result of results) {
-      const url = normalizeURL(result.url);
+      const url = await normalizeURL(result.url);
       if (!realSourceLinks.includes(url)) {
-        listItem.append(createSourceItem(result, results.length == 1));
+        listItem.append(await createSourceItem(result, results.length == 1));
         urls.push(url);
       }
     }

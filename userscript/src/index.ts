@@ -213,8 +213,8 @@ async function main() {
       const listItem = list.firstElementChild!;
 
       for (const _url of unusedSources) {
-        const url = normalizeURL(_url);
-        listItem.append(createSourceItem({ url }, unusedSources.length == 1));
+        const url = await normalizeURL(_url);
+        listItem.append(await createSourceItem({ url }, unusedSources.length == 1));
       }
 
       if (listItem.childElementCount > 0 && existingList != null) {

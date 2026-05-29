@@ -216,7 +216,7 @@ export default class SourceCheckerManager {
               const fluffleData = await getFluffleData(new Blob([resized]));
 
               if (fluffleData.results) {
-                const urls = fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621').map(r => normalizeURL(r.url)).filter(u => !queueItem.sources.includes(u));
+                const urls = (await Promise.all(fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621').map(r => normalizeURL(r.url)))).filter(u => u && !queueItem.sources.includes(u));
 
                 queueItem.sources.push(...urls);
               }

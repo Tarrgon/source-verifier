@@ -97,7 +97,7 @@ export function roundTo(x, n) {
   return Math.floor(x * power) / power;
 }
 
-export async function getBlueskyDid(handle) {
+export async function getBlueskyDid(handle: string): Promise<string | null> {
   try {
     const data: { did: string } = await new Promise((resolve, reject) => {
       GM.xmlHttpRequest({
@@ -126,17 +126,10 @@ export async function getBlueskyDid(handle) {
   return null;
 }
 
-export async function getReplacementUrl(id, sourceData, source, reason) {
-  let regexData: RegExpExecArray | null = null;
-  if ((regexData = /https:\/\/bsky\.app\/profile\/(.*)\/post/.exec(source)) != null) {
-    if (!regexData[1].startsWith('did:plc:')) {
-      const did = await getBlueskyDid(regexData[1]);
+export async function getReplacementUrl(id: number | string, sourceData: SourceData, source: string, reason: string) {
+  source = await normalizeURL(source);
 
-      if (did) source = source.replace(regexData[1], did);
-    }
-  }
-
-  return `https://e621.net/post_replacements/new?post_id=${id}&url=${encodeURIComponent(sourceData.originalUrl ? sourceData.originalUrl : sourceData.url)}&reason=${encodeURIComponent(reason)}&source=${encodeURIComponent(source)}`;
+  return `https://e621.net/post_replacements/new?post_id=${id}&url=${encodeURIComponent(sourceData.originalUrl ? sourceData.originalUrl : sourceData.url!)}&reason=${encodeURIComponent(reason)}&source=${encodeURIComponent(source)}`;
 }
 
 export async function processData(data: ServerResponse, refreshable = true, containerSelector = '.source-links') {
@@ -619,7 +612,7 @@ export function createSidebarList(id: string, title: string): HTMLUListElement {
   return list;
 }
 
-export function createSourceItem(result: { url: string }, immediate: boolean = false) {
+export async function createSourceItem(result: { url: string }, immediate: boolean = false) {
   const div = document.createElement('div');
   div.classList.add('source-link');
 
@@ -631,7 +624,7 @@ export function createSourceItem(result: { url: string }, immediate: boolean = f
   wrappedAnchor.appendChild(addSourceSign.cloneNode(true));
   div.appendChild(wrappedAnchor);
 
-  const normalizedURL = normalizeURL(result.url);
+  const normalizedURL = await normalizeURL(result.url);
 
   const a = document.createElement('a');
   a.classList.add('decorated');
@@ -645,7 +638,7 @@ export function createSourceItem(result: { url: string }, immediate: boolean = f
   return div;
 }
 
-export function normalizeSourceLinks(a: HTMLElement): string {
+export async function normalizeSourceLinks(a: HTMLElement): Promise<string> {
   let url;
   if (a.tagName == 'S') {
     try {
@@ -659,10 +652,10 @@ export function normalizeSourceLinks(a: HTMLElement): string {
     url = new URL(asAnchor.href);
   }
 
-  return normalizeURL(url);
+  return await normalizeURL(url);
 }
 
-export function normalizeURL(url: URL | string): string {
+export async function normalizeURL(url: URL | string): Promise<string> {
   if (url == '') return '';
   if (!(url instanceof URL)) url = new URL(url);
 
@@ -673,6 +666,19 @@ export function normalizeURL(url: URL | string): string {
       url = new URL(`https://www.weasyl.com/submission/${id}`);
     }
   }
+
+  let regexData: RegExpExecArray | null = null;
+  if ((regexData = /https:\/\/bsky\.app\/profile\/(.*)\/post/.exec(url.toString())) != null) {
+    if (!regexData[1].startsWith('did:plc:')) {
+      const did = await getBlueskyDid(regexData[1]);
+
+      if (did) {
+        const u = url.toString().replace(regexData[1], did);
+        url = new URL(u);
+      }
+    }
+  }
+
   const u = url.toString();
   return u.endsWith('/') ? u.slice(0, -1) : u;
 }
