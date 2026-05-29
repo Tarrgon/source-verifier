@@ -7,6 +7,7 @@ import Queue, { Priority } from '../modules/Queue';
 import { SourceChecker } from './SourceChecker';
 import { Database, E621Handler, normalizeURL } from '../modules';
 import { getFluffleData } from '../modules/Fluffle';
+import sharp from 'sharp';
 
 export default class SourceCheckerManager {
   private static queue: Queue<SourceCheckQueueItem> = new Queue();
@@ -208,7 +209,11 @@ export default class SourceCheckerManager {
             // console.log(`[SourceChecker] Got arraybuffer data for ${queueItem._id}`);
 
             try {
-              const fluffleData = await getFluffleData(new Blob([data]));
+              const resized = new Uint8Array(await sharp(data).resize(256, 256, {
+                fit: 'outside'
+              }).png().toBuffer());
+
+              const fluffleData = await getFluffleData(new Blob([resized]));
 
               if (fluffleData.results) {
                 const urls = fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621').map(r => normalizeURL(r.url)).filter(u => !queueItem.sources.includes(u));
