@@ -57,3 +57,18 @@ export function getVideoDimensions(filePath: string): Promise<Dimensions> {
     });
   });
 }
+
+export function normalizeURL(url: URL | string): string {
+  if (url == '') return '';
+  if (!(url instanceof URL)) url = new URL(url);
+
+  if (url.hostname == 'twitter.com') url.hostname = 'x.com';
+  else if (url.hostname.endsWith('weasyl.com')) {
+    if (!url.pathname.match(/\d+$/)) {
+      const id = /\/submissions?\/(\d+)/.exec(url.pathname)![1];
+      url = new URL(`https://www.weasyl.com/submission/${id}`);
+    }
+  }
+  const u = url.toString();
+  return u.endsWith('/') ? u.slice(0, -1) : u;
+}

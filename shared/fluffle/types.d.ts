@@ -24,5 +24,5 @@ export type FluffleResult = {
 
 export type FluffleResponse = {
   id: string
-  result: FluffleResult[]
+  results: FluffleResult[]
 }

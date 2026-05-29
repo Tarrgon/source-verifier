@@ -5,7 +5,8 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import type { BaseSourceData, DatabasePost, SourceDataMap, SourceCheckQueueItem, CallbackFunction, Result } from '../../../shared';
 import Queue, { Priority } from '../modules/Queue';
 import { SourceChecker } from './SourceChecker';
-import { Database, E621Handler } from '../modules';
+import { Database, E621Handler, normalizeURL } from '../modules';
+import { getFluffleData } from '../modules/Fluffle';
 
 export default class SourceCheckerManager {
   private static queue: Queue<SourceCheckQueueItem> = new Queue();
@@ -190,10 +191,11 @@ export default class SourceCheckerManager {
     let combinedData: SourceDataMap = {};
 
     const current = await Database.getSource(queueItem._id);
+    const currentPost = await Database.getPost(queueItem._id);
 
     if (current?.sources) combinedData = current.sources!;
 
-    if (!queueItem.phash) {
+    if (!queueItem.phash || queueItem.md5 != currentPost?.md5) {
       try {
         // console.log(`[SourceChecker] Calculating phash of ${queueItem._id}`);
         const e6Url = `https://static1.e621.net/data/${queueItem.md5.slice(0, 2)}/${queueItem.md5.slice(2, 4)}/${queueItem.md5}.${queueItem.fileType}`;
@@ -204,6 +206,13 @@ export default class SourceCheckerManager {
             // console.log(`[SourceChecker] Fetched data of ${queueItem._id}`);
             const data = await res.arrayBuffer();
             // console.log(`[SourceChecker] Got arraybuffer data for ${queueItem._id}`);
+
+            const fluffleData = await getFluffleData(new Blob([data]));
+
+            const urls = fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621').map(r => normalizeURL(r.url)).filter(u => !queueItem.sources.includes(u));
+
+            queueItem.sources.push(...urls);
+
             try {
               // console.log(`[SourceChecker] Doing phash calculation for ${queueItem._id}`);
               phash = await calcPhash(data);

@@ -36,7 +36,7 @@ export function getFluffleData(blob: Blob): Promise<FluffleResponse> {
 export async function checkFluffle(id: number) {
   const cachedData = await getFluffleCache(id);
 
-  let fluffleData;
+  let fluffleData: FluffleResponse | undefined;
 
   if (!cachedData) {
     const container = document.getElementById('image-container');
@@ -59,7 +59,7 @@ export async function checkFluffle(id: number) {
     fluffleData = await getFluffleData(imageBlob);
   }
 
-  const fluffleResults = cachedData ?? fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621');
+  const fluffleResults = cachedData ?? fluffleData!.results.filter(r => r.match == 'exact' && r.platform != 'e621');
 
   if (!cachedData && fluffleResults.length > 0) await setFluffleCache(id, fluffleResults);
 

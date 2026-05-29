@@ -4,9 +4,9 @@ import Queue, { Priority } from '../Queue';
 import { transformE621Post } from '../Utilities';
 import type { E621Post } from './types.d';
 import type { DatabasePost } from '../../../../shared';
+import { config } from '../../config';
 
 const BASE_URL = 'https://e621.net';
-const USER_AGENT = 'Janitor Source Verifier/2.0 (by Tarrgon)';
 
 type E621RequestQueueItem = {
   _id: number
@@ -41,7 +41,7 @@ export class E621Handler {
 
       if (!item.options.headers) item.options.headers = {};
 
-      item.options.headers['User-Agent'] = USER_AGENT;
+      item.options.headers['User-Agent'] = config.USER_AGENT;
 
       res = await fetch(url.toString(), item.options);
       if (res.ok) {

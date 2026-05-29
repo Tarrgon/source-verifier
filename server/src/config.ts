@@ -11,6 +11,7 @@ const {
 export const config = {
   PORT: parseInt(PORT as string),
   SECURE: SECURE == 'true',
+  USER_AGENT: 'Janitor Source Verifier/2.0 (by Tarrgon)',
   PRIVATE_KEY_LOCATION,
   CERTIFICATE_LOCATION,
   CHAIN_LOCATION,
