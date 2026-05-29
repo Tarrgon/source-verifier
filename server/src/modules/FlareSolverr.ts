@@ -36,9 +36,9 @@ async function destroySession(): Promise<boolean> {
 
 async function createSession(): Promise<boolean> {
   try {
-    console.log('[FlareSolverr] Creating FlareSolverr session');
-
     await destroySession();
+
+    console.log('[FlareSolverr] Creating FlareSolverr session');
 
     const res = await fetch(URL_BASE, {
       ...OPTIONS,
