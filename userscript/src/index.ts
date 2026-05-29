@@ -191,7 +191,7 @@ async function main() {
   try {
     const data = await getData(id);
 
-    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.source-link')).map(a => a.href);
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(a => a.href);
 
     const supported = await processData(data, links.length > 0);
 
