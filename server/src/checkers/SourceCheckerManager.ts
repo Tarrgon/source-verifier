@@ -160,7 +160,7 @@ export default class SourceCheckerManager {
 
       const toQueue: SourceCheckQueueItem = {
         ...post,
-        sources: combinedSources,
+        sources: await Promise.all(combinedSources.map(s => normalizeURL(s))),
         date: new Date(),
         priority,
         callbacks: callbacks ? callbacks : []
