@@ -497,8 +497,9 @@ export function processDataOnPostView(data: ServerResponse) {
   let closestPerceptually: SourceData | null = null;
 
   for (const sourceData of Object.values(data.sources)) {
-    if (closestPerceptually == null || (sourceData.phashDistance! >= 0 && sourceData.phashDistance! < closestPerceptually.phashDistance!)) {
+    if (closestPerceptually == null || (sourceData.md5Match && !closestPerceptually.md5Match) || (sourceData.phashDistance! >= 0 && sourceData.phashDistance! < closestPerceptually.phashDistance!)) {
       closestPerceptually = sourceData;
+      if (sourceData.md5Match) break;
     }
   }
 
@@ -536,12 +537,12 @@ export function processDataOnPostView(data: ServerResponse) {
       phashClone.title += ` Similarity: ${Math.floor(pd)}%`;
     }
 
-    if (closestPerceptually.isPreview) {
-      const clone = bvas.cloneNode(true) as HTMLElement;
-      clone.title = 'Matched version is preview image. Original version available.';
-      clone.style.color = 'red';
-      postInfo.appendChild(clone);
-    }
+    // if (closestPerceptually.isPreview) {
+    //   const clone = bvas.cloneNode(true) as HTMLElement;
+    //   clone.title = 'Matched version is preview image. Original version available.';
+    //   clone.style.color = 'red';
+    //   postInfo.appendChild(clone);
+    // }
   }
 }
 
