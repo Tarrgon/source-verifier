@@ -133,7 +133,7 @@ function addResults(results: FluffleResult[]): string[] {
   const urls: string[] = [];
   const realSourceLinks = Array.from(document.querySelectorAll<HTMLElement | HTMLAnchorElement>('.source-link > *')).map(normalizeSourceLinks).filter(a => a);
 
-  const existingList = document.querySelector('.post-sidebar-info');
+  const existingList = document.getElementById('unused-results') ?? document.querySelector('.post-sidebar-info');
 
   document.getElementById('fluffle-results')?.remove();
 

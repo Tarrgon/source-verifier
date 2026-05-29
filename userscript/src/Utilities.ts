@@ -171,7 +171,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
     if (supported) {
       const forceClone = force.cloneNode(true) as HTMLElement;
       forceClone.addEventListener('click', async () => {
-        for (const ele of document.querySelectorAll('.jsv-icon')) {
+        for (const ele of container.querySelectorAll('.jsv-icon')) {
           ele.remove();
         }
         forceClone.remove();
@@ -192,7 +192,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
     container.firstElementChild?.appendChild(spinner.cloneNode(true));
 
     getData(id, true, true).then((data) => {
-      for (const ele of document.querySelectorAll('.jsv-icon')) {
+      for (const ele of container.querySelectorAll('.jsv-icon')) {
         ele.remove();
       }
 
@@ -207,7 +207,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
       if (await anyLinksSupported(linkHrefs)) {
         const forceClone = force.cloneNode(true) as HTMLElement;
         forceClone.addEventListener('click', async () => {
-          for (const ele of document.querySelectorAll('.jsv-icon')) {
+          for (const ele of container.querySelectorAll('.jsv-icon')) {
             ele.remove();
           }
           forceClone.remove();
@@ -231,7 +231,7 @@ export async function processData(data: ServerResponse, refreshable = true, cont
   if (refreshable) {
     const reloadClone = reload.cloneNode(true) as HTMLElement;
     reloadClone.addEventListener('click', async () => {
-      for (const ele of document.querySelectorAll('.jsv-icon')) {
+      for (const ele of container.querySelectorAll('.jsv-icon')) {
         ele.remove();
       }
       reloadClone.remove();
@@ -628,14 +628,14 @@ export function createSourceItem(result: { url: string }, immediate: boolean = f
   wrappedAnchor.appendChild(addSourceSign.cloneNode(true));
   div.appendChild(wrappedAnchor);
 
-  if (result.url.endsWith('/')) result.url = result.url.slice(0, -1);
+  const normalizedURL = normalizeURL(result.url);
 
   const a = document.createElement('a');
   a.classList.add('decorated');
   a.target = '_blank';
   a.rel = 'nofollow noreferrer noopener';
-  a.href = result.url;
-  a.innerText = result.url;
+  a.href = normalizedURL;
+  a.innerText = normalizedURL;
 
   div.appendChild(a);
 
@@ -652,13 +652,15 @@ export function normalizeSourceLinks(a: HTMLElement): string {
     }
   } else {
     const asAnchor = a as HTMLAnchorElement;
+    if (!asAnchor.href) return '';
     url = new URL(asAnchor.href);
   }
 
   return normalizeURL(url);
 }
 
-export function normalizeURL(url: URL | string) {
+export function normalizeURL(url: URL | string): string {
+  if (url == '') return '';
   if (!(url instanceof URL)) url = new URL(url);
 
   if (url.hostname == 'twitter.com') url.hostname = 'x.com';
