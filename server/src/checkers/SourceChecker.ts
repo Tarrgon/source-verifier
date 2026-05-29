@@ -41,6 +41,7 @@ export class SourceChecker {
   static puppetReady = false;
   static browser: Browser;
 
+  inUse: boolean = false;
   supported?: RegExp[];
 
   constructor(public name: string) { }
@@ -173,15 +174,21 @@ export class SourceChecker {
   }
 
   async processPost(post: SourceCheckQueueItem, current: BaseSourceData | null): Promise<SourceDataMap> {
-    const data: SourceDataMap = {};
-    for (const source of post.sources) {
-      if (current?.sources?.[source]) continue;
-      if (this.supportsSource(source)) {
-        data[source] = await this._internalProcessPost(post, source);
+    while (this.inUse) await wait(100);
+    try {
+      const data: SourceDataMap = {};
+      for (const source of post.sources) {
+        if (current?.sources?.[source]) continue;
+        if (this.supportsSource(source)) {
+          this.inUse = true;
+          data[source] = await this._internalProcessPost(post, source);
+        }
       }
-    }
 
-    return data;
+      return data;
+    } finally {
+      this.inUse = false;
+    }
   }
 
   supportsSource(source: string): boolean {

@@ -252,17 +252,27 @@ export default class SourceCheckerManager {
 
     if (!queueItem.sources || queueItem.sources.length == 0) return combinedData;
 
+    const promises: Promise<void>[] = [];
+
     for (const sourceChecker of this.sourceCheckers) {
       // console.log(`[SourceCheckerManager] Processing post ${queueItem._id} with ${sourceChecker.name}`);
-      const data = await sourceChecker.processPost(queueItem, current);
-      for (const [key, value] of Object.entries(data)) {
-        if (value.error) {
-          console.error(`[SourceCheckerManager] Error while processing post ${queueItem._id} with ${sourceChecker.name} on source: ${key}`);
-        }
+      promises.push(new Promise(async (resolve) => {
+        try {
+          const data = await sourceChecker.processPost(queueItem, current);
+          for (const [key, value] of Object.entries(data)) {
+            if (value.error) {
+              console.error(`[SourceCheckerManager] Error while processing post ${queueItem._id} with ${sourceChecker.name} on source: ${key}`);
+            }
 
-        combinedData[key] = value;
-      }
+            combinedData[key] = value;
+          }
+        } finally {
+          resolve();
+        }
+      }));
     }
+
+    await Promise.all(promises);
 
     return combinedData;
   }
