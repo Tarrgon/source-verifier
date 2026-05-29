@@ -1,7 +1,7 @@
 import { getData, getDataBulk } from './Backend';
 import { Version } from './Constants';
 import { checkFluffle, hasCachedFluffleData } from './Fluffle';
-import { addKemonoData, createSidebarList, createSourceItem, isCompleteResponse, normalizeURL, processData, processDataOnPostView, wait, waitForSelector } from './Utilities';
+import { addKemonoData, createSidebarList, createSourceItem, isCompleteResponse, normalizeURL, processData, processDataOnPostView, waitForSelector } from './Utilities';
 
 function addCSS() {
   document.head.append(Object.assign(document.createElement('style'), {

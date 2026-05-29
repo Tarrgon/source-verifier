@@ -1,36 +1,8 @@
-import { anyLinksSupported, checkFluffleLinks, sendSources } from './Backend';
+import type { FluffleResponse, FluffleResult } from '../../shared';
+import { anyLinksSupported, checkFluffleLinks } from './Backend';
 import { FluffleFaces, FluffleMessages, UserAgent } from './Constants';
-import { addSourceSign, spinner } from './icons';
-import { createSidebarList, createSourceItem, getImageBlob, processData, normalizeSourceLinks, normalizeURL } from './Utilities';
-
-type FluffleAuthor = {
-  id: string
-  name: string
-}
-
-type FluffleThumbnail = {
-  width: number
-  centerX: number
-  height: number
-  centerY: number
-  url: string
-}
-
-type FluffleResult = {
-  id: string
-  distance: number
-  match: 'exact' | 'probable' | 'unlikely'
-  platform: string
-  url: string
-  isSfw: boolean
-  thumbnail: FluffleThumbnail | null
-  authors: FluffleAuthor[]
-}
-
-type FluffleResponse = {
-  id: string
-  result: FluffleResult[]
-}
+import { spinner } from './icons';
+import { createSidebarList, createSourceItem, getImageBlob, normalizeSourceLinks, normalizeURL, processData } from './Utilities';
 
 export function getFluffleData(blob: Blob): Promise<FluffleResponse> {
   return new Promise((resolve, reject) => {

@@ -1,6 +1,6 @@
-import type { ServerResponse, CompleteResponse, IncompleteResponse, SourceData } from '../../shared';
+import type { CompleteResponse, IncompleteResponse, ServerResponse, SourceData } from '../../shared';
 import { anyLinksSupported, getData, sendSources } from './Backend';
-import { force, spinner, noMatches, reload, info, phashMatch, md5Match, dimensionAndFileTypeMatch, dimensionMatch, aspectRatioMatch, fileTypeMatch, unknown, bvas, kemonoIcon, addSourceSign } from './icons';
+import { addSourceSign, aspectRatioMatch, bvas, dimensionAndFileTypeMatch, dimensionMatch, fileTypeMatch, force, info, kemonoIcon, md5Match, noMatches, phashMatch, reload, spinner, unknown } from './icons';
 import { getKemonoDataFromUrl } from './Kemono';
 
 export function getCSRFToken(): string {
