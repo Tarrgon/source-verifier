@@ -45,6 +45,7 @@ export default class DirectSourceChecker extends SourceChecker {
       /^https?:\/\/aryion.com\/g4\/data.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/.*\.bsky\.network\/xrpc\/com.atproto.sync.getBlob.*/,
       /^https?:\/\/cdn\.bsky\.app.*/,
+      /^https?:\/\/bsky\.social\/xrpc\/com\.atproto\.sync\.getBlob\?.*/,
       /^https?:\/\/snootbooru.com\/data\/posts.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/desu-usergeneratedcontent\.xyz.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/.*\.gelbooru\.com\/\/?(images|samples)\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
