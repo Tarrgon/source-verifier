@@ -86,29 +86,68 @@ export default class SourceCheckerManager {
     for (const post of posts) {
       const combinedSources = post.sources.concat(additionalSources);
 
+      const current: BaseSourceData | null = await Database.getSource(post._id);
+
+      const callbackData: Result = {
+        id: post._id,
+        date: new Date(),
+        sources: current?.sources
+      };
+
       if ((!post.isPending && !_checkActive)
         || post.isDeleted
         || !this.anyLinksSupported(combinedSources)) {
         let index = -1;
         if ((index = this.queue.findIndex(p => p._id == post._id)) != -1) this.queue.removeAt(index);
         queueBulk.find({ _id: post._id }).deleteOne();
+
+        if (callbacks && callbacks.length > 0) {
+          for (const callback of callbacks) {
+            try {
+              callback(callbackData);
+            } catch (e) {
+              console.error(`Error processing callback for ${post._id}`);
+              console.error(e);
+            }
+          }
+        }
+
         continue;
       }
 
       if (combinedSources.length == 0) {
         queueBulk.find({ _id: post._id }).deleteOne();
+        if (callbacks && callbacks.length > 0) {
+          for (const callback of callbacks) {
+            try {
+              callback(callbackData);
+            } catch (e) {
+              console.error(`Error processing callback for ${post._id}`);
+              console.error(e);
+            }
+          }
+        }
         continue;
       }
 
       const priority = callbacks ? Priority.HIGH : Priority.LOW;
 
-      let current: BaseSourceData | null = null;
-
-      if ((current = await Database.getSource(post._id)) != null) {
+      if (current != null) {
         if (force) {
           sourceBulk.find({ _id: post._id }).deleteOne();
         } else {
           const allSourcesChecked = combinedSources.every(s => !this.isSupportedSource(s) || current!.sources?.[s] != null);
+
+          if (callbacks && callbacks.length > 0) {
+            for (const callback of callbacks) {
+              try {
+                callback(callbackData);
+              } catch (e) {
+                console.error(`Error processing callback for ${post._id}`);
+                console.error(e);
+              }
+            }
+          }
 
           if (allSourcesChecked) continue;
         }
