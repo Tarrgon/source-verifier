@@ -41,30 +41,30 @@ export default class SourceCheckerManager {
 
       this.queueRunning = true;
 
-      const post = this.queue.pop();
-      const data = await this.processPost(post);
+      const queueItem = this.queue.pop();
+      const data = await this.processPost(queueItem);
 
-      if (post.callbacks && post.callbacks.length > 0) {
-        for (const callback of post.callbacks) {
+      if (queueItem.callbacks && queueItem.callbacks.length > 0) {
+        for (const callback of queueItem.callbacks) {
           try {
             const callbackData: Result = {
-              id: post._id,
+              id: queueItem._id,
               date: new Date(),
               sources: { ...data }
             };
 
             callback(callbackData);
           } catch (e) {
-            console.error(`Error processing callback for ${post._id}`);
+            console.error(`Error processing callback for ${queueItem._id}`);
             console.error(e);
           }
         }
       }
 
-      await Database.removeFromQueue(post._id);
-      await Database.updateSourceData(post._id, data);
+      await Database.removeFromQueue(queueItem._id);
+      await Database.updateSourceData(queueItem._id, data);
 
-      console.log(`[SourceCheckerManager] Processed post ${post._id}. Remaining: ${this.queue.length}`);
+      console.log(`[SourceCheckerManager] Processed post ${queueItem._id}. Remaining: ${this.queue.length}`);
     } catch (e) {
       console.error(e);
     }
@@ -250,7 +250,7 @@ export default class SourceCheckerManager {
       await Database.updatePost(queueItem._id, { phash: queueItem.phash });
     }
 
-    if (!queueItem.sources) return combinedData;
+    if (!queueItem.sources || queueItem.sources.length == 0) return combinedData;
 
     for (const sourceChecker of this.sourceCheckers) {
       // console.log(`[SourceCheckerManager] Processing post ${queueItem._id} with ${sourceChecker.name}`);
