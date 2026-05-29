@@ -98,7 +98,7 @@ export default class SourceCheckerManager {
 
       if ((!post.isPending && !_checkActive)
         || post.isDeleted
-        || !this.anyLinksSupported(combinedSources)) {
+        /*|| !this.anyLinksSupported(combinedSources)*/) {
         let index = -1;
         if ((index = this.queue.findIndex(p => p._id == post._id)) != -1) this.queue.removeAt(index);
         queueBulk.find({ _id: post._id }).deleteOne();
@@ -117,22 +117,22 @@ export default class SourceCheckerManager {
         continue;
       }
 
-      if (combinedSources.length == 0) {
-        queueBulk.find({ _id: post._id }).deleteOne();
+      // if (combinedSources.length == 0) {
+      //   queueBulk.find({ _id: post._id }).deleteOne();
 
-        if (callbacks && callbacks.length > 0) {
-          for (const callback of callbacks) {
-            try {
-              callback(callbackData);
-            } catch (e) {
-              console.error(`Error processing callback for ${post._id}`);
-              console.error(e);
-            }
-          }
-        }
+      //   if (callbacks && callbacks.length > 0) {
+      //     for (const callback of callbacks) {
+      //       try {
+      //         callback(callbackData);
+      //       } catch (e) {
+      //         console.error(`Error processing callback for ${post._id}`);
+      //         console.error(e);
+      //       }
+      //     }
+      //   }
 
-        continue;
-      }
+      //   continue;
+      // }
 
       const priority = callbacks ? Priority.HIGH : Priority.LOW;
 
@@ -140,7 +140,7 @@ export default class SourceCheckerManager {
         if (force) {
           sourceBulk.find({ _id: post._id }).deleteOne();
         } else {
-          const allSourcesChecked = combinedSources.every(s => !this.isSupportedSource(s) || current!.sources?.[s] != null);
+          const allSourcesChecked = combinedSources.length == 0 ? false : combinedSources.every(s => !this.isSupportedSource(s) || current!.sources?.[s] != null);
 
           if (allSourcesChecked) {
             if (callbacks && callbacks.length > 0) {
@@ -318,9 +318,9 @@ export default class SourceCheckerManager {
 
       await Database.deleteSource(id);
 
-      const supportedSources = this.getSupportedSources(post);
+      // const supportedSources = this.getSupportedSources(post);
 
-      if (supportedSources.length == 0) return resolve({ id, unsupported: true });
+      // if (supportedSources.length == 0) return resolve({ id, unsupported: true });
 
       let index = -1;
 
