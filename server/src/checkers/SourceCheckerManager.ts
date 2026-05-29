@@ -207,17 +207,24 @@ export default class SourceCheckerManager {
             const data = await res.arrayBuffer();
             // console.log(`[SourceChecker] Got arraybuffer data for ${queueItem._id}`);
 
-            const fluffleData = await getFluffleData(new Blob([data]));
+            try {
+              const fluffleData = await getFluffleData(new Blob([data]));
 
-            const urls = fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621').map(r => normalizeURL(r.url)).filter(u => !queueItem.sources.includes(u));
+              if (fluffleData.results) {
+                const urls = fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621').map(r => normalizeURL(r.url)).filter(u => !queueItem.sources.includes(u));
 
-            queueItem.sources.push(...urls);
+                queueItem.sources.push(...urls);
+              }
+            } catch (e) {
+              console.error('[SourceCheckerManager] Error while getting fluffle data:');
+              console.error(e);
+            }
 
             try {
               // console.log(`[SourceChecker] Doing phash calculation for ${queueItem._id}`);
               phash = await calcPhash(data);
             } catch (e) {
-              console.error('Error while calculating phash');
+              console.error('[SourceCheckerManager] Error while calculating phash:');
               console.error(e);
               phash = '9'.repeat(64);
             }
@@ -226,10 +233,11 @@ export default class SourceCheckerManager {
             queueItem.phash = '9'.repeat(64);
           }
         } else {
-          console.error(`Failed to fetch e621 post image for ${queueItem._id}`);
+          console.error(`[SourceCheckerManager] Failed to fetch e621 post image for ${queueItem._id}`);
           queueItem.phash = '9'.repeat(64);
         }
       } catch (e) {
+        console.error('[SourceCheckerManager] Error while calculating phash:');
         console.error(e);
         queueItem.phash = '9'.repeat(64);
       }
