@@ -530,7 +530,9 @@ export function processDataOnPostsView(data: ServerResponse) {
   let closestPerceptually: SourceData | null = null;
 
   for (const sourceData of Object.values(data.sources)) {
-    if (closestPerceptually == null || (sourceData.md5Match && !closestPerceptually.md5Match) || (sourceData.phashDistance! >= 0 && sourceData.phashDistance! < closestPerceptually.phashDistance!)) {
+    const closestIsError = closestPerceptually && (closestPerceptually.unknown || closestPerceptually.error || closestPerceptually.unsupported);
+    const currentIsError = (sourceData.unknown || sourceData.error || sourceData.unsupported);
+    if (closestPerceptually == null || (closestIsError && !currentIsError) || (sourceData.md5Match && !closestPerceptually.md5Match) || (sourceData.phashDistance && sourceData.phashDistance >= 0 && sourceData.phashDistance! < closestPerceptually.phashDistance!)) {
       closestPerceptually = sourceData;
       if (sourceData.md5Match) break;
     }
