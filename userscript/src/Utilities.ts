@@ -277,7 +277,12 @@ export async function processData(data: ServerResponse, links: string[], refresh
     container.firstElementChild?.appendChild(reloadClone);
   }
 
-  const allSourceLinks = Array.from(container.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]'));
+  const allSourceLinks = await Promise.all(Array.from(container.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(async (a) => {
+    return {
+      normalizedUrl: await normalizeURL(a.href),
+      element: a
+    };
+  }));
 
   const width = parseInt(document.querySelector<HTMLSpanElement>("span[itemprop='width']")?.innerText ?? '-1');
   const height = parseInt(document.querySelector<HTMLSpanElement>("span[itemprop='height']")?.innerText ?? '-1');
@@ -289,7 +294,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
 
   if (_isCompleteResponse) {
     for (const [source, sourceData] of Object.entries(data.sources)) {
-      const matchingSourceEntry = allSourceLinks.find(e => decodeURI(e.href) == source || e.href == source);
+      const matchingSourceEntry = allSourceLinks.find(e => decodeURI(e.element.href) == source || e.normalizedUrl == source)?.element;
 
       if (matchingSourceEntry) {
         anyMatches = true;
