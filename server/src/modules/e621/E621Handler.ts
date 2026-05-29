@@ -36,9 +36,8 @@ export class E621Handler {
 
     let res: Response | undefined;
 
+    const url = new URL(`${BASE_URL}/${item.url}`);
     try {
-      const url = new URL(`${BASE_URL}/${item.url}`);
-
       if (!item.options.headers) item.options.headers = {};
 
       item.options.headers['User-Agent'] = config.USER_AGENT;
@@ -51,6 +50,8 @@ export class E621Handler {
       }
 
     } catch (e) {
+      console.error(`[E621Handler] Fetch failed while requesting ${url.toString()}`);
+      console.error(e);
       item.onReject({ code: 500, url: 'Fetch failed' });
     }
 
