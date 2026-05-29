@@ -116,7 +116,7 @@ function checkForNewPosts(mutationList: MutationRecord[], observer: MutationObse
 async function main() {
   addCSS();
 
-  console.log(`[Janitor Source Verifier] Running with version ${Version}`);
+  console.log(`[Janitor Source Verifier] Running on version ${Version}`);
 
   if (window.location.href.startsWith('https://e621.net/post_replacements/')) {
     const params = new URLSearchParams(window.location.search);
