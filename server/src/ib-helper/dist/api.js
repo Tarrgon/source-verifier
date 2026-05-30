@@ -47,7 +47,7 @@ const request = async (url, params) => {
     debug(`[FETCH] ${url}?output_mode=json&${queryString}`);
     const response = await (0, node_fetch_1.default)(`${url}?output_mode=json&${queryString}`, { method: 'POST' });
     const resText = await response.text();
-    data = (resText.trim());
+    data = JSON.parse(resText.trim());
   } catch (error) {
     throw new APIError(-1, error.message);
   }
