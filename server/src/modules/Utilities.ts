@@ -72,7 +72,7 @@ export async function getBlueskyDid(handle: string): Promise<string | null> {
 
 export async function normalizeURL(url: URL | string): Promise<string> {
   if (url == '') return '';
-  if (!(url instanceof URL)) url = new URL(url);
+  if (!(url instanceof URL)) url = new URL(url.startsWith('-') ? url.slice(1) : url);
 
   if (url.hostname == 'twitter.com') url.hostname = 'x.com';
   else if (url.hostname.endsWith('weasyl.com')) {

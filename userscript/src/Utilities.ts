@@ -699,7 +699,7 @@ export async function normalizeSourceLinks(a: HTMLElement): Promise<string> {
 
 export async function normalizeURL(url: URL | string): Promise<string> {
   if (url == '') return '';
-  if (!(url instanceof URL)) url = new URL(url);
+  if (!(url instanceof URL)) url = new URL(url.startsWith('-') ? url.slice(1) : url);
 
   if (url.hostname == 'twitter.com') url.hostname = 'x.com';
   else if (url.hostname.endsWith('weasyl.com')) {
