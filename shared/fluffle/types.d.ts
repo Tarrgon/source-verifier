@@ -29,7 +29,7 @@ export type FluffleResponse = {
 
 export type FluffleError = {
   code: string | null
-  message: strring
+  message: string
 }
 
 export type FluffleErrorResponse = {

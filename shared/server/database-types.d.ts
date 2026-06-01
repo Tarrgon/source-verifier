@@ -1,4 +1,4 @@
-import type { Dimensions } from "./types.d";
+import type { Dimensions } from './types.d';
 
 export type SourceDataMap = { [source: string]: SourceData | ScoredSourceData };
 
