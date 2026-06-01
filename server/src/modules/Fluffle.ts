@@ -1,4 +1,4 @@
-import type { FluffleResponse } from '../../../shared';
+import type { FluffleResponse } from '../shared';
 import { config } from '../config';
 
 export async function getFluffleData(blob: Blob): Promise<FluffleResponse> {

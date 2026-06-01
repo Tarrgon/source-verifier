@@ -1,4 +1,4 @@
-import type { FluffleResponse, FluffleResult } from '../../shared';
+import type { FluffleResponse, FluffleResult } from './shared';
 import { anyLinksSupported, checkFluffleLinks } from './Backend';
 import { FluffleFaces, FluffleMessages, UserAgent } from './Constants';
 import { spinner } from './icons';

@@ -1,4 +1,4 @@
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 import { SourceChecker } from '../SourceChecker';
 
 const API_URL_BASE = 'https://snootbooru.com/api/post/';

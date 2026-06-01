@@ -1,4 +1,4 @@
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 import { SourceChecker } from '../SourceChecker';
 
 export default class ItakuSourceChecker extends SourceChecker {

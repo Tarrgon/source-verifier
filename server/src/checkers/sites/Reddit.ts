@@ -3,7 +3,7 @@ import parseSrcset from 'parse-srcset';
 import { config } from '../../config';
 import { getDOM } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 
 const con = new VirtualConsole();
 con.on('error', () => { });

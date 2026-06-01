@@ -5,7 +5,7 @@ import puppeteer, { Browser, TimeoutError } from 'puppeteer';
 import calcPhash from 'sharp-phash';
 import calcPhashDistance from 'sharp-phash/distance.js';
 import { DetectFileType, getVideoDimensions, wait } from '../modules';
-import type { SourceCheckQueueItem, BaseSourceData, DatabasePost, Dimensions, SourceData, SourceDataMap } from '../../../shared';
+import type { SourceCheckQueueItem, BaseSourceData, DatabasePost, Dimensions, SourceData, SourceDataMap } from '../shared';
 import { config } from '../config';
 
 class NotImplementedError extends Error {

@@ -1,4 +1,4 @@
-import type { ServerResponse } from '../../shared';
+import type { ServerResponse } from './shared';
 import { BACKEND_URL_BASE } from './Constants';
 import { getCSRFToken, wait } from './Utilities';
 

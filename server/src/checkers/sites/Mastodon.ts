@@ -1,7 +1,7 @@
 import parseSrcset from 'parse-srcset';
 import { wait } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 
 export default class MastodonSourceChecker extends SourceChecker {
   constructor() {

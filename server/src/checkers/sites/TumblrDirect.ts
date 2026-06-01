@@ -1,4 +1,4 @@
-import type { SourceCheckQueueItem, SourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData } from '../../shared';
 import { SourceChecker } from '../SourceChecker';
 
 export default class TumblrDirectSourceChecker extends SourceChecker {

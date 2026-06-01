@@ -2,7 +2,7 @@ import PixivApi from 'pixiv-api-client';
 import { Database, wait } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 import { config } from '../../config';
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 
 type PixivTokens = {
   token: string

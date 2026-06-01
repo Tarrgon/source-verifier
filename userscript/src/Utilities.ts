@@ -1,4 +1,4 @@
-import type { ServerResponse, SourceData } from './shared';
+import { isCompleteResponse, type ServerResponse, type SourceData } from './shared';
 import { anyLinksSupported, getData, sendSources } from './Backend';
 import { addSourceSign, aspectRatioMatch, bvas, dimensionAndFileTypeMatch, dimensionMatch, fileTypeMatch, force, info, kemonoIcon, md5Match, noMatches, phashMatch, reload, spinner, unknown } from './icons';
 import { getKemonoDataFromUrl } from './Kemono';

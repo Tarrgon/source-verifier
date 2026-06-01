@@ -3,7 +3,7 @@ import { dirname } from 'path';
 import sharp from 'sharp';
 import calcPhash from 'sharp-phash';
 import { fileURLToPath, pathToFileURL } from 'url';
-import type { BaseSourceData, CallbackFunction, DatabasePost, Result, SourceCheckQueueItem, SourceDataMap } from '../../../shared';
+import type { BaseSourceData, CallbackFunction, DatabasePost, Result, SourceCheckQueueItem, SourceDataMap } from '../shared';
 import { Database, E621Handler, normalizeURL } from '../modules';
 import { getFluffleData } from '../modules/Fluffle';
 import Queue, { Priority } from '../modules/Queue';

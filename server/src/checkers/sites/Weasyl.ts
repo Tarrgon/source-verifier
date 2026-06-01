@@ -1,4 +1,4 @@
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 import { config } from '../../config';
 import { SourceChecker } from '../SourceChecker';
 

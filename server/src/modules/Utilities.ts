@@ -1,6 +1,6 @@
 import { execFile } from 'child_process';
 import { JSDOM, VirtualConsole } from 'jsdom';
-import type { DatabasePost, Dimensions, Rename } from '../../../shared';
+import type { DatabasePost, Dimensions, Rename } from '../shared';
 import { type E621Post } from './e621';
 
 export function wait(ms): Promise<void> {

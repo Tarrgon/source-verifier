@@ -1,4 +1,4 @@
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 import { config } from '../../config';
 import { Helper as InkbunnyHelper } from '../../ib-helper/dist/index.js';
 import { wait } from '../../modules';

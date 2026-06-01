@@ -2,7 +2,7 @@ import express, { type Response } from 'express';
 import SourceCheckerManager from '../../checkers/SourceCheckerManager';
 import { Database, E621Handler } from '../../modules';
 import { getServerResponse } from '../Utilities';
-import type { DatabasePost, Result, ServerResponse } from '../../../../shared';
+import type { DatabasePost, Result, ServerResponse } from '../../shared';
 const router = express.Router();
 
 router.post('/:id', async (req, res: Response<ServerResponse>) => {

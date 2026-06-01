@@ -1,5 +1,5 @@
 import type { Page } from 'puppeteer';
-import type { SourceCheckQueueItem, SourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData } from '../../shared';
 import { wait } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 

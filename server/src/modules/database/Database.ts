@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, UnorderedBulkOperation } from 'mongodb';
 import { config } from '../../config';
-import type { BaseSourceData, DatabasePost, MainSchema, SourceDataMap, SourceCheckQueueItem } from '../../../../shared';
+import type { BaseSourceData, DatabasePost, MainSchema, SourceDataMap, SourceCheckQueueItem } from '../../shared';
 
 export class Database {
   private static _database: Db;

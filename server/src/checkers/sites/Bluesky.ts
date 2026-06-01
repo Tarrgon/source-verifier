@@ -2,7 +2,7 @@ import { Agent, AppBskyEmbedImages, AppBskyEmbedRecord, AppBskyEmbedRecordWithMe
 import { config } from '../../config';
 import { wait } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 
 export default class BlueskySourceChecker extends SourceChecker {
   private ready = false;

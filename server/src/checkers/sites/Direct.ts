@@ -1,4 +1,4 @@
-import type { SourceCheckQueueItem, SourceData } from '../../../../shared';
+import type { SourceCheckQueueItem, SourceData } from '../../shared';
 import { getFromFlareSolverr } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 
