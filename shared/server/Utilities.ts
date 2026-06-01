@@ -1,4 +1,4 @@
-import type { CompleteResponse, IncompleteResponse, ServerResponse } from './response-types.d'
+import type { CompleteResponse, IncompleteResponse, ServerResponse } from './response-types.d';
 
 export function isCompleteResponse(response: ServerResponse): response is CompleteResponse {
   const incompleteResponse = response as IncompleteResponse;
