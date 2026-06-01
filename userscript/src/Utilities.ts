@@ -1,4 +1,4 @@
-import type { CompleteResponse, IncompleteResponse, ServerResponse, SourceData } from '../../shared';
+import type { ServerResponse, SourceData } from './shared';
 import { anyLinksSupported, getData, sendSources } from './Backend';
 import { addSourceSign, aspectRatioMatch, bvas, dimensionAndFileTypeMatch, dimensionMatch, fileTypeMatch, force, info, kemonoIcon, md5Match, noMatches, phashMatch, reload, spinner, unknown } from './icons';
 import { getKemonoDataFromUrl } from './Kemono';
@@ -9,14 +9,6 @@ export function getCSRFToken(): string {
 
 export function wait(ms: number): Promise<void> {
   return new Promise(r => setTimeout(r, ms));
-}
-
-export function isCompleteResponse(response: ServerResponse): response is CompleteResponse {
-  const incompleteResponse = response as IncompleteResponse;
-  const completeResponse = response as CompleteResponse;
-  if (incompleteResponse.notPending || incompleteResponse.unsupported || incompleteResponse.queued || incompleteResponse.notIndexed || !completeResponse.sources) return false;
-
-  return true;
 }
 
 export function waitForSelector<T extends Element>(selector, timeout = 5000): Promise<T | null> {

@@ -1,5 +1,5 @@
-import type { DatabasePost, BaseSourceData } from "./database-types";
-import type { Rename } from "./types";
+import type { DatabasePost, BaseSourceData } from "./database-types.d";
+import type { Rename } from "./types.d";
 
 type CallbackFunction = (data: Result) => void;
 

@@ -1,6 +1,6 @@
 import type { BaseSourceData, DatabasePost } from './database-types.d';
-import type { Rename } from './types';
-import type { ResultExtras } from './source-checker-types';
+import type { Rename } from './types.d';
+import type { ResultExtras } from './source-checker-types.d';
 
 type BaseSourceDataWithoutId = Omit<BaseSourceData, '_id'>;
 type DatabasePostWithoutSources = Omit<DatabasePost, 'sources'>;
