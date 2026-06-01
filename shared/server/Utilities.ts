@@ -8,7 +8,7 @@ export function isCompleteResponse(response: ServerResponse): response is Comple
   return true;
 }
 
-export async function normalizeURL(url: URL | string, getBlueskyDid: (handle: string) => Promise<string>): Promise<string> {
+export async function normalizeURL(url: URL | string, getBlueskyDid: (handle: string) => Promise<string | null>): Promise<string> {
   if (url == '') return '';
   if (!(url instanceof URL)) url = new URL(url.startsWith('-') ? url.slice(1) : url);
 
