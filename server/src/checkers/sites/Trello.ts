@@ -7,8 +7,9 @@ export default class TrelloSourceChecker extends SourceChecker {
   constructor() {
     super('Trello');
 
+    // Doesn't work, they have some kinda protection.
     this.supported = [
-      /^https?:\/\/trello\.com\/c\/.*/,
+      // /^https?:\/\/trello\.com\/c\/.*/,
     ];
   }
 
@@ -26,7 +27,6 @@ export default class TrelloSourceChecker extends SourceChecker {
 
       const dom = getDOM(html);
       const document = dom.window.document;
-
 
       const urlData = Array.from<HTMLLIElement>(document.querySelectorAll('li[data-testid="card-back-action"]'))
         .filter(e => e.innerText.includes('attached'))
