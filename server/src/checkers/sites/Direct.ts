@@ -58,6 +58,8 @@ export default class DirectSourceChecker extends SourceChecker {
       /^https?:\/\/downloads\.fanbox\.cc\/images\/post\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/co\.llection\.pics\/_images\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/piczel\.tv\/static\/uploads\/gallery_image\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
+      /^https?:\/\/files\.trello\.com\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
+      /^https?:\/\/trello\.com\/.*\/cards\/.*\/download\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
     ];
 
     this.previewRegex = [
