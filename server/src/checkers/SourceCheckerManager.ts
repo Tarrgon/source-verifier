@@ -3,8 +3,8 @@ import { dirname } from 'path';
 import sharp from 'sharp';
 import calcPhash from 'sharp-phash';
 import { fileURLToPath, pathToFileURL } from 'url';
-import type { BaseSourceData, CallbackFunction, DatabasePost, Result, SourceCheckQueueItem, SourceDataMap } from '../shared';
-import { Database, E621Handler, normalizeURL } from '../modules';
+import { normalizeURL, type BaseSourceData, type CallbackFunction, type DatabasePost, type Result, type SourceCheckQueueItem, type SourceDataMap } from '../shared';
+import { Database, E621Handler, getBlueskyDid } from '../modules';
 import { getFluffleData } from '../modules/Fluffle';
 import Queue, { Priority } from '../modules/Queue';
 import { SourceChecker } from './SourceChecker';
@@ -160,7 +160,7 @@ export default class SourceCheckerManager {
 
       const toQueue: SourceCheckQueueItem = {
         ...post,
-        sources: await Promise.all(combinedSources.map(s => normalizeURL(s))),
+        sources: await Promise.all(combinedSources.map(s => normalizeURL(s, getBlueskyDid))),
         date: new Date(),
         priority,
         callbacks: callbacks ? callbacks : []
@@ -216,7 +216,7 @@ export default class SourceCheckerManager {
               const fluffleData = await getFluffleData(new Blob([resized]));
 
               if (fluffleData.results) {
-                const urls = (await Promise.all(fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621').map(r => normalizeURL(r.url)))).filter(u => u && !queueItem.sources.includes(u));
+                const urls = (await Promise.all(fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621').map(r => normalizeURL(r.url, getBlueskyDid)))).filter(u => u && !queueItem.sources.includes(u));
 
                 queueItem.sources.push(...urls);
               }

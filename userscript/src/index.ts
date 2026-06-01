@@ -1,7 +1,8 @@
 import { getData, getDataBulk } from './Backend';
 import { Version } from './Constants';
 import { checkFluffle, hasCachedFluffleData } from './Fluffle';
-import { addKemonoData, normalizeURL, processData, processDataOnPostsView, waitForSelector } from './Utilities';
+import { normalizeURL } from './shared';
+import { addKemonoData, getBlueskyDid, processData, processDataOnPostsView, waitForSelector } from './Utilities';
 
 function addCSS() {
   document.head.append(Object.assign(document.createElement('style'), {
@@ -189,7 +190,7 @@ async function main() {
   try {
     const data = await getData(id);
 
-    const links = await Promise.all(Array.from(document.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(a => normalizeURL(a.href)));
+    const links = await Promise.all(Array.from(document.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(a => normalizeURL(a.href, getBlueskyDid)));
 
     const supported = await processData(data, links, links.length > 0);
 

@@ -1,8 +1,8 @@
-import type { FluffleResponse, FluffleResult } from './shared';
+import { normalizeURL, type FluffleResponse, type FluffleResult } from './shared';
 import { anyLinksSupported, checkFluffleLinks } from './Backend';
 import { FluffleFaces, FluffleMessages, UserAgent } from './Constants';
 import { spinner } from './icons';
-import { createSidebarList, createSourceItem, getImageBlob, normalizeSourceLinks, normalizeURL, processData } from './Utilities';
+import { createSidebarList, createSourceItem, getBlueskyDid, getImageBlob, normalizeSourceLinks, processData } from './Utilities';
 
 export function getFluffleData(blob: Blob): Promise<FluffleResponse> {
   return new Promise((resolve, reject) => {
@@ -119,7 +119,7 @@ async function addResults(results: FluffleResult[]): Promise<string[]> {
     listItem.append(getRandomEmptyResultMessage());
   } else {
     for (const result of results) {
-      const url = await normalizeURL(result.url);
+      const url = await normalizeURL(result.url, getBlueskyDid);
       if (!realSourceLinks.includes(url)) {
         listItem.append(await createSourceItem(result, results.length == 1));
         urls.push(url);

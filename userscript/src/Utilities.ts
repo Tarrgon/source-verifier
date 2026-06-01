@@ -1,4 +1,4 @@
-import { isCompleteResponse, type ServerResponse, type SourceData } from './shared';
+import { isCompleteResponse, normalizeURL, type ServerResponse, type SourceData } from './shared';
 import { anyLinksSupported, getData, sendSources } from './Backend';
 import { addSourceSign, aspectRatioMatch, bvas, dimensionAndFileTypeMatch, dimensionMatch, fileTypeMatch, force, info, kemonoIcon, md5Match, noMatches, phashMatch, reload, spinner, unknown } from './icons';
 import { getKemonoDataFromUrl } from './Kemono';
@@ -119,7 +119,7 @@ export async function getBlueskyDid(handle: string): Promise<string | null> {
 }
 
 export async function getReplacementUrl(id: number | string, sourceData: SourceData, source: string, reason: string) {
-  source = await normalizeURL(source);
+  source = await normalizeURL(source, getBlueskyDid);
 
   return `https://e621.net/post_replacements/new?post_id=${id}&url=${encodeURIComponent(sourceData.originalUrl ? sourceData.originalUrl : sourceData.url!)}&reason=${encodeURIComponent(reason)}&source=${encodeURIComponent(source)}`;
 }
@@ -145,7 +145,7 @@ async function checkForUnusedSources(data: ServerResponse, links: string[]) {
     const listItem = list.firstElementChild!;
 
     for (const _url of unusedSources) {
-      const url = await normalizeURL(_url);
+      const url = await normalizeURL(_url, getBlueskyDid);
       listItem.append(await createSourceItem({ url }, unusedSources.length == 1));
     }
 
@@ -271,7 +271,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
 
   const allSourceLinks = await Promise.all(Array.from(container.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(async (a) => {
     return {
-      normalizedUrl: await normalizeURL(a.href),
+      normalizedUrl: await normalizeURL(a.href, getBlueskyDid),
       element: a
     };
   }));
@@ -658,7 +658,7 @@ export async function createSourceItem(result: { url: string }, immediate: boole
   wrappedAnchor.appendChild(addSourceSign.cloneNode(true));
   div.appendChild(wrappedAnchor);
 
-  const normalizedURL = await normalizeURL(result.url);
+  const normalizedURL = await normalizeURL(result.url, getBlueskyDid);
 
   const a = document.createElement('a');
   a.classList.add('decorated');
@@ -686,33 +686,5 @@ export async function normalizeSourceLinks(a: HTMLElement): Promise<string> {
     url = new URL(asAnchor.href);
   }
 
-  return await normalizeURL(url);
-}
-
-export async function normalizeURL(url: URL | string): Promise<string> {
-  if (url == '') return '';
-  if (!(url instanceof URL)) url = new URL(url.startsWith('-') ? url.slice(1) : url);
-
-  if (url.hostname == 'twitter.com') url.hostname = 'x.com';
-  else if (url.hostname.endsWith('weasyl.com')) {
-    if (!url.pathname.match(/\d+$/)) {
-      const id = /\/submissions?\/(\d+)/.exec(url.pathname)![1];
-      url = new URL(`https://www.weasyl.com/submission/${id}`);
-    }
-  }
-
-  let regexData: RegExpExecArray | null = null;
-  if ((regexData = /https:\/\/bsky\.app\/profile\/(.*)\/post/.exec(url.toString())) != null) {
-    if (!regexData[1].startsWith('did:plc:')) {
-      const did = await getBlueskyDid(regexData[1]);
-
-      if (did) {
-        const u = url.toString().replace(regexData[1], did);
-        url = new URL(u);
-      }
-    }
-  }
-
-  const u = url.toString();
-  return u.endsWith('/') ? u.slice(0, -1) : u;
+  return await normalizeURL(url, getBlueskyDid);
 }
