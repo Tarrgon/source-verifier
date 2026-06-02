@@ -49,6 +49,9 @@
     "copyfiles": "npx copyfiles -u 1 \"./src/**/*.html\" \"./src/**/*.js\" \"./src/**/*.json\" ./dist",
     "copyenv": "npx copyfiles .env ./dist",
     "preinstall": "npx rimraf src/shared",
-    "postinstall": "cd src && mkdir shared && cd shared && git init && git remote add -f origin https://github.com/Tarrgon/source-verifier.git && git config core.sparsecheckout true && git sparse-checkout set --no-cone \"shared\" && git pull --depth=1 origin master && npx copyfiles \"./**\" ../ && npx rimraf shared"
+    "postinstall": "cd src && mkdir shared && cd shared && git init && git remote add -f origin https://github.com/Tarrgon/source-verifier.git && git config core.sparsecheckout true && git sparse-checkout set --no-cone \"shared\" && git pull --depth=1 origin master && npx copyfiles \"./**\" ../ && npx rimraf shared",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:bup": "npm run docker:build && npm run docker:up"
   }
 }
