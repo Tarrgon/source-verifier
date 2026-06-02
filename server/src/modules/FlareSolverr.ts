@@ -1,5 +1,7 @@
+import { config } from '../config';
+
 const SESSION_ID = 'SourceVerifier_FlareSolverr';
-const URL_BASE = 'http://localhost:8191/v1';
+const URL_BASE = `${config.FLARE_SOLVERR_URL}/v1`;
 
 const OPTIONS = {
   method: 'POST',
