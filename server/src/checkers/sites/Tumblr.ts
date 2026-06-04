@@ -53,11 +53,11 @@ export default class TumblrSourceChecker extends SourceChecker {
 
       const matchData: ScoredSourceData[] = [];
 
-      const urls: { url: string, isPreview: boolean }[] = [];
-
       for (const object of data) {
         for (const content of object.content) {
           if (content.type == 'image') {
+            const urls: { url: string, isPreview: boolean }[] = [];
+
             let isOriginal = true;
             for (const media of content.media) {
               urls.push({
@@ -67,26 +67,26 @@ export default class TumblrSourceChecker extends SourceChecker {
 
               isOriginal = false;
             }
+
+            for (const urlData of urls) {
+              const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
+
+              if (urlData.isPreview) {
+                data.originalUrl = urls[0].url;
+              }
+
+              if (!data || data.error || data.unknown || data.unsupported) {
+                data.score = 0;
+                matchData.push(data);
+                continue;
+              }
+
+              data.score = (Number(data.md5Match!) * 5000) + (1000 / (data.phashDistance! + 1)) + (Number(data.dimensionMatch!) * 200) + Number(data.fileTypeMatch) + (data.isPreview ? 0 : 5);
+
+              matchData.push(data);
+            }
           }
         }
-      }
-
-      for (const urlData of urls) {
-        const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
-
-        if (urlData.isPreview) {
-          data.originalUrl = urls[0].url;
-        }
-
-        if (!data || data.error || data.unknown || data.unsupported) {
-          data.score = 0;
-          matchData.push(data);
-          continue;
-        }
-
-        data.score = (Number(data.md5Match!) * 5000) + (1000 / (data.phashDistance! + 1)) + (Number(data.dimensionMatch!) * 200) + Number(data.fileTypeMatch) + (data.isPreview ? 0 : 5);
-
-        matchData.push(data);
       }
 
       if (matchData.length > 0) {
