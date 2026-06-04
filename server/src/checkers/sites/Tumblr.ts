@@ -31,11 +31,16 @@ export default class TumblrSourceChecker extends SourceChecker {
 
     this.supported = [
       /^https?:\/\/(?:www\.)?tumblr\.com\/.+\/\d+/,
+      /^https?:\/\/(.*)\.tumblr\.com\/post\/(\d+).*/,
     ];
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
     try {
+      const requireRewrite = /^https?:\/\/(.*)\.tumblr\.com\/post\/(\d+).*/.exec(source);
+
+      if (requireRewrite) source = `https://www.tumblr.com/${requireRewrite[1]}/${requireRewrite[2]}`;
+
       const res = await fetch(source);
 
       if (!res.ok) {
