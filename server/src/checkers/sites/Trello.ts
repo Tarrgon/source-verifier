@@ -29,7 +29,7 @@ export default class TrelloSourceChecker extends SourceChecker {
       const document = dom.window.document;
 
       const urlData = Array.from<HTMLLIElement>(document.querySelectorAll('li[data-testid="card-back-action"]'))
-        .filter(e => e.innerText.includes('attached'))
+        .filter(e => e.textContent.includes('attached'))
         .map<HTMLAnchorElement | null>(e => e.querySelector('a[href*="download"]'))
         .map(e => ({ preview: e?.querySelector('img')?.src, original: e?.href }));
 

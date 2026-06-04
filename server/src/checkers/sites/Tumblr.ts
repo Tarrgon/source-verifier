@@ -49,7 +49,7 @@ export default class TumblrSourceChecker extends SourceChecker {
       const dom = getDOM(html);
       const document = dom.window.document;
 
-      const data = JSON.parse(document.getElementById('___INITIAL_STATE___').innerText).PeeprRoute.initialTimeline.objects as TumblrObject[];
+      const data = JSON.parse(document.getElementById('___INITIAL_STATE___').textContent).PeeprRoute.initialTimeline.objects as TumblrObject[];
 
       const matchData: ScoredSourceData[] = [];
 
