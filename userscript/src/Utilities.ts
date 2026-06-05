@@ -1,6 +1,6 @@
 import { isCompleteResponse, normalizeURL, type ServerResponse, type SourceData } from './shared';
 import { anyLinksSupported, getData, sendSources } from './Backend';
-import { addSourceSign, aspectRatioMatch, bvas, dimensionAndFileTypeMatch, dimensionMatch, fileTypeMatch, force, info, kemonoIcon, md5Match, noMatches, phashMatch, reload, spinner, unknown } from './icons';
+import { addSourceSign, aspectRatioMatch, bvas, dimensionAndFileTypeMatch, dimensionMatch, fileTypeMatch, force, kemonoIcon, md5Match, noMatches, phashMatch, reload, spinner, unknown } from './icons';
 import { getKemonoDataFromUrl } from './Kemono';
 
 export function getCSRFToken(): string {
@@ -24,9 +24,11 @@ export function waitForSelector<T extends Element>(selector, timeout = 5000): Pr
   });
 }
 
-export function getImageBlob(fileUrl): Promise<Blob | null> {
+export function getImageBlob(fileUrl: string | null): Promise<Blob | null> {
   return new Promise((resolve, reject) => {
     try {
+      if (fileUrl == null) return null;
+
       const container = document.getElementById('image-container')!;
       const image = new Image();
 
@@ -55,33 +57,15 @@ export function getImageBlob(fileUrl): Promise<Blob | null> {
   });
 }
 
-export function approximateAspectRatio(val, lim) {
-  let lower = [0, 1];
-  let upper = [1, 0];
+function gcd(a: number, b: number): number {
+  return (b == 0) ? a : gcd(b, a % b);
+}
 
-  while (true) {
-    const mediant = [lower[0] + upper[0], lower[1] + upper[1]];
-
-    if (val * mediant[1] > mediant[0]) {
-      if (lim < mediant[1]) {
-        return upper;
-      }
-      lower = mediant;
-    } else if (val * mediant[1] == mediant[0]) {
-      if (lim >= mediant[1]) {
-        return mediant;
-      }
-      if (lower[1] < upper[1]) {
-        return lower;
-      }
-      return upper;
-    } else {
-      if (lim < mediant[1]) {
-        return lower;
-      }
-      upper = mediant;
-    }
-  }
+export function calculateAspectRatio(width: number, height: number): string {
+  const ratio = gcd(width, height);
+  const widthRatio = width / ratio;
+  const heightRatio = height / ratio;
+  return `${(widthRatio / heightRatio).toFixed(2)}:1`;
 }
 
 export function roundTo(x, n) {
@@ -280,7 +264,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
   const height = parseInt(document.querySelector<HTMLSpanElement>("span[itemprop='height']")?.innerText ?? '-1');
   const fileType = document.querySelector<HTMLElement>('#image-container[data-file-ext]')?.getAttribute('data-file-ext') ?? 'unk';
 
-  const approxAspectRatio = approximateAspectRatio(width / height, 50);
+  const aspectRatio = calculateAspectRatio(width, height);
 
   let anyMatches = false;
 
@@ -291,67 +275,68 @@ export async function processData(data: ServerResponse, links: string[], refresh
       if (matchingSourceEntry) {
         anyMatches = true;
 
-        const embeddedInfo = info.cloneNode(true) as HTMLElement;
-
         let matchingAspectRatio = false;
 
-        if (sourceData.dimensions) {
-          const sourceApproxAspectRatio = approximateAspectRatio(sourceData.dimensions.width / sourceData.dimensions.height, 50);
-          matchingAspectRatio = approxAspectRatio[0] == sourceApproxAspectRatio[0] && approxAspectRatio[1] == sourceApproxAspectRatio[1];
+        const sourceAspectRatio = sourceData.dimensions ? calculateAspectRatio(sourceData.dimensions.width, sourceData.dimensions.height) : '-1:-1';
+        matchingAspectRatio = aspectRatio == sourceAspectRatio;
 
-          embeddedInfo.title = `${sourceData.dimensions.width}x${sourceData.dimensions.height} (${roundTo(sourceData.dimensions.width / width, 2)}:${roundTo(sourceData.dimensions.height / height, 2)}) ${sourceData.fileType!.toUpperCase()}`;
-          matchingSourceEntry.prepend(embeddedInfo);
-        } else {
-          embeddedInfo.title = 'UNK';
-          matchingSourceEntry.prepend(embeddedInfo);
-        }
-
+        console.log(width, height);
+        console.log(sourceData.dimensions?.width, sourceData.dimensions?.height);
+        console.log(aspectRatio, sourceAspectRatio);
 
         if (!sourceData.md5Match && sourceData.phashDistance !== undefined && sourceData.phashDistance != -1) {
           const phashClone = phashMatch.cloneNode(true) as HTMLElement;
 
           if (sourceData.phashDistance == 0) {
-            embeddedInfo.after(phashClone);
+            matchingSourceEntry.prepend(phashClone);
           } else if (sourceData.phashDistance < 7) {
             phashClone.style.color = 'yellow';
             // phashClone.style.outlineColor = colors["yellow"][colorIndex]
             phashClone.title = 'Perceptually similar';
-            embeddedInfo.after(phashClone);
+            matchingSourceEntry.prepend(phashClone);
           } else {
             phashClone.style.color = 'red';
             // phashClone.style.outlineColor = colors["red"][colorIndex]
             phashClone.title = 'Perceptually dissimilar';
-            embeddedInfo.after(phashClone);
+            matchingSourceEntry.prepend(phashClone);
           }
 
           const pd = 100 - (sourceData.phashDistance / 64 * 100);
           phashClone.title += ` Similarity: ${Math.floor(pd)}%`;
+
+          if (!sourceData.fileTypeMatch && !sourceData.dimensionMatch && !matchingAspectRatio) {
+            phashClone.title += ` (${sourceData.dimensions!.width}x${sourceData.dimensions!.height} | ${roundTo(sourceData.dimensions!.width / width, 2)}:${roundTo(sourceData.dimensions!.height / height, 2)}) & different file type (${sourceData.fileType!.toUpperCase()})`;
+          }
         }
 
         if (sourceData.md5Match) {
-          embeddedInfo.after(md5Match.cloneNode(true));
+          matchingSourceEntry.prepend(md5Match.cloneNode(true));
         } else if (sourceData.dimensionMatch && sourceData.fileTypeMatch) {
-          embeddedInfo.after(dimensionAndFileTypeMatch.cloneNode(true));
+          matchingSourceEntry.prepend(dimensionAndFileTypeMatch.cloneNode(true));
         } else if (sourceData.dimensionMatch) {
-          embeddedInfo.after(dimensionMatch.cloneNode(true));
+          const clone = dimensionMatch.cloneNode(true) as HTMLElement;
+          clone.title += ` (${sourceData.fileType!.toUpperCase()})`;
+          matchingSourceEntry.prepend(clone);
         } else if (matchingAspectRatio) {
           if (sourceData.fileTypeMatch) {
             const clone = aspectRatioMatch.cloneNode(true) as HTMLElement;
-            clone.title += ' file type match';
+            clone.title += ` (${sourceData.dimensions!.width}x${sourceData.dimensions!.height} | ${roundTo(sourceData.dimensions!.width / width, 2)}:${roundTo(sourceData.dimensions!.height / height, 2)}) & file type match`;
             clone.style.color = 'lime';
-            embeddedInfo.after(clone);
+            matchingSourceEntry.prepend(clone);
           } else {
             const clone = aspectRatioMatch.cloneNode(true) as HTMLElement;
-            clone.title += ' different file type';
+            clone.title += ` (${sourceData.dimensions!.width}x${sourceData.dimensions!.height} | ${roundTo(sourceData.dimensions!.width / width, 2)}:${roundTo(sourceData.dimensions!.height / height, 2)}) & different file type (${sourceData.fileType!.toUpperCase()})`;
             clone.style.color = 'yellow';
-            embeddedInfo.after(clone);
+            matchingSourceEntry.prepend(clone);
           }
         } else if (sourceData.fileTypeMatch) {
-          embeddedInfo.after(fileTypeMatch.cloneNode(true));
+          const clone = fileTypeMatch.cloneNode(true) as HTMLElement;
+          clone.title += ` (${sourceData.dimensions!.width}x${sourceData.dimensions!.height} | ${roundTo(sourceData.dimensions!.width / width, 2)}:${roundTo(sourceData.dimensions!.height / height, 2)})`;
+          matchingSourceEntry.prepend(clone);
         } else if (sourceData.unknown) {
-          embeddedInfo.after(unknown.cloneNode(true));
-        } else {
-          embeddedInfo.after(noMatches.cloneNode(true));
+          matchingSourceEntry.prepend(unknown.cloneNode(true));
+        } else if (sourceData.phashDistance != 0) {
+          matchingSourceEntry.prepend(noMatches.cloneNode(true));
         }
 
         if (sourceData.isPreview) {

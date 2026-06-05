@@ -160,19 +160,6 @@ export const phashMatch = (() => {
   return i;
 })();
 
-export const info = (() => {
-  const i = document.createElement('i');
-  i.classList.add('jsv-icon');
-  i.style.color = 'cyan';
-  i.style.marginRight = '0.25rem';
-  if (window.location.pathname == '/posts') {
-    i.style.lineHeight = 'inherit';
-    i.style.verticalAlign = 'middle';
-  }
-  i.innerHTML = INFO_SVG;
-  return i;
-})();
-
 export const force = (() => {
   const i = document.createElement('i');
   i.classList.add('jsv-icon');
