@@ -9,12 +9,12 @@ export default class InstagramSourceChecker extends SourceChecker {
     super('FurAffinity');
 
     this.supported = [
-      /^https?:\/\/.*instagram\.com\/p\/(\d+).*/
+      /^https?:\/\/.*instagram\.com\/p\/([^/]+).*/
     ];
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
-    const id = (/^https?:\/\/.*instagram\.com\/p\/(\d+).*/).exec(source)?.[1];
+    const id = (/^https?:\/\/.*instagram\.com\/p\/([^/]+).*/).exec(source)?.[1];
 
     if (id) {
       try {
