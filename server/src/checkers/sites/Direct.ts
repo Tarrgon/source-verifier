@@ -25,6 +25,7 @@ export default class DirectSourceChecker extends SourceChecker {
       /^https?:\/\/dl\.dropboxusercontent\.com\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/.*\.cloudfront\.net\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/itaku.ee\/api\/.*\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
+      /^https?:\/\/itaku-media\.b-cdn\.net.*\/api\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/cdn\.weasyl\.com\/.*\/submissions\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/cdn\.weasyl\.com\/static\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/uploads\.ungrounded\.net\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
