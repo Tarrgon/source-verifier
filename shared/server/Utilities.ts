@@ -12,16 +12,15 @@ export async function normalizeURL(url: URL | string, getBlueskyDid: (handle: st
   if (url == '') return '';
   if (!(url instanceof URL)) url = new URL(url.startsWith('-') ? url.slice(1) : url);
 
+  let regexData: RegExpExecArray | null = null;
+
   if (url.hostname == 'twitter.com') url.hostname = 'x.com';
   else if (url.hostname.endsWith('weasyl.com')) {
     if (!url.pathname.match(/\d+$/)) {
       const id = /\/submissions?\/(\d+)/.exec(url.pathname)![1];
       url = new URL(`https://www.weasyl.com/submission/${id}`);
     }
-  }
-
-  let regexData: RegExpExecArray | null = null;
-  if ((regexData = /https:\/\/bsky\.app\/profile\/(.*)\/post/.exec(url.toString())) != null) {
+  } else if ((regexData = /https:\/\/bsky\.app\/profile\/(.*)\/post/.exec(url.toString())) != null) {
     if (!regexData[1].startsWith('did:plc:')) {
       const did = await getBlueskyDid(regexData[1]);
 
