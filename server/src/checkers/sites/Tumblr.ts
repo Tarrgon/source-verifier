@@ -70,6 +70,19 @@ export default class TumblrSourceChecker extends SourceChecker {
                 isPreview: !(media.hasOriginalDimensions || isOriginal)
               });
 
+              if (isOriginal && !media.hasOriginalDimensions) {
+                const baseUrl = media.url.replace(/s\d+x\d+/, 's9999999x9999999');
+                urls.push({
+                  url: baseUrl.replace('.pnj', '.png'),
+                  isPreview: false
+                });
+
+                urls.push({
+                  url: baseUrl.replace('.pnj', '.jpg'),
+                  isPreview: false
+                });
+              }
+
               isOriginal = false;
             }
 
