@@ -66,7 +66,7 @@ export default class TumblrSourceChecker extends SourceChecker {
             let isOriginal = true;
             for (const media of content.media) {
               urls.push({
-                url: media.url,
+                url: media.type == 'image/png' ? media.url.replace('.pnj', '.png') : media.url,
                 isPreview: !(media.hasOriginalDimensions || isOriginal)
               });
 
