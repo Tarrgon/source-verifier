@@ -280,10 +280,6 @@ export async function processData(data: ServerResponse, links: string[], refresh
         const sourceAspectRatio = sourceData.dimensions ? calculateAspectRatio(sourceData.dimensions.width, sourceData.dimensions.height) : '-1:-1';
         matchingAspectRatio = aspectRatio == sourceAspectRatio;
 
-        console.log(width, height);
-        console.log(sourceData.dimensions?.width, sourceData.dimensions?.height);
-        console.log(aspectRatio, sourceAspectRatio);
-
         if (!sourceData.md5Match && sourceData.phashDistance !== undefined && sourceData.phashDistance != -1) {
           const phashClone = phashMatch.cloneNode(true) as HTMLElement;
 
@@ -469,7 +465,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
     }
   }
 
-  if (containerSelector == '.source-links') checkForUnusedSources(data, links);
+  if (containerSelector == '.source-links') await checkForUnusedSources(data, links);
 
   return anyMatches;
 }
