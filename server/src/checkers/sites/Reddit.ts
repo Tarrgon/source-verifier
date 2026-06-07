@@ -14,6 +14,7 @@ export default class RedditSourceChecker extends SourceChecker {
 
     this.supported = [
       /^https?:\/\/(www\.)?reddit\.com\/r\/.*/,
+      /^https?:\/\/(www\.)?reddit\.com\/user\/.*\/comments\/.*/,
     ];
   }
 
