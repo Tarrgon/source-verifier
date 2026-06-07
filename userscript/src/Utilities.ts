@@ -573,13 +573,14 @@ export async function addKemonoData(url: string | undefined) {
       container.insertBefore(span, container.firstElementChild);
     }
 
-    const kemonoIconClone = kemonoIcon.cloneNode() as HTMLElement;
-    kemonoIconClone.style.cursor = 'pointer';
-    kemonoIconClone.addEventListener('click', () => {
-      window.open(`https://kemono.cr/${first.service}/user/${first.user}/post/${first.id}`);
-    });
+    const a = document.createElement('a');
+    a.href = `https://kemono.cr/${first.service}/user/${first.user}/post/${first.id}`;
+    a.target = '_blank';
 
-    container.firstElementChild?.appendChild(kemonoIcon);
+    const kemonoIconClone = kemonoIcon.cloneNode(true) as HTMLImageElement;
+    a.appendChild(kemonoIconClone);
+
+    container.firstElementChild?.appendChild(a);
     return;
   }
 }
