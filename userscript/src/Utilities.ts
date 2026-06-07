@@ -501,7 +501,7 @@ export function processDataOnPostsView(data: ServerResponse) {
     }
   }
 
-  if (closestPerceptually) {
+  if (closestPerceptually && !closestPerceptually.unknown && !closestPerceptually.error && !closestPerceptually.unsupported) {
     if (!isRe6) {
       const link = post.querySelector('.thm-link');
 
@@ -511,7 +511,7 @@ export function processDataOnPostsView(data: ServerResponse) {
       if (closestPerceptually.md5Match) {
         ribbon.classList.add('md5-match', 'right');
         ribbon.title = 'MD5 Match';
-      } else if (!closestPerceptually.unknown && !closestPerceptually.error) {
+      } else {
         if (closestPerceptually.dimensionMatch && closestPerceptually.fileTypeMatch) {
           ribbon.classList.add('right');
         } else {
@@ -564,7 +564,7 @@ export function processDataOnPostsView(data: ServerResponse) {
       if (closestPerceptually.md5Match) {
         ribbon.classList.add('md5-match', 'right');
         ribbon.title = 'MD5 Match';
-      } else if (!closestPerceptually.unknown && !closestPerceptually.error) {
+      } else {
         if (closestPerceptually.dimensionMatch && closestPerceptually.fileTypeMatch) {
           ribbon.classList.add('right');
         } else {
