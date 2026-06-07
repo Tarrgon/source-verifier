@@ -85,39 +85,39 @@ article.thumbnail .ribbon.bottom.right {
 }
 
 .md5-match {
-  --color-1: lime;
-  --color-2: lime;
+  --color-1: lime !important;
+  --color-2: lime !important;
   --ribbon-bg-pos: 0% !important;
 }
 
 .dimension-match.file-type-match {
-  --color-1: #a53ac5;
+  --color-1: #a53ac5 !important;
 }
 
 .dimension-match {
-  --color-1: #c5a53a;
+  --color-1: #c5a53a !important;
 }
 
 .file-type-match {
-  --color-1: #2767d8;
+  --color-1: #2767d8 !important;
 }
 
 .no-matches {
-  --color-1: #800;
+  --color-1: #800 !important;
 }
 
 .perceptually-identical {
-  --color-2: lime;
+  --color-2: lime !important;
   --ribbon-bg-pos: 50% !important;
 }
 
 .perceptually-similar {
-  --color-2: yellow;
+  --color-2: yellow !important;
   --ribbon-bg-pos: 50% !important;
 }
 
 .perceptually-dissimilar {
-  --color-2: red;
+  --color-2: red !important;
   --ribbon-bg-pos: 50% !important;
 }
 
