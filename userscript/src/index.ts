@@ -70,6 +70,79 @@ function addCSS() {
 .source-link > a {
   display: inline-flex;
 }
+
+article.thumbnail .ribbon.bottom {
+	top: unset;
+  visibility: visible !important;
+	background: linear-gradient(to right, var(--color-1) 50%, var(--color-2) 50% 100%);
+	background-size: 200% 100%;
+	background-position-x: var(--ribbon-bg-pos);
+}
+
+article.thumbnail .ribbon.bottom.right {
+  background-position-x: calc(var(--ribbon-bg-pos) * -1);
+  box-shadow: calc(var(--transform-scalar) * 5px) calc(var(--transform-scalar) * -5px) 10px 5px rgba(0,0,0,.5);
+}
+
+.md5-match {
+  --color-1: lime;
+  --color-2: lime;
+  --ribbon-bg-pos: 0% !important;
+}
+
+.dimension-match.file-type-match {
+  --color-1: #a53ac5;
+}
+
+.dimension-match {
+  --color-1: #c5a53a;
+}
+
+.file-type-match {
+  --color-1: #2767d8;
+}
+
+.no-matches {
+  --color-1: #800;
+}
+
+.perceptually-identical {
+  --color-2: lime;
+  --ribbon-bg-pos: 50% !important;
+}
+
+.perceptually-similar {
+  --color-2: yellow;
+  --ribbon-bg-pos: 50% !important;
+}
+
+.perceptually-dissimilar {
+  --color-2: red;
+  --ribbon-bg-pos: 50% !important;
+}
+
+.bottom-ribbons {
+	top: unset;
+	bottom: 32px;
+  z-index: 20;
+}
+
+.bottom-ribbons ribbon {
+	border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+}
+
+.bottom-ribbons ribbon.right > span {
+	transform: rotate(135deg) !important;
+	top: -0.8rem;
+  background: linear-gradient(to right, var(--color-1) 57%, var(--color-2) 50% 100%);
+}
+
+.bottom-ribbons ribbon.left > span {
+	transform: rotate(225deg) !important;
+	top: -0.8rem;
+  background: linear-gradient(to left, var(--color-1) 56%, var(--color-2) 50% 100%);
+}
 `
   }));
 }

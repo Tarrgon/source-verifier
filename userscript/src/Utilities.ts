@@ -484,18 +484,8 @@ export function processDataOnPostsView(data: ServerResponse) {
 
   if (!postInfo) return;
 
-  for (const element of postInfo.querySelectorAll<HTMLElement>('.jsv-icon')) {
+  for (const element of postInfo.querySelectorAll<HTMLElement>('.jsv-container')) {
     element.remove();
-  }
-
-  if (!_isCompleteResponse && data.queued) {
-    postInfo.appendChild(spinner.cloneNode(true));
-    return;
-  } else if (!_isCompleteResponse && data.unsupported) {
-    const noMatchesClone = noMatches.cloneNode(true) as HTMLElement;
-    noMatchesClone.title = 'Unsupported';
-    postInfo.appendChild(noMatchesClone);
-    return;
   }
 
   if (!_isCompleteResponse) return;
@@ -512,45 +502,112 @@ export function processDataOnPostsView(data: ServerResponse) {
   }
 
   if (closestPerceptually) {
-    if (closestPerceptually.md5Match) {
-      postInfo.appendChild(md5Match.cloneNode(true));
-    } else if (closestPerceptually.dimensionMatch && closestPerceptually.fileTypeMatch) {
-      postInfo.appendChild(dimensionAndFileTypeMatch.cloneNode(true));
-    } else if (closestPerceptually.dimensionMatch) {
-      postInfo.appendChild(dimensionMatch.cloneNode(true));
-    } else if (closestPerceptually.fileTypeMatch) {
-      postInfo.appendChild(fileTypeMatch.cloneNode(true));
-    } else if (closestPerceptually.unknown) {
-      postInfo.appendChild(unknown.cloneNode(true));
-    }
+    if (!isRe6) {
+      const link = post.querySelector('.thm-link');
 
-    if (!closestPerceptually.md5Match && closestPerceptually.phashDistance !== undefined && closestPerceptually.phashDistance != -1) {
-      const phashClone = phashMatch.cloneNode(true) as HTMLElement;
+      const ribbon = document.createElement('div');
+      ribbon.classList.add('jsv-container', 'ribbon', 'bottom');
 
-      if (closestPerceptually.phashDistance == 0) {
-        postInfo.appendChild(phashClone);
-      } else if (closestPerceptually.phashDistance < 7) {
-        phashClone.style.color = 'yellow';
-        // phashClone.style.outlineColor = colors["yellow"][colorIndex]
-        phashClone.title = 'Perceptually similar';
-        postInfo.appendChild(phashClone);
-      } else {
-        phashClone.style.color = 'red';
-        // phashClone.style.outlineColor = colors["red"][colorIndex]
-        phashClone.title = 'Perceptually dissimilar';
-        postInfo.appendChild(phashClone);
+      if (closestPerceptually.md5Match) {
+        ribbon.classList.add('md5-match', 'right');
+        ribbon.title = 'MD5 Match';
+      } else if (!closestPerceptually.unknown && !closestPerceptually.error) {
+        if (closestPerceptually.dimensionMatch && closestPerceptually.fileTypeMatch) {
+          ribbon.classList.add('right');
+        } else {
+          ribbon.classList.add('left');
+        }
+
+        if (closestPerceptually.dimensionMatch) {
+          ribbon.classList.add('dimension-match');
+          ribbon.title = 'Dimension match.';
+        }
+
+        if (closestPerceptually.fileTypeMatch) {
+          ribbon.classList.add('file-type-match');
+          ribbon.title += ' File type match.';
+          ribbon.title = ribbon.title.trim();
+        }
+
+        if (!closestPerceptually.dimensionMatch && !closestPerceptually.fileTypeMatch) {
+          ribbon.classList.add('no-matches');
+          ribbon.title += 'No matches.';
+        }
+
+        if (closestPerceptually.phashDistance !== undefined && closestPerceptually.phashDistance != -1) {
+          if (closestPerceptually.phashDistance == 0) {
+            ribbon.classList.add('perceptually-identical');
+            ribbon.title += ' Perceptually identical.';
+          } else if (closestPerceptually.phashDistance < 7) {
+            ribbon.classList.add('perceptually-similar');
+            ribbon.title += ' Perceptually similar.';
+          } else {
+            ribbon.classList.add('perceptually-dissimilar');
+            ribbon.title += ' Perceptually dissimilar.';
+          }
+
+          const pd = 100 - (closestPerceptually.phashDistance / 64 * 100);
+          ribbon.title += ` Similarity: ${Math.floor(pd)}%`;
+        }
       }
 
-      const pd = 100 - (closestPerceptually.phashDistance / 64 * 100);
-      phashClone.title += ` Similarity: ${Math.floor(pd)}%`;
-    }
+      link?.appendChild(ribbon);
+    } else {
+      const ribbons = post.querySelector('img-ribbons');
 
-    // if (closestPerceptually.isPreview) {
-    //   const clone = bvas.cloneNode(true) as HTMLElement;
-    //   clone.title = 'Matched version is preview image. Original version available.';
-    //   clone.style.color = 'red';
-    //   postInfo.appendChild(clone);
-    // }
+      const bottomRibbons = document.createElement('img-ribbons');
+      bottomRibbons.classList.add('jsv-container', 'bottom-ribbons');
+      const ribbon = document.createElement('ribbon');
+      const span = document.createElement('span');
+      ribbon.appendChild(span);
+
+      if (closestPerceptually.md5Match) {
+        ribbon.classList.add('md5-match', 'right');
+        ribbon.title = 'MD5 Match';
+      } else if (!closestPerceptually.unknown && !closestPerceptually.error) {
+        if (closestPerceptually.dimensionMatch && closestPerceptually.fileTypeMatch) {
+          ribbon.classList.add('right');
+        } else {
+          ribbon.classList.add('left');
+        }
+
+        if (closestPerceptually.dimensionMatch) {
+          ribbon.classList.add('dimension-match');
+          ribbon.title = 'Dimension match.';
+        }
+
+        if (closestPerceptually.fileTypeMatch) {
+          ribbon.classList.add('file-type-match');
+          ribbon.title += ' File type match.';
+          ribbon.title = ribbon.title.trim();
+        }
+
+        if (!closestPerceptually.dimensionMatch && !closestPerceptually.fileTypeMatch) {
+          ribbon.classList.add('no-matches');
+          ribbon.title += 'No matches.';
+        }
+
+        if (closestPerceptually.phashDistance !== undefined && closestPerceptually.phashDistance != -1) {
+          if (closestPerceptually.phashDistance == 0) {
+            ribbon.classList.add('perceptually-identical');
+            ribbon.title += ' Perceptually identical.';
+          } else if (closestPerceptually.phashDistance < 7) {
+            ribbon.classList.add('perceptually-similar');
+            ribbon.title += ' Perceptually similar.';
+          } else {
+            ribbon.classList.add('perceptually-dissimilar');
+            ribbon.title += ' Perceptually dissimilar.';
+          }
+
+          const pd = 100 - (closestPerceptually.phashDistance / 64 * 100);
+          ribbon.title += ` Similarity: ${Math.floor(pd)}%`;
+        }
+      }
+
+      bottomRibbons.appendChild(ribbon);
+
+      ribbons?.after(bottomRibbons);
+    }
   }
 }
 
