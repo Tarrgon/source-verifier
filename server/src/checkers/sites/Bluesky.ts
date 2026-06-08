@@ -60,9 +60,7 @@ export default class BlueskySourceChecker extends SourceChecker {
 
       if (!images || images.length == 0) {
         return {
-          md5Match: false,
-          dimensionMatch: false,
-          fileTypeMatch: false
+          unknown: true
         };
       }
 

@@ -495,10 +495,12 @@ export function processDataOnPostsView(data: ServerResponse) {
   let closestPerceptually: SourceData | null = null;
 
   for (const sourceData of Object.values(data.sources)) {
-    const closestIsError = closestPerceptually && (closestPerceptually.unknown || closestPerceptually.error || closestPerceptually.unsupported);
+    const closestIsError = closestPerceptually && (closestPerceptually.unknown || closestPerceptually.error || closestPerceptually.unsupported || closestPerceptually.phashDistance === undefined);
     const currentIsError = (sourceData.unknown || sourceData.error || sourceData.unsupported);
 
+    console.log(closestPerceptually, sourceData);
     if (closestPerceptually == null || (closestIsError && !currentIsError) || (sourceData.md5Match && !closestPerceptually.md5Match) || (sourceData.phashDistance !== undefined && sourceData.phashDistance >= 0 && sourceData.phashDistance! < closestPerceptually.phashDistance!)) {
+      console.log('setting');
       closestPerceptually = sourceData;
       if (sourceData.md5Match) break;
     }
