@@ -9,7 +9,7 @@ export default class SkebSourceChecker extends SourceChecker {
     super('Skeb');
 
     this.supported = [
-      /^https?:\/\/(?:www\.)?skeb\.jp\/@.*\/worls\/(\d+).*/,
+      /^https?:\/\/(?:www\.)?skeb\.jp\/@.*\/works\/(\d+).*/,
     ];
   }
 
