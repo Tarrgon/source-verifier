@@ -5,7 +5,7 @@
     "name": "Tarrgon",
     "url": "https://github.com/Tarrgon"
   },
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A userscript which shows post source information for e621 staff.",
   "devDependencies": {
     "@eslint/js": "^9.27.0",
