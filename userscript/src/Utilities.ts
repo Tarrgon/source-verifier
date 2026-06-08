@@ -297,8 +297,10 @@ export async function processData(data: ServerResponse, links: string[], refresh
             matchingSourceEntry.prepend(phashClone);
           }
 
-          const pd = 100 - (sourceData.phashDistance / 64 * 100);
-          phashClone.title += ` Similarity: ${Math.floor(pd)}%`;
+          if (sourceData.phashDistance > 0) {
+            const pd = 100 - (sourceData.phashDistance / 64 * 100);
+            phashClone.title += ` Similarity: ${Math.floor(pd)}%`;
+          }
 
           if (!sourceData.fileTypeMatch && !sourceData.dimensionMatch && !matchingAspectRatio) {
             phashClone.title += ` (${sourceData.dimensions!.width}x${sourceData.dimensions!.height} | ${roundTo(sourceData.dimensions!.width / width, 2)}:${roundTo(sourceData.dimensions!.height / height, 2)}) & different file type (${sourceData.fileType!.toUpperCase()})`;
@@ -547,8 +549,10 @@ export function processDataOnPostsView(data: ServerResponse) {
             ribbon.title += ' Perceptually dissimilar.';
           }
 
-          const pd = 100 - (closestPerceptually.phashDistance / 64 * 100);
-          ribbon.title += ` Similarity: ${Math.floor(pd)}%`;
+          if (closestPerceptually.phashDistance > 0) {
+            const pd = 100 - (closestPerceptually.phashDistance / 64 * 100);
+            ribbon.title += ` Similarity: ${Math.floor(pd)}%`;
+          }
         }
       }
 
@@ -600,8 +604,10 @@ export function processDataOnPostsView(data: ServerResponse) {
             ribbon.title += ' Perceptually dissimilar.';
           }
 
-          const pd = 100 - (closestPerceptually.phashDistance / 64 * 100);
-          ribbon.title += ` Similarity: ${Math.floor(pd)}%`;
+          if (closestPerceptually.phashDistance > 0) {
+            const pd = 100 - (closestPerceptually.phashDistance / 64 * 100);
+            ribbon.title += ` Similarity: ${Math.floor(pd)}%`;
+          }
         }
       }
 
