@@ -495,7 +495,7 @@ export function processDataOnPostsView(data: ServerResponse) {
   let closestPerceptually: SourceData | null = null;
 
   for (const sourceData of Object.values(data.sources)) {
-    const closestIsError = closestPerceptually && (closestPerceptually.unknown || closestPerceptually.error || closestPerceptually.unsupported || closestPerceptually.phashDistance === undefined);
+    const closestIsError = closestPerceptually && (closestPerceptually.unknown || closestPerceptually.error || closestPerceptually.unsupported || closestPerceptually.phashDistance === undefined || closestPerceptually.phashDistance == -1);
     const currentIsError = (sourceData.unknown || sourceData.error || sourceData.unsupported);
 
     if (closestPerceptually == null || (closestIsError && !currentIsError) || (sourceData.md5Match && !closestPerceptually.md5Match) || (sourceData.phashDistance !== undefined && sourceData.phashDistance >= 0 && sourceData.phashDistance! < closestPerceptually.phashDistance!)) {
@@ -556,6 +556,11 @@ export function processDataOnPostsView(data: ServerResponse) {
         }
       }
 
+      if (closestPerceptually.phashDistance === undefined || closestPerceptually.phashDistance == -1) {
+        ribbon.classList.add('no-perceputal-hash');
+        ribbon.title += ' No perceptual hash.';
+      }
+
       link?.appendChild(ribbon);
     } else {
       const ribbons = post.querySelector('img-ribbons');
@@ -609,6 +614,11 @@ export function processDataOnPostsView(data: ServerResponse) {
             ribbon.title += ` Similarity: ${Math.floor(pd)}%`;
           }
         }
+      }
+
+      if (closestPerceptually.phashDistance === undefined || closestPerceptually.phashDistance == -1) {
+        ribbon.classList.add('no-perceputal-hash');
+        ribbon.title += ' No perceptual hash.';
       }
 
       bottomRibbons.appendChild(ribbon);

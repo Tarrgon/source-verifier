@@ -121,6 +121,11 @@ article.thumbnail .ribbon.bottom.right {
   --ribbon-bg-pos: 50% !important;
 }
 
+.no-perceputal-hash {
+  --color-2: black !important;
+  --ribbon-bg-pos: 50% !important;
+}
+
 .bottom-ribbons {
 	top: unset;
 	bottom: 32px;
