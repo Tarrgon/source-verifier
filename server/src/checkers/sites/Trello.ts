@@ -16,7 +16,7 @@ export default class TrelloSourceChecker extends SourceChecker {
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
     while (!SourceChecker.puppetReady) await wait(500);
 
-    let page: Page | undefined;
+    let page!: Page;
     try {
       page = await SourceChecker.browser!.newPage();
       await page.goto(source);

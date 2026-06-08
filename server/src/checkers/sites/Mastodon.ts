@@ -2,6 +2,7 @@ import parseSrcset from 'parse-srcset';
 import { wait } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
+import type { Page } from 'puppeteer';
 
 export default class MastodonSourceChecker extends SourceChecker {
   constructor() {
@@ -18,7 +19,7 @@ export default class MastodonSourceChecker extends SourceChecker {
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
     while (!SourceChecker.puppetReady) await wait(500);
 
-    let page;
+    let page!: Page;
     try {
       page = await SourceChecker.browser!.newPage();
       await page.goto(source);

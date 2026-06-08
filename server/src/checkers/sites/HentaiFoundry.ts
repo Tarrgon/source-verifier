@@ -15,7 +15,7 @@ export default class HentaiFoundrySourceChecker extends SourceChecker {
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
     while (!SourceChecker.puppetReady) await wait(500);
 
-    let page: Page | undefined;
+    let page!: Page;
     try {
       const sourceUrl = new URL(source);
       sourceUrl.searchParams.append('enterAgree', '1');

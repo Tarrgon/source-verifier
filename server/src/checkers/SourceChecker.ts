@@ -1,12 +1,12 @@
 import sizeOf from 'buffer-image-size';
 import { existsSync, rmSync, writeFileSync } from 'fs';
 import { md5 as jsmd5 } from 'js-md5';
-import puppeteer, { Browser, TimeoutError } from 'puppeteer';
+import puppeteer, { Browser, Page, TimeoutError } from 'puppeteer';
 import calcPhash from 'sharp-phash';
 import calcPhashDistance from 'sharp-phash/distance.js';
-import { DetectFileType, getVideoDimensions, wait } from '../modules';
-import type { SourceCheckQueueItem, BaseSourceData, DatabasePost, Dimensions, SourceData, SourceDataMap } from '../shared';
 import { config } from '../config';
+import { DetectFileType, getVideoDimensions, wait } from '../modules';
+import type { BaseSourceData, DatabasePost, Dimensions, SourceCheckQueueItem, SourceData, SourceDataMap } from '../shared';
 
 class NotImplementedError extends Error {
   message: string;
@@ -117,9 +117,9 @@ export class SourceChecker {
     };
   }
 
-  static async waitForSelectorOrNull(e, selector, ms) {
+  static async waitForSelectorOrNull(page: Page, selector: string, ms: number): Promise<any> {
     try {
-      return await e.waitForSelector(selector, { timeout: ms });
+      return await page.waitForSelector(selector, { timeout: ms });
     } catch (e) {
       if (e instanceof TimeoutError) return null;
       else throw e;
