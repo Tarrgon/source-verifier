@@ -2,6 +2,7 @@ import { isCompleteResponse, normalizeURL, type ServerResponse, type SourceData 
 import { anyLinksSupported, getData, sendSources } from './Backend';
 import { addSourceSign, aspectRatioMatch, bvas, dimensionAndFileTypeMatch, dimensionMatch, fileTypeMatch, force, kemonoIcon, md5Match, noMatches, phashMatch, reload, spinner, unknown } from './icons';
 import { getKemonoDataFromUrl } from './Kemono';
+import { BACKEND_URL_BASE } from './Constants';
 
 export function getCSRFToken(): string {
   return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
@@ -54,6 +55,34 @@ export function getImageBlob(fileUrl: string | null): Promise<Blob | null> {
     } catch (e) {
       reject(e);
     }
+  });
+}
+
+export async function getFaviconBlob(hostname: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    GM.xmlHttpRequest({
+      method: 'GET',
+      url: `${BACKEND_URL_BASE}/favicons/${hostname}.png`,
+      responseType: 'blob',
+      onload: function (response) {
+        try {
+          resolve(response.response);
+        } catch (e) {
+          reject(e);
+        }
+      },
+      onerror: function (e) {
+        reject(e);
+      }
+    });
+  });
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.readAsDataURL(blob);
   });
 }
 
@@ -472,6 +501,23 @@ export async function processData(data: ServerResponse, links: string[], refresh
   return anyMatches;
 }
 
+export const enum MatchType {
+  NO_MATCHES = 0,
+  MD5_MATCH = 1,
+  DIMENSION_AND_FILE_TYPE_MATCH = 2,
+  DIMENSION_MATCH = 3,
+  FILE_TYPE_MATCH = 4
+}
+
+export function getMatchType(data: SourceData): MatchType {
+  if (data.md5Match) return MatchType.MD5_MATCH;
+  if (data.dimensionMatch && data.fileTypeMatch) return MatchType.DIMENSION_AND_FILE_TYPE_MATCH;
+  if (data.dimensionMatch) return MatchType.DIMENSION_MATCH;
+  if (data.fileTypeMatch) return MatchType.FILE_TYPE_MATCH;
+
+  return MatchType.NO_MATCHES;
+}
+
 export function processDataOnPostsView(data: ServerResponse) {
   const _isCompleteResponse = isCompleteResponse(data);
 
@@ -505,6 +551,9 @@ export function processDataOnPostsView(data: ServerResponse) {
   }
 
   if (closestPerceptually && !closestPerceptually.unknown && !closestPerceptually.error && !closestPerceptually.unsupported) {
+    post.setAttribute('data-jsv-phash-distance', (closestPerceptually.phashDistance ?? -1).toString());
+    post.setAttribute('data-jsv-match-type', getMatchType(closestPerceptually).toString());
+
     if (!isRe6) {
       const link = post.querySelector('.thm-link');
 
@@ -715,13 +764,26 @@ export async function createSourceItem(result: { url: string }, immediate: boole
   div.appendChild(wrappedAnchor);
 
   const normalizedURL = await normalizeURL(result.url, getBlueskyDid);
+  const url = new URL(normalizedURL);
 
   const a = document.createElement('a');
   a.classList.add('decorated');
   a.target = '_blank';
   a.rel = 'nofollow noreferrer noopener';
   a.href = normalizedURL;
-  a.innerText = normalizedURL;
+
+  const icon = document.createElement('img');
+  icon.classList.add('link-decoration');
+  icon.alt = url.hostname;
+  icon.width = 16;
+  icon.height = 16;
+  icon.setAttribute('data-hostname', url.hostname);
+  icon.src = await blobToBase64(await getFaviconBlob(url.hostname.replace('www.', '')));
+  a.appendChild(icon);
+
+  const span = document.createElement('span');
+  span.innerText = normalizedURL;
+  a.appendChild(span);
 
   div.appendChild(a);
 
