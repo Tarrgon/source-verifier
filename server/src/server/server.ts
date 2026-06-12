@@ -12,6 +12,7 @@ export default async function (): Promise<ExpressServer> {
 
   app.use(cors());
   app.use(bodyParser.json({ limit: '1KB' }));
+  app.use(express.static('static'));
 
   // routers
   for (const p of fs.readdirSync(path.join(__dirname, 'routes')).filter(file => file.endsWith('.js') || file.endsWith('.ts'))) {
