@@ -142,9 +142,10 @@ async function checkForUnusedSources(data: ServerResponse, links: string[]) {
 
   if (isCompleteResponse(data)) {
     for (const source of Object.keys(data.sources)) {
-      const hasMatchingSourceEntry = links.find(e => decodeURI(e) == source || e == source);
+      const normalizedUrl = await normalizeURL(source, getBlueskyDid);
+      const hasMatchingSourceEntry = links.find(e => decodeURI(e) == normalizedUrl || e == normalizedUrl);
 
-      if (!hasMatchingSourceEntry) unusedSources.push(source);
+      if (!hasMatchingSourceEntry) unusedSources.push(normalizedUrl);
     }
   }
 
@@ -157,8 +158,7 @@ async function checkForUnusedSources(data: ServerResponse, links: string[]) {
 
     const listItem = list.firstElementChild!;
 
-    for (const _url of unusedSources) {
-      const url = await normalizeURL(_url, getBlueskyDid);
+    for (const url of unusedSources) {
       listItem.append(await createSourceItem({ url }, unusedSources.length == 1));
     }
 
@@ -496,7 +496,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
     }
   }
 
-  if (containerSelector == '.source-links') await checkForUnusedSources(data, links);
+  if (containerSelector == '.source-links') await checkForUnusedSources(data, allSourceLinks.map(e => e.normalizedUrl));
 
   return anyMatches;
 }
