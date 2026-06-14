@@ -135,7 +135,7 @@ async function addResults(results: FluffleResult[]): Promise<string[]> {
 }
 
 function createTemporaryList() {
-  const existingList = document.querySelector('.post-sidebar-info');
+  const existingList = document.getElementById('unused-results') ?? document.querySelector('.post-sidebar-info');
 
   const list = document.createElement('ul');
   list.id = 'fluffle-results';
