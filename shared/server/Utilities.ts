@@ -34,5 +34,5 @@ export async function normalizeURL(url: URL | string, getBlueskyDid: (handle: st
   let u = url.toString();
   u = u.replace('://www.', '://');
   u = u.endsWith('/') ? u.slice(0, -1) : u;
-  return u
+  return u;
 }
