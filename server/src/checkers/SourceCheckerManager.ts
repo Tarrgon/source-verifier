@@ -196,6 +196,8 @@ export default class SourceCheckerManager {
 
     if (current?.sources) combinedData = current.sources!;
 
+    const fluffleSources: string[] = [];
+
     if (!queueItem.phash || queueItem.md5 != currentPost?.md5) {
       try {
         // console.log(`[SourceChecker] Calculating phash of ${queueItem._id}`);
@@ -219,6 +221,7 @@ export default class SourceCheckerManager {
                 const urls = (await Promise.all(fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621').map(r => normalizeURL(r.url, getBlueskyDid)))).filter(u => u && !queueItem.sources.includes(u));
 
                 queueItem.sources.push(...urls);
+                fluffleSources.push(...urls);
               }
             } catch (e) {
               console.error(`[SourceCheckerManager] Error while getting fluffle data (${queueItem._id}):`);
@@ -263,6 +266,9 @@ export default class SourceCheckerManager {
             if (value.error) {
               console.error(`[SourceCheckerManager] Error while processing post ${queueItem._id} with ${sourceChecker.name} on source: ${key}`);
             }
+
+            // Prune bad fluffle results.
+            if (fluffleSources.includes(key) && value.phashDistance !== undefined && value.phashDistance >= 7) continue;
 
             combinedData[key] = value;
           }
