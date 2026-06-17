@@ -56,6 +56,7 @@ export default class TwitterSourceChecker extends SourceChecker {
       const matchData: ScoredSourceData[] = [];
 
       for (const imageUrl of urlsToCheck) {
+        const theseMatchDatas: ScoredSourceData[] = [];
         const url = new URL(imageUrl);
 
         let urls: UrlData[] = [];
@@ -77,11 +78,15 @@ export default class TwitterSourceChecker extends SourceChecker {
             continue;
           }
 
-          if (data.isPreview) {
-            data.originalUrl = urls.find(u => !u.isPreview)?.url;
-          }
-
           data.score = (Number(data.md5Match!) * 5000) + (1000 / (data.phashDistance! + 1)) + (Number(data.dimensionMatch!) * 200) + Number(data.fileTypeMatch) + (data.isPreview ? 0 : 5);
+
+          theseMatchDatas.push(data);
+        }
+
+        for (const data of theseMatchDatas) {
+          if (data.isPreview) {
+            data.originalUrl = theseMatchDatas.find(u => !u.isPreview)?.url;
+          }
 
           matchData.push(data);
         }
