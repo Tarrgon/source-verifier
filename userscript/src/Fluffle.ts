@@ -120,7 +120,7 @@ async function addResults(results: FluffleResult[]): Promise<string[]> {
   } else {
     for (const result of results) {
       const url = await normalizeURL(result.url, getBlueskyDid);
-      if (!realSourceLinks.includes(url)) {
+      if (url && !realSourceLinks.includes(url)) {
         listItem.append(await createSourceItem(result, results.length == 1));
         urls.push(url);
       }

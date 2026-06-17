@@ -132,9 +132,11 @@ export async function getBlueskyDid(handle: string): Promise<string | null> {
 }
 
 export async function getReplacementUrl(id: number | string, sourceData: SourceData, source: string, reason: string) {
-  source = await normalizeURL(source, getBlueskyDid);
+  const normalizedSource = await normalizeURL(source, getBlueskyDid);
 
-  return `https://e621.net/post_replacements/new?post_id=${id}&url=${encodeURIComponent(sourceData.originalUrl ? sourceData.originalUrl : sourceData.url!)}&reason=${encodeURIComponent(reason)}&source=${encodeURIComponent(source)}`;
+  if (!normalizedSource) throw new Error('Error normalizing source. Cannot normalize replacement URL.');
+
+  return `https://e621.net/post_replacements/new?post_id=${id}&url=${encodeURIComponent(sourceData.originalUrl ? sourceData.originalUrl : sourceData.url!)}&reason=${encodeURIComponent(reason)}&source=${encodeURIComponent(normalizedSource)}`;
 }
 
 async function checkForUnusedSources(data: ServerResponse, links: string[]) {
@@ -143,6 +145,8 @@ async function checkForUnusedSources(data: ServerResponse, links: string[]) {
   if (isCompleteResponse(data)) {
     for (const source of Object.keys(data.sources)) {
       const normalizedUrl = await normalizeURL(source, getBlueskyDid);
+      if (!normalizedUrl) continue;
+
       const hasMatchingSourceEntry = links.find(e => decodeURI(e) == normalizedUrl || e == normalizedUrl);
 
       if (!hasMatchingSourceEntry) unusedSources.push(normalizedUrl);
@@ -282,12 +286,12 @@ export async function processData(data: ServerResponse, links: string[], refresh
     container.firstElementChild?.appendChild(reloadClone);
   }
 
-  const allSourceLinks = await Promise.all(Array.from(container.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(async (a) => {
+  const allSourceLinks: { normalizedUrl: string, element: HTMLAnchorElement }[] = (await Promise.all(Array.from(container.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(async (a) => {
     return {
-      normalizedUrl: await normalizeURL(a.href, getBlueskyDid),
+      normalizedUrl: await normalizeURL(a.href, getBlueskyDid) as string,
       element: a
     };
-  }));
+  }))).filter(e => e.normalizedUrl != null);
 
   const width = parseInt(document.querySelector<HTMLSpanElement>("span[itemprop='width']")?.innerText ?? '-1');
   const height = parseInt(document.querySelector<HTMLSpanElement>("span[itemprop='height']")?.innerText ?? '-1');
@@ -764,6 +768,9 @@ export async function createSourceItem(result: { url: string }, immediate: boole
   div.appendChild(wrappedAnchor);
 
   const normalizedURL = await normalizeURL(result.url, getBlueskyDid);
+
+  if (!normalizedURL) throw new Error('Error normalizing source. Cannot create source link.');
+
   const url = new URL(normalizedURL);
 
   const a = document.createElement('a');
@@ -790,7 +797,7 @@ export async function createSourceItem(result: { url: string }, immediate: boole
   return div;
 }
 
-export async function normalizeSourceLinks(a: HTMLElement): Promise<string> {
+export async function normalizeSourceLinks(a: HTMLElement): Promise<string | null> {
   let url;
   if (a.tagName == 'S') {
     try {

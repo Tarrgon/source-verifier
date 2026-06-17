@@ -148,6 +148,10 @@ article.thumbnail .ribbon.bottom.right {
 	top: -0.8rem;
   background: linear-gradient(to left, var(--color-1) 56%, var(--color-2) 50% 100%);
 }
+
+.search {
+  z-index: 30 !important;
+}
 `
   }));
 }
@@ -268,7 +272,7 @@ async function main() {
   try {
     const data = await getData(id);
 
-    const links = await Promise.all(Array.from(document.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(a => normalizeURL(a.href, getBlueskyDid)));
+    const links = (await Promise.all(Array.from(document.querySelectorAll<HTMLAnchorElement>('.source-link > a[href]')).map(a => normalizeURL(a.href, getBlueskyDid)))).filter(e => e != null);
 
     const supported = await processData(data, links, links.length > 0);
 
