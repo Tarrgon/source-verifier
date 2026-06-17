@@ -58,31 +58,32 @@ export default class TwitterSourceChecker extends SourceChecker {
       for (const imageUrl of urlsToCheck) {
         const url = new URL(imageUrl);
 
+        let urls: UrlData[] = [];
+
         for (const name of NAMES) {
-          let urls: UrlData[] = [];
           url.searchParams.set('name', name);
           url.searchParams.set('format', 'png');
           urls.push({ url: url.toString(), isPreview: name != 'orig' && !url.toString().includes('tweet_video_thumb') });
           url.searchParams.set('format', 'jpg');
           urls.push({ url: url.toString(), isPreview: name != 'orig' && !url.toString().includes('tweet_video_thumb') });
+        }
 
-          urls = urls.filter(s => !(!s.url.includes('name=orig') && s.url.includes('format=png')));
+        urls = urls.filter(s => !(!s.url.includes('name=orig') && s.url.includes('format=png')));
 
-          for (const urlData of urls) {
-            const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
+        for (const urlData of urls) {
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
 
-            if (!data || data.error || data.unknown || data.unsupported) {
-              continue;
-            }
-
-            if (data.isPreview) {
-              data.originalUrl = urls.find(u => !u.isPreview)!.url;
-            }
-
-            data.score = (Number(data.md5Match!) * 5000) + (1000 / (data.phashDistance! + 1)) + (Number(data.dimensionMatch!) * 200) + Number(data.fileTypeMatch) + (data.isPreview ? 0 : 5);
-
-            matchData.push(data);
+          if (!data || data.error || data.unknown || data.unsupported) {
+            continue;
           }
+
+          if (data.isPreview) {
+            data.originalUrl = urls.find(u => !u.isPreview)?.url;
+          }
+
+          data.score = (Number(data.md5Match!) * 5000) + (1000 / (data.phashDistance! + 1)) + (Number(data.dimensionMatch!) * 200) + Number(data.fileTypeMatch) + (data.isPreview ? 0 : 5);
+
+          matchData.push(data);
         }
       }
 
