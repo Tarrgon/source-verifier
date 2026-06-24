@@ -1,5 +1,5 @@
 import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
-import { getDOM} from '../../modules';
+import { getDOM } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 
 export default class GelbooruSourceChecker extends SourceChecker {
@@ -37,17 +37,17 @@ export default class GelbooruSourceChecker extends SourceChecker {
         const sources = video.querySelectorAll('source').map(s => s.getAttribute('src'));
 
         for (const src of sources) {
-          const data = await SourceChecker.processDirectLink(post, src) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, src, false, { Accept: '*/*', Referer: 'https://gelbooru.com' }) as ScoredSourceData;
           data.score = (Number(data.md5Match) * 5000) + (Number(data.dimensionMatch) * 200) + Number(data.fileTypeMatch);
 
           matchData.push(data);
         }
       } else {
-        const fullSrc = sampleSrc.replace('/samples/', '/images/')?.replace('sample_', '');
+        const fullSrc = document.querySelector('a[href*="/images/"][target="_blank"]')?.getAttribute('href');
         const urls = [{ url: sampleSrc, isPreview: true }, { url: fullSrc, isPreview: false }];
 
         for (const urlData of urls) {
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, { Accept: '*/*', Referer: 'https://gelbooru.com' }) as ScoredSourceData;
 
           if (urlData.isPreview) {
             data.originalUrl = urls[0].url;
