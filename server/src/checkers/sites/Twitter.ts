@@ -62,11 +62,12 @@ export default class TwitterSourceChecker extends SourceChecker {
         let urls: UrlData[] = [];
 
         for (const name of NAMES) {
-          url.searchParams.set('name', name);
           url.searchParams.set('format', 'png');
           urls.push({ url: url.toString(), isPreview: name != 'orig' && !url.toString().includes('tweet_video_thumb') });
           url.searchParams.set('format', 'jpg');
           urls.push({ url: url.toString(), isPreview: name != 'orig' && !url.toString().includes('tweet_video_thumb') });
+
+          url.searchParams.set('name', name);
         }
 
         urls = urls.filter(s => !(!s.url.includes('name=orig') && s.url.includes('format=png')));
