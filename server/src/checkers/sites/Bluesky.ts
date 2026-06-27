@@ -56,7 +56,7 @@ export default class BlueskySourceChecker extends SourceChecker {
         };
       }
 
-      const images: AppBskyEmbedImages.Image[] = res.value?.embed?.images ?? res.value?.embed?.media?.images;
+      const images: AppBskyEmbedImages.Image[] = res.value?.embed?.images ?? res.value?.embed?.media?.images ?? res.value?.embed?.items;
 
       if (!images || images.length == 0) {
         return {
@@ -69,6 +69,8 @@ export default class BlueskySourceChecker extends SourceChecker {
       const urls: string[][] = [];
 
       for (const imageData of images) {
+        if (!imageData.image) continue;
+
         const cid = imageData.image.ref.toString();
         if (!cid) continue;
 
