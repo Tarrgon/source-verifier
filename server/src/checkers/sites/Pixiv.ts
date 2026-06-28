@@ -3,10 +3,7 @@ import { Database, wait } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 import { config } from '../../config';
 import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
-
-type PixivTokens = {
-  token: string
-}
+import type { PixivTokens } from '../../modules/database/types';
 
 export default class PixivSourceChecker extends SourceChecker {
   private ready = false;
@@ -32,7 +29,7 @@ export default class PixivSourceChecker extends SourceChecker {
 
       const data = await this.pixiv.refreshAccessToken(pixivData?.token ?? config.PIXIV_REFRESH_TOKEN);
 
-      await Database.setTokens<PixivTokens>('pixiv', { token: data.refresh_token });
+      await Database.setTokens<PixivTokens>('pixiv', { token: data.refresh_token as string });
 
       this.ready = true;
       console.log('[PixivSourceChecker] Refreshed access token');

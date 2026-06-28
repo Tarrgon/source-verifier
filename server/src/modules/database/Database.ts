@@ -1,6 +1,7 @@
-import { Collection, Db, MongoClient, UnorderedBulkOperation } from 'mongodb';
+import { Collection, Db, MongoClient, UnorderedBulkOperation, type Document as MongoDocument } from 'mongodb';
 import { config } from '../../config';
 import type { BaseSourceData, DatabasePost, MainSchema, SourceDataMap, SourceCheckQueueItem } from '../../shared';
+import type { SiteTokens, TokenSites } from './types.d';
 
 export class Database {
   private static _database: Db;
@@ -29,8 +30,8 @@ export class Database {
     return this._database.collection<SourceCheckQueueItem>('sourceCheckerQueue');
   }
 
-  static get tokens(): Collection<any> {
-    return this._database.collection<any>('tokens');
+  static getTokenDatabase<T extends SiteTokens>(): Collection<T> {
+    return this._database.collection<T>('tokens');
   }
 
   static async getSource(id: number): Promise<BaseSourceData | null> {
@@ -127,11 +128,11 @@ export class Database {
     return postsToQueue;
   }
 
-  static async setTokens<T extends Partial<any>>(site: 'pixiv', tokens: T) {
-    await this.tokens.updateOne({ _id: site }, { $set: tokens }, { upsert: true });
+  static async setTokens<T extends SiteTokens>(site: TokenSites, tokens: Omit<T, 'id' | '_id'>) {
+    await this.getTokenDatabase().updateOne({ id: site }, { $set: tokens }, { upsert: true });
   }
 
-  static async getTokens<T>(site: 'pixiv'): Promise<T> {
-    return await this.tokens.findOne({ _id: site });
+  static async getTokens<T extends SiteTokens>(site: TokenSites): Promise<T | null> {
+    return await this.getTokenDatabase().findOne<T>({ id: site });
   }
 }
