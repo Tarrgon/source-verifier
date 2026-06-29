@@ -1,7 +1,7 @@
 import type { SourceCheckQueueItem, SourceData } from '../../shared';
 import { SourceChecker } from '../SourceChecker';
 
-const URL_BASE = 'https://sofurry.com/s';
+const URL_BASE = 'https://sofurry.com/api/submission-download';
 
 export default class SoFurryChecker extends SourceChecker {
   constructor() {
@@ -18,7 +18,7 @@ export default class SoFurryChecker extends SourceChecker {
 
       if (id) {
         try {
-          return await SourceChecker.processDirectLink(post, `${URL_BASE}/${id}/dl`);
+          return await SourceChecker.processDirectLink(post, `${URL_BASE}/${id}`);
         } catch (e) {
           console.error(e);
         }

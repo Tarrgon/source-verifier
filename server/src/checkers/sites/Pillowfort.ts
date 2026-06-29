@@ -26,6 +26,7 @@ export default class PillowfortSourceChecker extends SourceChecker {
       const dom = getDOM(html);
       const document = dom.window.document;
 
+      const authorName = document.querySelector('.username > a')?.textContent;
       const sourceUrls = Array.from(document.querySelectorAll("meta[property='og:image']")).map((e: any) => e.getAttribute('content'));
 
       const matchData: ScoredSourceData[] = [];
@@ -52,7 +53,7 @@ export default class PillowfortSourceChecker extends SourceChecker {
         ];
 
         for (const urlData of urls) {
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, authorName) as ScoredSourceData;
 
           if (urlData.isPreview) {
             data.originalUrl = urls[0].url;

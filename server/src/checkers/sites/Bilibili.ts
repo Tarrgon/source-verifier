@@ -32,6 +32,7 @@ export default class BilibiliSourceChecker extends SourceChecker {
       const dom = getDOM(html);
       const document = dom.window.document;
 
+      const authorName = document.querySelector('.opus-module-author__name')?.textContent ?? '';
       const elements = document.querySelectorAll('.bili-album .b-img__inner');
 
       if (!elements || elements.length == 0) {
@@ -62,7 +63,7 @@ export default class BilibiliSourceChecker extends SourceChecker {
         ];
 
         for (const urlData of urls) {
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, authorName) as ScoredSourceData;
 
           if (urlData.isPreview) {
             data.originalUrl = urls[0].url;

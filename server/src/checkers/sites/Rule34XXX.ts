@@ -1,5 +1,5 @@
 import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
-import { getDOM } from '../../modules';
+import { ARTIST_SEPARATOR, getDOM } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 
 export default class Rule34XXXSourceChecker extends SourceChecker {
@@ -35,6 +35,8 @@ export default class Rule34XXXSourceChecker extends SourceChecker {
         };
       }
 
+      const authors = Array.from(document.querySelectorAll('.tag-type-artist > a:nth-child(2)')).map((e: any) => e.textContent).join(ARTIST_SEPARATOR);
+
       if (url.includes('samples')) {
         const originalUrl = document.querySelector('.link-list a[href*=images]')?.getAttribute('href');
 
@@ -62,7 +64,7 @@ export default class Rule34XXXSourceChecker extends SourceChecker {
         ];
 
         for (const urlData of urls) {
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, authors) as ScoredSourceData;
 
           if (urlData.isPreview) {
             data.originalUrl = urls[0].url;
@@ -85,7 +87,7 @@ export default class Rule34XXXSourceChecker extends SourceChecker {
           return matchData[0];
         }
       } else {
-        return await SourceChecker.processDirectLink(post, url);
+        return await SourceChecker.processDirectLink(post, url, false, authors);
       }
     } catch (e) {
       console.error(e);

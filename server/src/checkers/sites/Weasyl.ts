@@ -52,7 +52,7 @@ export default class WeasylSourceChecker extends SourceChecker {
           for (const urlData of urls) {
             if (!urlData.url) continue;
 
-            const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
+            const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, postData.owner_login) as ScoredSourceData;
 
             if (urlData.isPreview && urls[0].url) {
               data.originalUrl = urls[0].url;

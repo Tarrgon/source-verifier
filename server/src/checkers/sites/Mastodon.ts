@@ -44,6 +44,8 @@ export default class MastodonSourceChecker extends SourceChecker {
         await sensitive.evaluate(b => b.click());
       }
 
+      const authorName = document.querySelector('.detailed-status .display-name__account')?.textContent;
+
       let allImages = (await main.$$('.media-gallery__item-thumbnail > img'));
 
       for (let i = 0; i < allImages.length; i++) {
@@ -65,7 +67,7 @@ export default class MastodonSourceChecker extends SourceChecker {
       const matchData: ScoredSourceData[] = [];
 
       for (const url of allImages) {
-        const data = await SourceChecker.processDirectLink(post, url) as ScoredSourceData;
+        const data = await SourceChecker.processDirectLink(post, url, false, authorName) as ScoredSourceData;
 
         if (!data || data.error || data.unknown || data.unsupported) {
           data.score = 0;

@@ -16,6 +16,10 @@ export default class SkebSourceChecker extends SourceChecker {
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
     while (!SourceChecker.puppetReady) await wait(500);
 
+    const matches = /^https?:\/\/(?:www\.)?skeb\.jp\/(@.*)\/works\/(\d+).*/.exec(source);
+
+    const authorName = matches?.[1] ?? '';
+
     let page!: Page;
     try {
       page = await SourceChecker.browser!.newPage();
@@ -42,7 +46,7 @@ export default class SkebSourceChecker extends SourceChecker {
       const matchData: ScoredSourceData[] = [];
 
       for (const url of urls) {
-        const data = await SourceChecker.processDirectLink(post, url) as ScoredSourceData;
+        const data = await SourceChecker.processDirectLink(post, url, false, authorName) as ScoredSourceData;
 
         if (!data || data.error || data.unknown || data.unsupported) {
           data.score = 0;

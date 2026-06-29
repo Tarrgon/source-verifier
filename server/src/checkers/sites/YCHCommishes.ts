@@ -30,6 +30,8 @@ export default class YCHCommishesSourceChecker extends SourceChecker {
       const previewSrc = element?.getAttribute('src');
       const fullSrc = element?.parentElement?.getAttribute('href');
 
+      const authorName = document.querySelector('.font-semibold[href^="/user/"]')?.textContent;
+
       if (element) {
         const urls = [
           {
@@ -45,7 +47,7 @@ export default class YCHCommishesSourceChecker extends SourceChecker {
         const matchData: ScoredSourceData[] = [];
 
         for (const urlData of urls) {
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, authorName) as ScoredSourceData;
 
           if (urlData.isPreview) {
             data.originalUrl = urls[0].url;

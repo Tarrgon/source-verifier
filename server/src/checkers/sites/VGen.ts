@@ -19,6 +19,9 @@ type VGenProps = {
       product?: {
         galleryItems: VGenGalleryItem[]
       }
+      user: {
+        username: string
+      }
     }
   }
 }
@@ -48,13 +51,13 @@ export default class VGenSourceChecker extends SourceChecker {
       const dom = getDOM(html);
       const document = dom.window.document;
 
-      const data = JSON.parse(document.getElementById('__NEXT_DATA__').textContent) as VGenProps;
+      const vgenProps = JSON.parse(document.getElementById('__NEXT_DATA__').textContent) as VGenProps;
 
       const matchData: ScoredSourceData[] = [];
 
-      const images = data.props.pageProps.linkedShowcase?.showcaseItems
-        ?? data.props.pageProps.services?.galleryItems
-        ?? data.props.pageProps.product?.galleryItems;
+      const images = vgenProps.props.pageProps.linkedShowcase?.showcaseItems
+        ?? vgenProps.props.pageProps.services?.galleryItems
+        ?? vgenProps.props.pageProps.product?.galleryItems;
 
       if (!images) {
         return {
@@ -64,7 +67,7 @@ export default class VGenSourceChecker extends SourceChecker {
 
       for (const item of images) {
         if (item.type == 'IMAGE' || item.type == 'ANIMATED_IMAGE') {
-          const data = await SourceChecker.processDirectLink(post, item.url) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, item.url, false, vgenProps.props.pageProps.user.username) as ScoredSourceData;
 
           if (!data || data.error || data.unknown || data.unsupported) {
             data.score = 0;

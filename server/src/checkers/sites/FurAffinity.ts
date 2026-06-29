@@ -26,7 +26,9 @@ export default class FurAffinitySourceChecker extends SourceChecker {
         const href = document.querySelector("meta[property='og:image']")?.getAttribute('content');
 
         if (href) {
-          return await SourceChecker.processDirectLink(post, href, false, {}, getFromFlareSolverr);
+          const title = document.querySelector("meta[property='og:title']")?.getAttribute('content');
+          const author = title?.slice(title?.lastIndexOf(' by ') + 4) ?? '';
+          return await SourceChecker.processDirectLink(post, href, false, author, {}, getFromFlareSolverr);
         } else {
           return { unknown: true };
         }

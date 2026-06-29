@@ -1,5 +1,5 @@
 import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
-import { getDOM } from '../../modules';
+import { ARTIST_SEPARATOR, getDOM } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 
 export default class GelbooruSourceChecker extends SourceChecker {
@@ -26,6 +26,8 @@ export default class GelbooruSourceChecker extends SourceChecker {
       const dom = getDOM(html);
       const document = dom.window.document;
 
+      const authors = Array.from(document.querySelectorAll('.tag-type-artist > a')).map((e: any) => e.textContent).join(ARTIST_SEPARATOR);
+
       const matchData: ScoredSourceData[] = [];
 
       const sampleSrc = document.querySelector('#image')?.getAttribute('src');
@@ -37,7 +39,7 @@ export default class GelbooruSourceChecker extends SourceChecker {
         const sources = video.querySelectorAll('source').map(s => s.getAttribute('src'));
 
         for (const src of sources) {
-          const data = await SourceChecker.processDirectLink(post, src, false, { Accept: '*/*', Referer: 'https://gelbooru.com' }) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, src, false, authors, { Accept: '*/*', Referer: 'https://gelbooru.com' }) as ScoredSourceData;
           data.score = (Number(data.md5Match) * 5000) + (Number(data.dimensionMatch) * 200) + Number(data.fileTypeMatch);
 
           matchData.push(data);
@@ -47,7 +49,7 @@ export default class GelbooruSourceChecker extends SourceChecker {
         const urls = [{ url: sampleSrc, isPreview: true }, { url: fullSrc, isPreview: false }];
 
         for (const urlData of urls) {
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, { Accept: '*/*', Referer: 'https://gelbooru.com' }) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, authors, { Accept: '*/*', Referer: 'https://gelbooru.com' }) as ScoredSourceData;
 
           if (urlData.isPreview) {
             data.originalUrl = urls[0].url;
