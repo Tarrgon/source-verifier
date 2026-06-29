@@ -55,7 +55,7 @@ export default class ItakuSourceChecker extends SourceChecker {
       ];
 
       for (const urlData of urls) {
-        const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, result.owner_displayname) as ScoredSourceData;
+        const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, [result.owner_displayname]) as ScoredSourceData;
 
         if (urlData.isPreview) {
           data.originalUrl = urls[0].url;
