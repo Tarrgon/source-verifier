@@ -22,7 +22,7 @@ export type SourceData = {
   originalUrl?: string
   dimensions?: Dimensions
   isPreview?: boolean
-  authorName?: string
+  authors?: string[]
 }
 
 export type ScoredSourceData = SourceData & { score?: number };
