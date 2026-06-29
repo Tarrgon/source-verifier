@@ -6,5 +6,3 @@ export const MIME_TYPE_TO_FILE_EXTENSION = {
   'video/webm': 'webm',
   'image/webp': 'webp'
 };
-
-export const ARTIST_SEPARATOR = '<-|->';
