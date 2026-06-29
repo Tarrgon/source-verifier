@@ -1,5 +1,4 @@
-import { ARTIST_SEPARATOR } from '../../modules';
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
+import type { ScoredSourceData, SourceCheckQueueItem, SourceData } from '../../shared';
 import { SourceChecker } from '../SourceChecker';
 
 const API_URL_BASE = 'https://furrynetwork.com/api';
@@ -42,7 +41,7 @@ export default class FurryNetworkSourceChecker extends SourceChecker {
         },
       ];
 
-      const authors = postData.tags.filter(t => t.type == 'artist').map(t => t.value).join(ARTIST_SEPARATOR);
+      const authors = postData.tags.filter(t => t.type == 'artist').map(t => t.value);
 
       for (const urlData of urls) {
         const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, authors) as ScoredSourceData;

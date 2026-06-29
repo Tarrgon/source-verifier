@@ -18,7 +18,7 @@ export default class SkebSourceChecker extends SourceChecker {
 
     const matches = /^https?:\/\/(?:www\.)?skeb\.jp\/(@.*)\/works\/(\d+).*/.exec(source);
 
-    const authorName = matches?.[1] ?? '';
+    const authorName = matches?.[1];
 
     let page!: Page;
     try {
@@ -46,7 +46,7 @@ export default class SkebSourceChecker extends SourceChecker {
       const matchData: ScoredSourceData[] = [];
 
       for (const url of urls) {
-        const data = await SourceChecker.processDirectLink(post, url, false, authorName) as ScoredSourceData;
+        const data = await SourceChecker.processDirectLink(post, url, false, authorName ? [authorName] : []) as ScoredSourceData;
 
         if (!data || data.error || data.unknown || data.unsupported) {
           data.score = 0;

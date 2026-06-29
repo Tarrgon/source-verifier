@@ -100,7 +100,7 @@ export default class InkbunnySourceChecker extends SourceChecker {
         for (const urlData of urls) {
           if (!urlData.url) continue;
 
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, submission.username) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, [submission.username]) as ScoredSourceData;
 
           if (urlData.isPreview) {
             data.originalUrl = urls[0].url;

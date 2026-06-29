@@ -1,5 +1,4 @@
-import { ARTIST_SEPARATOR } from '../../modules';
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
+import type { ScoredSourceData, SourceCheckQueueItem, SourceData } from '../../shared';
 import { SourceChecker } from '../SourceChecker';
 
 const API_URL_BASE = 'https://snootbooru.com/api/post/';
@@ -34,7 +33,7 @@ export default class SnootbooruSourceChecker extends SourceChecker {
 
         const snootPost = await res.json() as any;
 
-        const authors = snootPost.tags.filter(t => t.category == 'artist').map(t => t.names[0]).join(ARTIST_SEPARATOR);
+        const authors = snootPost.tags.filter(t => t.category == 'artist').map(t => t.names[0]);
 
         const matchData: ScoredSourceData[] = [];
 

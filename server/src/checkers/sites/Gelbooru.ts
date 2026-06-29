@@ -1,5 +1,5 @@
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
-import { ARTIST_SEPARATOR, getDOM } from '../../modules';
+import { getDOM } from '../../modules';
+import type { ScoredSourceData, SourceCheckQueueItem, SourceData } from '../../shared';
 import { SourceChecker } from '../SourceChecker';
 
 export default class GelbooruSourceChecker extends SourceChecker {
@@ -26,7 +26,7 @@ export default class GelbooruSourceChecker extends SourceChecker {
       const dom = getDOM(html);
       const document = dom.window.document;
 
-      const authors = Array.from(document.querySelectorAll('.tag-type-artist > a')).map((e: any) => e.textContent).join(ARTIST_SEPARATOR);
+      const authors = Array.from(document.querySelectorAll('.tag-type-artist > a')).map((e: any) => e.textContent);
 
       const matchData: ScoredSourceData[] = [];
 

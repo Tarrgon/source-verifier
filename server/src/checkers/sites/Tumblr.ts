@@ -88,7 +88,7 @@ export default class TumblrSourceChecker extends SourceChecker {
             }
 
             for (const urlData of urls) {
-              const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, object.blogName) as ScoredSourceData;
+              const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, [object.blogName]) as ScoredSourceData;
 
               if (urlData.isPreview) {
                 data.originalUrl = urls[0].url;

@@ -67,7 +67,7 @@ export default class MastodonSourceChecker extends SourceChecker {
       const matchData: ScoredSourceData[] = [];
 
       for (const url of allImages) {
-        const data = await SourceChecker.processDirectLink(post, url, false, authorName) as ScoredSourceData;
+        const data = await SourceChecker.processDirectLink(post, url, false, authorName ? [authorName] : []) as ScoredSourceData;
 
         if (!data || data.error || data.unknown || data.unsupported) {
           data.score = 0;

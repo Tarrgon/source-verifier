@@ -59,7 +59,7 @@ export default class BlueskySourceChecker extends SourceChecker {
       }
 
       const author = await this.BlueskyAgent.getProfile({ actor: sourceData[1] });
-      const authorName = author?.data?.handle ?? '';
+      const authorName = author?.data?.handle;
 
       // @ts-ignore: This is just a mess, the typings here suck to work with. This line would be 20 lines longer otherwise.
       const images: AppBskyEmbedImages.Image[] = res.value?.embed?.images ?? res.value?.embed?.media?.images ?? res.value?.embed?.items;
@@ -91,7 +91,7 @@ export default class BlueskySourceChecker extends SourceChecker {
 
       for (const [originalUrl, fullSizeUrl, thumbnailUrl] of urls) {
         for (const url of ([originalUrl, fullSizeUrl, thumbnailUrl])) {
-          const data = await SourceChecker.processDirectLink(post, url, url == thumbnailUrl || url == fullSizeUrl, authorName) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, url, url == thumbnailUrl || url == fullSizeUrl, authorName ? [authorName] : []) as ScoredSourceData;
 
           if (data.isPreview) {
             data.originalUrl = originalUrl;

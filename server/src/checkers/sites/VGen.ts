@@ -67,7 +67,7 @@ export default class VGenSourceChecker extends SourceChecker {
 
       for (const item of images) {
         if (item.type == 'IMAGE' || item.type == 'ANIMATED_IMAGE') {
-          const data = await SourceChecker.processDirectLink(post, item.url, false, vgenProps.props.pageProps.user.username) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, item.url, false, [vgenProps.props.pageProps.user.username]) as ScoredSourceData;
 
           if (!data || data.error || data.unknown || data.unsupported) {
             data.score = 0;

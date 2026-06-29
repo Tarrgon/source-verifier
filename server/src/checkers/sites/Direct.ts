@@ -98,7 +98,7 @@ export default class DirectSourceChecker extends SourceChecker {
 
     const useFlareSolverr = this.useFlareSolverrRegex.some(r => r.test(source));
 
-    return await SourceChecker.processDirectLink(post, source, this.isPreview(source), '', headers, useFlareSolverr ? getFromFlareSolverr : null);
+    return await SourceChecker.processDirectLink(post, source, this.isPreview(source), [], headers, useFlareSolverr ? getFromFlareSolverr : null);
   }
 
 }

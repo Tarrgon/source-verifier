@@ -1,5 +1,5 @@
-import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
-import { ARTIST_SEPARATOR, getDOM } from '../../modules';
+import { getDOM } from '../../modules';
+import type { ScoredSourceData, SourceCheckQueueItem, SourceData } from '../../shared';
 import { SourceChecker } from '../SourceChecker';
 
 export default class Rule34XXXSourceChecker extends SourceChecker {
@@ -35,7 +35,7 @@ export default class Rule34XXXSourceChecker extends SourceChecker {
         };
       }
 
-      const authors = Array.from(document.querySelectorAll('.tag-type-artist > a:nth-child(2)')).map((e: any) => e.textContent).join(ARTIST_SEPARATOR);
+      const authors = Array.from(document.querySelectorAll('.tag-type-artist > a:nth-child(2)')).map((e: any) => e.textContent);
 
       if (url.includes('samples')) {
         const originalUrl = document.querySelector('.link-list a[href*=images]')?.getAttribute('href');
