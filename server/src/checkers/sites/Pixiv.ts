@@ -86,7 +86,7 @@ export default class PixivSourceChecker extends SourceChecker {
 
       for (const page of res.illust.meta_pages) {
         for (const [key, src] of Object.entries(page.image_urls)) {
-          const data = await SourceChecker.processDirectLink(post, src as string, key != 'original', { Referer: 'https://www.pixiv.net/' }) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, src as string, key != 'original', res.illust.user.name, { Referer: 'https://www.pixiv.net/' }) as ScoredSourceData;
 
           if (!data || data.error || data.unknown || data.unsupported) {
             data.score = 0;
@@ -104,7 +104,7 @@ export default class PixivSourceChecker extends SourceChecker {
 
       if (single && single.original_image_url) {
         const src = single.original_image_url;
-        const data = await SourceChecker.processDirectLink(post, src as string, false, { Referer: 'https://www.pixiv.net/' }) as ScoredSourceData;
+        const data = await SourceChecker.processDirectLink(post, src as string, false, res.illust.user.name, { Referer: 'https://www.pixiv.net/' }) as ScoredSourceData;
 
         if (!data || data.error || data.unknown || data.unsupported) {
           data.score = 0;
