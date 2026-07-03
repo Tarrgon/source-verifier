@@ -32,8 +32,6 @@ export default class BlueskySourceChecker extends SourceChecker {
     await this.BlueskyAgent.setAdultContentEnabled(true);
 
     this.ready = true;
-
-    console.log(await this.BlueskyAgent.getPost({ repo: 'did:plc:mftm7khlzsss7jlsmigdg3jz', rkey: '3mp3scdvwwk2v' }));
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
