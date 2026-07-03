@@ -41,6 +41,7 @@ export class E621Handler {
       if (!item.options.headers) item.options.headers = {};
 
       item.options.headers['User-Agent'] = config.USER_AGENT;
+      item.options.headers['Authorization'] = `Basic ${btoa(`${config.E621_USERNAME}:${config.E621_API_KEY}`)}`;
 
       res = await fetch(url.toString(), item.options);
       if (res.ok) {
