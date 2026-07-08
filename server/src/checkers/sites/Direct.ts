@@ -14,7 +14,7 @@ export default class DirectSourceChecker extends SourceChecker {
       /^https?:\/\/pbs\.twimg\.com\/media\/.*\.(png|jpg|jpeg|webp).*/,
       /^https?:\/\/pbs\.twimg\.com\/media\/.*\?format=(png|jpg|jpeg|webp).*/,
       /^https?:\/\/inkbunny\.net\/files\/.*\.(png|jpg|jpeg|webp|gif).*/,
-      /^https?:\/\/d\.furaffinity\.net\/art\/.*\.(png|jpg|jpeg|webp|gif).*/,
+      // /^https?:\/\/d\.furaffinity\.net\/art\/.*\.(png|jpg|jpeg|webp|gif).*/,
       /^https?:\/\/d\.facdn\.net\/art\/.*\.(png|jpg|jpeg|webp|gif).*/,
       /^https?:\/\/media\.baraag\.net\/media_attachments\/.*\.(png|jpg|jpeg|webp|gif).*/,
       /^https?:\/\/artconomy.com\/media\/art\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
