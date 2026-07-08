@@ -263,16 +263,18 @@ export default class SourceCheckerManager {
       // console.log(`[SourceCheckerManager] Processing post ${queueItem._id} with ${sourceChecker.name}`);
       promises.push(new Promise(async (resolve) => {
         try {
-          const data = await sourceChecker.processPost(queueItem, current);
-          for (const [key, value] of Object.entries(data)) {
-            if (value.error) {
-              console.error(`[SourceCheckerManager] Error while processing post ${queueItem._id} with ${sourceChecker.name} on source: ${key}`);
+          if (sourceChecker.enabled) {
+            const data = await sourceChecker.processPost(queueItem, current);
+            for (const [key, value] of Object.entries(data)) {
+              if (value.error) {
+                console.error(`[SourceCheckerManager] Error while processing post ${queueItem._id} with ${sourceChecker.name} on source: ${key}`);
+              }
+
+              // Prune bad fluffle results.
+              if (fluffleSources.includes(key) && value.phashDistance !== undefined && value.phashDistance >= 7) continue;
+
+              combinedData[key] = value;
             }
-
-            // Prune bad fluffle results.
-            if (fluffleSources.includes(key) && value.phashDistance !== undefined && value.phashDistance >= 7) continue;
-
-            combinedData[key] = value;
           }
         } finally {
           resolve();

@@ -41,6 +41,7 @@ export class SourceChecker {
   static puppetReady = false;
   static browser: Browser;
 
+  enabled: boolean = true;
   inUse: boolean = false;
   supported?: RegExp[];
 
