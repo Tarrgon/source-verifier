@@ -1,5 +1,5 @@
 import type { SourceCheckQueueItem, SourceData } from '../../shared';
-import { getDOM } from '../../modules';
+import { fetchProxy, getDOM } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 
 const PROXY_URL_BASE = 'https://xfuraffinity.net/view';
@@ -11,8 +11,6 @@ export default class FurAffinitySourceChecker extends SourceChecker {
     this.supported = [
       /^https?:\/\/.*furaffinity\.net\/(view|full)\/(\d+).*/
     ];
-
-    this.enabled = false;
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
@@ -30,7 +28,7 @@ export default class FurAffinitySourceChecker extends SourceChecker {
         if (href) {
           const title = document.querySelector("meta[property='og:title']")?.getAttribute('content');
           const author = title?.slice(title?.lastIndexOf(' by ') + 4);
-          return await SourceChecker.processDirectLink(post, href, false, author ? [author] : [], {});
+          return await SourceChecker.processDirectLink(post, href, false, author ? [author] : [], {}, fetchProxy);
         } else {
           return { unknown: true };
         }
