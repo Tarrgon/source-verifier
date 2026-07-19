@@ -7,6 +7,8 @@ const PROXY_AUTHENTICATION = 'Basic ' + Buffer.from(config.PROXY_USERNAME + ':' 
 const PROXY_IP = config.PROXY_URI!.split(':')[0];
 const PROXY_PORT = parseInt(config.PROXY_URI!.split(':')[1]);
 
+let agent: https.Agent;
+
 function connectToProxy(hostname: string, secure: boolean = true): Promise<Stream.Duplex | null> {
   return new Promise((resolve) => {
     http.request({
@@ -32,11 +34,14 @@ export function fetchProxy(url: string, options?: { headers?: { [header: string]
   return new Promise(async (resolve, reject) => {
     const _url = new URL(url);
     const secure = _url.protocol == 'https:';
-    const socket = await connectToProxy(_url.hostname, secure);
 
-    if (!socket) return reject('Could not connect to proxy');
+    if (!agent) {
+      const socket = await connectToProxy(_url.hostname, secure);
 
-    const agent = new https.Agent({ socket });
+      if (!socket) return reject('Could not connect to proxy');
+
+      agent = new https.Agent({ socket, keepAlive: true });
+    }
 
     const _http = secure ? https : http;
 
