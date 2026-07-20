@@ -19,6 +19,7 @@ type E621RequestQueueItem = {
 }
 
 const PAGE_LIMIT = 320;
+const E621_AUTH = `Basic ${btoa(`${config.E621_USERNAME}:${config.E621_API_KEY}`)}`;
 
 export class E621Handler {
   private static queue = new Queue<E621RequestQueueItem>();
@@ -41,7 +42,7 @@ export class E621Handler {
       if (!item.options.headers) item.options.headers = {};
 
       item.options.headers['User-Agent'] = config.USER_AGENT;
-      item.options.headers['Authorization'] = `Basic ${btoa(`${config.E621_USERNAME}:${config.E621_API_KEY}`)}`;
+      item.options.headers['Authorization'] = E621_AUTH;
 
       res = await fetch(url.toString(), item.options);
       if (res.ok) {
