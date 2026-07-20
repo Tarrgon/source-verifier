@@ -11,8 +11,6 @@ export default class FurAffinitySourceChecker extends SourceChecker {
     this.supported = [
       /^https?:\/\/.*furaffinity\.net\/(view|full)\/(\d+).*/
     ];
-
-    this.enabled = false;
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
