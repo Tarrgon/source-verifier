@@ -308,6 +308,10 @@ export async function processData(data: ServerResponse, links: string[], refresh
       if (matchingSourceEntry) {
         anyMatches = true;
 
+        if (sourceData.authors) {
+          matchingSourceEntry.setAttribute('data-authors', JSON.stringify(sourceData.authors));
+        }
+
         let matchingAspectRatio = false;
 
         const sourceAspectRatio = sourceData.dimensions ? calculateAspectRatio(sourceData.dimensions.width, sourceData.dimensions.height) : '-1:-1';
