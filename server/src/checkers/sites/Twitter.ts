@@ -73,7 +73,7 @@ export default class TwitterSourceChecker extends SourceChecker {
         urls = urls.filter(s => !(!s.url.includes('name=orig') && s.url.includes('format=png')));
 
         for (const urlData of urls) {
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, authorName) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, authorName ? [authorName] : []) as ScoredSourceData;
 
           if (!data || data.error || data.unknown || data.unsupported) {
             continue;
