@@ -3,11 +3,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class TumblrDirectSourceChecker extends SourceChecker {
   constructor() {
-    super('TumblrDirect');
-
-    this.supported = [
+    super('TumblrDirect', 'tumblrdirect', [
       /^https?:\/\/.*\.media\.tumblr\.com\/.*\.(png|jpg|jpeg|gif|webm|pnj).*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

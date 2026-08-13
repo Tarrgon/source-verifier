@@ -3,11 +3,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class ItakuSourceChecker extends SourceChecker {
   constructor() {
-    super('Itaku');
-
-    this.supported = [
+    super('Itaku', 'itaku', [
       /^https?:\/\/(?:www\.)?itaku\.ee\/images\/(\d+).*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

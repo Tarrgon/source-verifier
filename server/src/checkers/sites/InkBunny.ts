@@ -5,17 +5,15 @@ import { wait } from '../../modules';
 import { MIME_TYPE_TO_FILE_EXTENSION, SourceChecker } from '../SourceChecker';
 
 export default class InkbunnySourceChecker extends SourceChecker {
-  private ready = false;
+  private inkbunnyReady = false;
   private disabled = false;
   private inkbunnyHelper: InkbunnyHelper;
 
   constructor() {
-    super('Inkbunny');
-
-    this.supported = [
+    super('Inkbunny', 'inkbunny', [
       /^https?:\/\/(?:www\.)?inkbunny\.net\/s\/(\d+).*/,
       /^https?:\/\/(?:www\.)?inkbunny\.net\/submissionview\.php\?.*id=(\d+).*/,
-    ];
+    ]);
 
     this.inkbunnyHelper = new InkbunnyHelper();
     this.setup();
@@ -24,7 +22,7 @@ export default class InkbunnySourceChecker extends SourceChecker {
   async setup() {
     try {
       await this.inkbunnyHelper.login(config.INKBUNNY_USERNAME, config.INKBUNNY_PASSWORD);
-      this.ready = true;
+      this.inkbunnyReady = true;
     } catch (e) {
       console.error('[InkbunnySourceChecker] Got error while logging into inkbunny. Disabling. Retrying in 5 minutes.');
       console.error(e);
@@ -54,7 +52,7 @@ export default class InkbunnySourceChecker extends SourceChecker {
       };
     }
 
-    while (!this.ready) await wait(500);
+    while (!this.inkbunnyReady) await wait(500);
 
     try {
       const id = this.getIdFromSource(source);

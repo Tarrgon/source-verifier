@@ -5,12 +5,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class TrelloSourceChecker extends SourceChecker {
   constructor() {
-    super('Trello');
-
-    // Doesn't work, they have some kinda protection.
-    this.supported = [
+    super('Trello', 'trello', [
       // /^https?:\/\/trello\.com\/c\/.*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

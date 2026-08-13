@@ -3,11 +3,9 @@ import { getDOM } from '../../modules';
 import { SourceChecker } from '../SourceChecker';
 export default class AryionSourceChecker extends SourceChecker {
   constructor() {
-    super('Aryion');
-
-    this.supported = [
+    super('Aryion', 'aryion', [
       /^https?:\/\/(?:www\.)?aryion\.com\/g4\/view\/(\d+).*/
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

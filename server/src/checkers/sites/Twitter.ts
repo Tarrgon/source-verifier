@@ -6,11 +6,9 @@ const NAMES = ['orig', '4096x4096', 'large'];
 
 export default class TwitterSourceChecker extends SourceChecker {
   constructor() {
-    super('Twitter');
-
-    this.supported = [
+    super('Twitter', 'twitter', [
       /^https?:\/\/.*\.?(x|twitter)\.com\/.*\/status\/(\d+).*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

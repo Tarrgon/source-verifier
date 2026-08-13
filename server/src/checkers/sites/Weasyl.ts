@@ -6,12 +6,10 @@ const API_URL_BASE = 'https://www.weasyl.com/api';
 
 export default class WeasylSourceChecker extends SourceChecker {
   constructor() {
-    super('Weasyl');
-
-    this.supported = [
+    super('Weasyl', 'weasyl', [
       /^https?:\/\/(?:www\.)?weasyl\.com\/.*\/submissions\/(\d+).*/,
       /^https?:\/\/(?:www\.)?weasyl\.com\/submission\/(\d+).*/
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

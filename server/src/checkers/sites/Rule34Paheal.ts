@@ -4,11 +4,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class Rule34PahealSourceChecker extends SourceChecker {
   constructor() {
-    super('Rule34Paheal');
-
-    this.supported = [
+    super('Rule34Paheal', 'r34paheal', [
       /^https?:\/\/rule34\.paheal\.net\/post\/view\/\d+/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

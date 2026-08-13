@@ -10,12 +10,10 @@ con.on('error', () => { });
 
 export default class RedditSourceChecker extends SourceChecker {
   constructor() {
-    super('Reddit');
-
-    this.supported = [
+    super('Reddit', 'reddit', [
       /^https?:\/\/(www\.)?reddit\.com\/r\/.*/,
       /^https?:\/\/(www\.)?reddit\.com\/user\/.*\/comments\/.*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

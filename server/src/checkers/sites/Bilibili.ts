@@ -4,12 +4,10 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class BilibiliSourceChecker extends SourceChecker {
   constructor() {
-    super('Bilibili');
-
-    this.supported = [
+    super('Bilibili', 'bilibili', [
       /^https?:\/\/(www\.)?bilibili\.com\/opus\/\d+/,
       /^https?:\/\/t.bilibili.com\/\d+/
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

@@ -8,9 +8,7 @@ export default class DirectSourceChecker extends SourceChecker {
   private useProxyRegex: RegExp[];
 
   constructor() {
-    super('Direct');
-
-    this.supported = [
+    super('Direct', 'direct', [
       /^https?:\/\/pbs\.twimg\.com\/media\/.*\.(png|jpg|jpeg|webp).*/,
       /^https?:\/\/pbs\.twimg\.com\/media\/.*\?format=(png|jpg|jpeg|webp).*/,
       /^https?:\/\/inkbunny\.net\/files\/.*\.(png|jpg|jpeg|webp|gif).*/,
@@ -63,7 +61,7 @@ export default class DirectSourceChecker extends SourceChecker {
       /^https?:\/\/trello\.com\/.*\/cards\/.*\/download\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
       /^https?:\/\/si\.imgix\.net\/.*\/uploads\/origins\/.*/,
       /^https?:\/\/twokinds\.gallery\/download\/art\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/,
-    ];
+    ]);
 
     this.previewRegex = [
       /^https?:\/\/cdn\.bsky\.app.*/

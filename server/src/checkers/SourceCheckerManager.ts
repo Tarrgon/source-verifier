@@ -4,13 +4,14 @@ import sharp from 'sharp';
 import calcPhash from 'sharp-phash';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { normalizeURL, type BaseSourceData, type CallbackFunction, type DatabasePost, type Result, type SourceCheckQueueItem, type SourceDataMap } from '../shared';
-import { Database, E621Handler, getBlueskyDid } from '../modules';
+import { Database, E621Handler, getBlueskyDid, wait } from '../modules';
 import { getFluffleData } from '../modules/Fluffle';
 import Queue, { Priority } from '../modules/Queue';
 import { SourceChecker } from './SourceChecker';
 
 export default class SourceCheckerManager {
   private static queue: Queue<SourceCheckQueueItem> = new Queue();
+  private static lastProcessed: { entry: SourceCheckQueueItem, timestamp: Date } | null = null;
   private static queueRunning: boolean = false;
 
   private static sourceCheckers: SourceChecker[] = [];
@@ -20,11 +21,30 @@ export default class SourceCheckerManager {
 
     const __dirname = dirname(fileURLToPath(import.meta.url));
 
+    console.log('[SourceCheckerManager] Initializing...');
+
     const files = fs.readdirSync(`${__dirname}/sites`).filter(file => file.endsWith('.js') || file.endsWith('.ts'));
     for (const file of files) {
       const sourceChecker = (await import(pathToFileURL(`${__dirname}/sites/${file}`).href)).default;
       this.sourceCheckers.push(new sourceChecker() as SourceChecker);
     }
+
+    while (true) {
+      let allReady = true;
+
+      for (const checker of this.sourceCheckers) {
+        if (!checker.ready) {
+          allReady = false;
+          console.log(`[SourceCheckerManager] ${checker.name} not ready.`);
+        }
+      }
+
+      if (allReady) break;
+
+      await wait(500);
+    }
+
+    console.log('[SourceCheckerManager] All checkers ready.');
 
     const queueItems = await Database.getQueue();
     console.log(`[SourceCheckerManager] Starting with ${queueItems.length} posts in queue`);
@@ -61,6 +81,7 @@ export default class SourceCheckerManager {
         }
       }
 
+      this.lastProcessed = { entry: queueItem, timestamp: new Date() };
       await Database.removeFromQueue(queueItem._id);
       await Database.updateSourceData(queueItem._id, data);
 

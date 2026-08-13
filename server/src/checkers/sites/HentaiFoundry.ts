@@ -5,11 +5,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class HentaiFoundrySourceChecker extends SourceChecker {
   constructor() {
-    super('HentaiFoundry');
-
-    this.supported = [
+    super('HentaiFoundry', 'hentaifoundry', [
       // /^https?:\/\/(www\.)?hentai-foundry\.com\/pictures\/user\/.*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

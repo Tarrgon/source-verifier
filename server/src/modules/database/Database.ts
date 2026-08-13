@@ -1,7 +1,8 @@
 import { Collection, Db, MongoClient, UnorderedBulkOperation, type Document as MongoDocument } from 'mongodb';
 import { config } from '../../config';
-import type { BaseSourceData, DatabasePost, MainSchema, SourceDataMap, SourceCheckQueueItem } from '../../shared';
+import type { BaseSourceData, DatabasePost, MainSchema, SourceDataMap, SourceCheckQueueItem, SourceCheckerData } from '../../shared';
 import type { SiteTokens, TokenSites } from './types.d';
+import type { SourceChecker } from '../../checkers/SourceChecker';
 
 export class Database {
   private static _database: Db;
@@ -28,6 +29,10 @@ export class Database {
 
   static get sourceCheckerQueue(): Collection<SourceCheckQueueItem> {
     return this._database.collection<SourceCheckQueueItem>('sourceCheckerQueue');
+  }
+
+  static get sourceCheckerData(): Collection<SourceCheckerData> {
+    return this._database.collection<SourceCheckerData>('stats');
   }
 
   static getTokenDatabase<T extends SiteTokens>(): Collection<T> {
@@ -134,5 +139,35 @@ export class Database {
 
   static async getTokens<T extends SiteTokens>(site: TokenSites): Promise<T | null> {
     return await this.getTokenDatabase().findOne<T>({ id: site });
+  }
+
+  static async getSourceCheckerData(slug: string): Promise<SourceCheckerData | null> {
+    return await this.sourceCheckerData.findOne({ slug });
+  }
+
+  static async saveSourceCheckerData(checker: SourceChecker) {
+    await this.sourceCheckerData.updateOne({ slug: checker.slug },
+      {
+        $set: {
+          enabled: checker.enabled,
+          supported: checker.supported
+        }
+      },
+      {
+        upsert: true
+      }
+    );
+  }
+
+  static async getSupportedUrls(slug: string): Promise<RegExp[]> {
+    return (await this.sourceCheckerData.findOne({ slug }))?.supported ?? [];
+  }
+
+  static async incrementSuccess(slug: string) {
+    await this.sourceCheckerData.updateOne({ slug }, { $inc: { success: 1 } });
+  }
+
+  static async incrementFailure(slug: string) {
+    await this.sourceCheckerData.updateOne({ slug }, { $inc: { failure: 1 } });
   }
 }

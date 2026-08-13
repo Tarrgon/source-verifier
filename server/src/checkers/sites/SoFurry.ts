@@ -5,11 +5,9 @@ const URL_BASE = 'https://sofurry.com/api/submission-download';
 
 export default class SoFurryChecker extends SourceChecker {
   constructor() {
-    super('SoFurry');
-
-    this.supported = [
+    super('SoFurry', 'sofurry', [
       /^https?:\/\/.*sofurry\.com\/s\/(\d+).*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

@@ -5,15 +5,8 @@ import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../s
 import type { Page } from 'puppeteer';
 
 export default class MastodonSourceChecker extends SourceChecker {
-  constructor() {
-    super('Mastodon');
-
-    this.supported = [
-      /^https?:\/\/(?:www\.)?pawoo\.net\/@.*\/(\d+).*/,
-      /^https?:\/\/(?:www\.)?pawb\.fun\/@.*\/(\d+).*/,
-      /^https?:\/\/(?:www\.)?baraag\.net\/@.*\/(\d+).*/,
-      /^https?:\/\/(?:www\.)?mastodon\.social\/@.*\/(\d+).*/,
-    ];
+  constructor(name: string = 'Mastodon', slug: string = 'mastodon', supported: RegExp[] = [/^https?:\/\/(?:www\.)?mastodon\.social\/@.*\/(\d+).*/]) {
+    super(name, slug, supported);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

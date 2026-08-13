@@ -5,20 +5,18 @@ import { SourceChecker } from '../SourceChecker';
 import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 
 export default class BlueskySourceChecker extends SourceChecker {
-  private ready = false;
+  private blueskyReady = false;
 
   // @ts-ignore: Assigned in login
   private BlueskyAgent: Agent;
 
   constructor() {
-    super('Bluesky');
-
-    this.supported = [
+    super('Bluesky', 'bluesky', [
       /^https?:\/\/(?:www\.)?bsky\.app\/profile\/(.*)\/post\/(.*)/,
       /^https?:\/\/web-cdn\.bsky\.app\/profile\/(.*)\/post\/(.*)/
-    ];
+    ]);
 
-    this.ready = false;
+    this.blueskyReady = false;
 
     this.login();
   }
@@ -31,11 +29,11 @@ export default class BlueskySourceChecker extends SourceChecker {
     this.BlueskyAgent = new Agent(session);
     await this.BlueskyAgent.setAdultContentEnabled(true);
 
-    this.ready = true;
+    this.blueskyReady = true;
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
-    while (!this.ready) await wait(500);
+    while (!this.blueskyReady) await wait(500);
 
     try {
       const sourceData = /^https?:\/\/(?:www\.)?bsky\.app\/profile\/(.*)\/post\/(.*)/.exec(source);

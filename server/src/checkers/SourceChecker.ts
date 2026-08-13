@@ -5,7 +5,7 @@ import puppeteer, { Browser, Page, TimeoutError } from 'puppeteer';
 import calcPhash from 'sharp-phash';
 import calcPhashDistance from 'sharp-phash/distance.js';
 import { config } from '../config';
-import { DetectFileType, getVideoDimensions, wait } from '../modules';
+import { Database, DetectFileType, getVideoDimensions, wait } from '../modules';
 import type { BaseSourceData, DatabasePost, Dimensions, SourceCheckQueueItem, SourceData, SourceDataMap } from '../shared';
 
 class NotImplementedError extends Error {
@@ -42,10 +42,25 @@ export class SourceChecker {
   static browser: Browser;
 
   enabled: boolean = true;
+  ready: boolean = false;
   inUse: boolean = false;
-  supported?: RegExp[];
 
-  constructor(public name: string) { }
+  constructor(public name: string, public slug: string, public supported: RegExp[] = []) {
+    SourceChecker.setup(this);
+  }
+
+  static async setup(checker: SourceChecker) {
+    const savedData = await Database.getSourceCheckerData(checker.slug);
+
+    if (savedData) {
+      if (savedData.supported?.length > 0) checker.supported = savedData.supported;
+      checker.enabled = savedData.enabled;
+    } else {
+      await Database.saveSourceCheckerData(checker);
+    }
+
+    checker.ready = true;
+  }
 
   static async initializePuppet() {
     this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'], executablePath: config.CHROME_EXECUTABLE_LOCATION });
@@ -186,11 +201,18 @@ export class SourceChecker {
         if (current?.sources?.[source]) continue;
         if (this.supportsSource(source)) {
           this.inUse = true;
-          data[source] = await this._internalProcessPost(post, source);
+          const processedData = await this._internalProcessPost(post, source);
+          data[source] = processedData;
+          if (processedData.error || processedData.unknown) await Database.incrementFailure(this.slug);
+          else Database.incrementSuccess(this.slug);
         }
       }
 
       return data;
+    } catch {
+      await Database.incrementFailure(this.slug);
+
+      return {};
     } finally {
       this.inUse = false;
     }

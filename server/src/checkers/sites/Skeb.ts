@@ -6,11 +6,9 @@ import type { ElementHandle, Page } from 'puppeteer';
 
 export default class SkebSourceChecker extends SourceChecker {
   constructor() {
-    super('Skeb');
-
-    this.supported = [
+    super('Skeb', 'skeb', [
       /^https?:\/\/(?:www\.)?skeb\.jp\/@.*\/works\/(\d+).*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

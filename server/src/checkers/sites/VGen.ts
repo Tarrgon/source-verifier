@@ -28,12 +28,9 @@ type VGenProps = {
 
 export default class VGenSourceChecker extends SourceChecker {
   constructor() {
-    super('VGen');
-
-    // https://vgen.co/xanderavell/portfolio/showcase/birdpathy-s-spicy-furry-illustration/e755fbd7-127a-4fb6-99bc-5513632dd2fd
-    this.supported = [
+    super('VGen', 'vgen', [
       /^https?:\/\/(?:www\.)?vgen\.co\/.+\/portfolio\/showcase\/.*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

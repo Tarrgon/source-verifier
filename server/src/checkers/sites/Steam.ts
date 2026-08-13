@@ -4,11 +4,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class SteamSourceChecker extends SourceChecker {
   constructor() {
-    super('Steam');
-
-    this.supported = [
+    super('Steam', 'steam', [
       /^https?:\/\/(?:www\.)?steamcommunity\.com\/sharedfiles\/filedetails\/?\?id=\d+/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

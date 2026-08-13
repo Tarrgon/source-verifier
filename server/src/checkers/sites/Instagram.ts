@@ -6,11 +6,9 @@ const PROXY_URL_BASE = 'https://vxinstagram.com/p';
 
 export default class InstagramSourceChecker extends SourceChecker {
   constructor() {
-    super('FurAffinity');
-
-    this.supported = [
+    super('Instagram', 'instagram', [
       /^https?:\/\/.*instagram\.com\/p\/([^/]+).*/
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

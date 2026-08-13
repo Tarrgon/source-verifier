@@ -4,11 +4,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class YCHCommishesSourceChecker extends SourceChecker {
   constructor() {
-    super('YCHCommishes');
-
-    this.supported = [
+    super('YCHCommishes', 'ychcomm', [
       /^https?:\/\/ych\.commishes\.com\/auction\/show.*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

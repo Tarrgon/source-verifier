@@ -4,11 +4,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class DesuArchiveSourceChecker extends SourceChecker {
   constructor() {
-    super('DesuArchive');
-
-    this.supported = [
+    super('DesuArchive', 'desuarchive', [
       /^https?:\/\/(?:www\.)?desuarchive\.org\/.*\/thread\/\d+\/#(\d+)/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

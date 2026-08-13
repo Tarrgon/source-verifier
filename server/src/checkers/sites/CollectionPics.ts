@@ -4,11 +4,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class CollectionPicsSourceChecker extends SourceChecker {
   constructor() {
-    super('CollectionPics');
-
-    this.supported = [
+    super('CollectionPics', 'collectionpics', [
       /^https?:\/\/co\.llection\.pics\/post\/view\/(\d+).*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

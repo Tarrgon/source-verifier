@@ -4,11 +4,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class PillowfortSourceChecker extends SourceChecker {
   constructor() {
-    super('Pillowfort');
-
-    this.supported = [
+    super('Pillowfort', 'pillowfort', [
       /^https?:\/\/(?:www\.)?pillowfort\.social\/posts\/\d+.*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

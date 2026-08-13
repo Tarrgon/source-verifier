@@ -6,22 +6,20 @@ import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../s
 import type { PixivTokens } from '../../modules/database/types';
 
 export default class PixivSourceChecker extends SourceChecker {
-  private ready = false;
+  private pixivReady = false;
   private disabled: boolean = false;
   private pixiv: PixivApi = new PixivApi();
 
   constructor() {
-    super('Pixiv');
-
-    this.supported = [
+    super('Pixiv', 'pixiv', [
       /^https?:\/\/.*pixiv\.net\/.*artworks\/(\d+).*/,
-    ];
+    ]);
 
     this.setup();
   }
 
   async setup() {
-    this.ready = false;
+    this.pixivReady = false;
 
     try {
       console.log('[PixivSourceChecker] Refreshing access token');
@@ -31,7 +29,7 @@ export default class PixivSourceChecker extends SourceChecker {
 
       await Database.setTokens<PixivTokens>('pixiv', { token: data.refresh_token as string });
 
-      this.ready = true;
+      this.pixivReady = true;
       console.log('[PixivSourceChecker] Refreshed access token');
     } catch (e) {
       console.error('[PixivSourceChecker] Failed to refresh access token. Disabling. Retrying in 5 minutes.');
@@ -53,7 +51,7 @@ export default class PixivSourceChecker extends SourceChecker {
       };
     }
 
-    while (!this.ready) await wait(500);
+    while (!this.pixivReady) await wait(500);
 
     try {
       const id = (/^https?:\/\/.*pixiv\.net\/.*artworks\/(\d+).*/).exec(source)![1];

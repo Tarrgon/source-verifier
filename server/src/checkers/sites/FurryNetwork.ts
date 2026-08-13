@@ -5,11 +5,9 @@ const API_URL_BASE = 'https://furrynetwork.com/api';
 
 export default class FurryNetworkSourceChecker extends SourceChecker {
   constructor() {
-    super('FurryNetwork');
-
-    this.supported = [
+    super('FurryNetwork', 'furrynetwork', [
       /^https?:\/\/(?:www\.)?furrynetwork\.com\/artwork\/(\d+).*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

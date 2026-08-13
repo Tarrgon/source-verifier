@@ -6,11 +6,9 @@ const URL_BASE = 'https://snootbooru.com/';
 
 export default class SnootbooruSourceChecker extends SourceChecker {
   constructor() {
-    super('Snootbooru');
-
-    this.supported = [
+    super('Snootbooru', 'snootbooru', [
       /^https?:\/\/(?:www\.)?snootbooru\.com\/post\/(\d+).*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

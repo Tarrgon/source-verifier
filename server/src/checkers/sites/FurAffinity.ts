@@ -6,11 +6,9 @@ const PROXY_URL_BASE = 'https://xfuraffinity.net/view';
 
 export default class FurAffinitySourceChecker extends SourceChecker {
   constructor() {
-    super('FurAffinity');
-
-    this.supported = [
+    super('FurAffinity', 'furaffinity', [
       /^https?:\/\/.*furaffinity\.net\/(view|full)\/(\d+).*/
-    ];
+    ]);
 
     this.enabled = false;
   }

@@ -4,12 +4,10 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class DerpibooruSourceChecker extends SourceChecker {
   constructor() {
-    super('Derpibooru');
-
-    this.supported = [
+    super('Derpibooru', 'derpibooru', [
       /^https?:\/\/(?:www\.)?derpibooru\.org\/images\/(\d+).*/,
       /^https?:\/\/(?:www\.)?derpibooru\.org\/(\d+).*/
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

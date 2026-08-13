@@ -1,3 +1,4 @@
+import { ObjectId } from 'bson';
 import type { Dimensions } from './types.d';
 
 export type SourceDataMap = { [source: string]: SourceData | ScoredSourceData };
@@ -42,4 +43,13 @@ export type DatabasePost = {
 
 export type MainSchema = {
   latestId: number
+}
+
+export type SourceCheckerData = {
+  _id: ObjectId
+  slug: string
+  enabled: boolean
+  success: number
+  failure: number
+  supported: RegExp[]
 }

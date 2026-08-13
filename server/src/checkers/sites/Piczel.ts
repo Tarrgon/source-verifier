@@ -4,11 +4,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class PiczelSourceChecker extends SourceChecker {
   constructor() {
-    super('Piczel');
-
-    this.supported = [
+    super('Piczel', 'piczel', [
       /^https?:\/\/piczel\.tv\/gallery\/image\/(\d+).*/
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

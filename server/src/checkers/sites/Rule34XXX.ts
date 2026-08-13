@@ -4,11 +4,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class Rule34XXXSourceChecker extends SourceChecker {
   constructor() {
-    super('Rule34XXX');
-
-    this.supported = [
+    super('Rule34XXX', 'r34xxx', [
       /^https?:\/\/(?:www\.)?rule34\.xxx\/index\.php.*s=view.*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

@@ -4,11 +4,9 @@ import { SourceChecker } from '../SourceChecker';
 
 export default class GelbooruSourceChecker extends SourceChecker {
   constructor() {
-    super('Gelbooru');
-
-    this.supported = [
+    super('Gelbooru', 'gelbooru', [
       /^https?:\/\/(?:www\.)?gelbooru\.com\/index\.php\?.*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {

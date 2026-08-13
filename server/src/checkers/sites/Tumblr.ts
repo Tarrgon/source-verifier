@@ -28,12 +28,10 @@ type TumblrObject = {
 
 export default class TumblrSourceChecker extends SourceChecker {
   constructor() {
-    super('Tumblr');
-
-    this.supported = [
+    super('Tumblr', 'tumblr', [
       /^https?:\/\/(?:www\.)?tumblr\.com\/.+\/\d+/,
       /^https?:\/\/(.*)\.tumblr\.com\/post\/(\d+).*/,
-    ];
+    ]);
   }
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
