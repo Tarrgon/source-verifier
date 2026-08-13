@@ -32,7 +32,7 @@ export class Database {
   }
 
   static get sourceCheckerData(): Collection<SourceCheckerData> {
-    return this._database.collection<SourceCheckerData>('stats');
+    return this._database.collection<SourceCheckerData>('sourceCheckerData');
   }
 
   static getTokenDatabase<T extends SiteTokens>(): Collection<T> {
