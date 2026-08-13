@@ -29,6 +29,8 @@ export default class SourceCheckerManager {
       this.sourceCheckers.push(new sourceChecker() as SourceChecker);
     }
 
+    await wait(100);
+
     while (true) {
       let allReady = true;
 
