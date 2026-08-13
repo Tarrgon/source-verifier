@@ -48,6 +48,7 @@ export type MainSchema = {
 export type SourceCheckerData = {
   _id: ObjectId
   slug: string
+  name: string
   enabled: boolean
   success: number
   failure: number

@@ -53,11 +53,11 @@ export class SourceChecker {
     const savedData = await Database.getSourceCheckerData(checker.slug);
 
     if (savedData) {
-      if (savedData.supported?.length > 0) checker.supported = savedData.supported;
+      if (savedData.supported.length > 0) checker.supported = savedData.supported;
       checker.enabled = savedData.enabled;
-    } else {
-      await Database.saveSourceCheckerData(checker);
     }
+
+    await Database.saveSourceCheckerData(checker);
 
     checker.ready = true;
   }

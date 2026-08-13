@@ -150,6 +150,7 @@ export class Database {
       {
         $set: {
           enabled: checker.enabled,
+          name: checker.name,
           supported: checker.supported
         }
       },
