@@ -26,6 +26,7 @@
     "cors": "^2.8.6",
     "debug": "^4.3.3",
     "dotenv": "^16.5.0",
+    "ejs": "^6.0.1",
     "express": "^5.1.0",
     "iconv-lite": "^0.6.3",
     "js-md5": "^0.8.3",
@@ -36,7 +37,7 @@
     "parse-srcset": "^1.0.2",
     "pixiv-api-client": "github:Tarrgon/pixiv-api-client#2cee9fad782b0bb7725d16728e6bd09cce141cc4",
     "puppeteer": "^24.16.1",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.3",
     "sharp-phash": "^2.2.0"
   },
   "scripts": {

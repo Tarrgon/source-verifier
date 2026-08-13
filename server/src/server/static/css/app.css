@@ -1,0 +1,30 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
+
+:root {
+  --surface-color: #121212;
+  --tonal-color: #1b1622;
+  --primary-color: #7d1ac8;
+  --success-color: #7dff95;
+  --warning-color: #ffbc5e;
+  --danger-color: #ff8080;
+  --info-color: #87d1ff;
+}
+
+html, body {
+  height: 100vh;
+}
+
+body {
+  width: 100%;
+  background-color: var(--background-color);
+  overflow-x: hidden;
+  font-family: "Open Sans", "Lucida Grande", Tahoma, sans-serif;
+}
+
+html {
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}

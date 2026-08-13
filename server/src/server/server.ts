@@ -10,8 +10,12 @@ export default async function (): Promise<ExpressServer> {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const app = express();
 
+  app.set('trust proxy', 1);
+  app.set('views', path.join(__dirname, 'views'));
+  app.set('view engine', 'ejs');
   app.use(cors());
   app.use(bodyParser.json({ limit: '1KB' }));
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(express.static(path.join(__dirname, 'static')));
 
   // routers
