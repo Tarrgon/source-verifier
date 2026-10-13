@@ -100,12 +100,14 @@ export default class InkBunnySourceChecker extends SourceChecker {
         };
       }
 
+      console.log(`https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`);
       const res = await fetch(`https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`);
       const data = await res.json() as InkBunnySubmissionsDetails;
       const submission = data.submissions[0];
       if (!submission) {
         console.error('[InkbunnySourceChecker] No submission...');
-        console.log(data);
+        console.error(`https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`);
+        console.error(data);
         return {
           unknown: true,
           error: true,
@@ -157,7 +159,6 @@ export default class InkBunnySourceChecker extends SourceChecker {
       }
 
       if (matchData.length > 0) {
-        console.log(matchData);
         matchData.sort((a, b) => b.score! - a.score!);
 
         return matchData[0];
