@@ -129,15 +129,15 @@ export default class InkBunnySourceChecker extends SourceChecker {
         }
 
         const urls = [
-          { url: file.file_url_full.replace('tx.', 'qc.'), isPreview: false },
-          { url: file.file_url_preview.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.file_url_screen.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_huge.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_huge_noncustom.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_large.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_large_noncustom.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_medium.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_medium_noncustom.replace('tx.', 'qc.'), isPreview: true }
+          { url: file.file_url_full?.replace('tx.', 'qc.'), isPreview: false },
+          { url: file.file_url_preview?.replace('tx.', 'qc.'), isPreview: true },
+          { url: file.file_url_screen?.replace('tx.', 'qc.'), isPreview: true },
+          { url: file.thumbnail_url_huge?.replace('tx.', 'qc.'), isPreview: true },
+          { url: file.thumbnail_url_huge_noncustom?.replace('tx.', 'qc.'), isPreview: true },
+          { url: file.thumbnail_url_large?.replace('tx.', 'qc.'), isPreview: true },
+          { url: file.thumbnail_url_large_noncustom?.replace('tx.', 'qc.'), isPreview: true },
+          { url: file.thumbnail_url_medium?.replace('tx.', 'qc.'), isPreview: true },
+          { url: file.thumbnail_url_medium_noncustom?.replace('tx.', 'qc.'), isPreview: true }
         ];
 
         for (const urlData of urls) {
