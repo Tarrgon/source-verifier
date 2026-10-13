@@ -17,11 +17,12 @@ function connectToProxy(hostname: string, secure: boolean = true): Promise<Strea
       host: PROXY_IP,
       port: PROXY_PORT,
       method: 'CONNECT',
-      path: `${hostname}${secure ? ':443' : ''}`,
+      path: `${hostname}${secure ? '[[]]:443' : ''}`,
       headers: {
         'Proxy-Authorization': PROXY_AUTHENTICATION
       }
     };
+
     _http.request(options).on('connect', (res, socket) => {
       if (res.statusCode == 200) return resolve(socket);
       console.error(`Error connecting to proxy: ${hostname} (${secure}) (non-200 response code: ${res.statusCode}):`);
