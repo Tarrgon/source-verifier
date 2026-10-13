@@ -44,6 +44,7 @@ export default class InkBunnySourceChecker extends SourceChecker {
     ]);
 
     console.log('[InkbunnySourceChecker] Calling setup...');
+    this.setup();
   }
 
   async setup() {
@@ -56,6 +57,7 @@ export default class InkBunnySourceChecker extends SourceChecker {
       console.log('[InkbunnySourceChecker] Successfully logged in...');
 
       this.disabled = false;
+      this.inkbunnyReady = true;
     } catch (e) {
       this.disabled = true;
     }
