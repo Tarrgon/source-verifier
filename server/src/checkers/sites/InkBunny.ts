@@ -70,6 +70,7 @@ export default class InkbunnySourceChecker extends SourceChecker {
       }
 
       const data = await this.inkbunnyHelper.details(id, false, false, false);
+      console.log(JSON.stringify(data, null, 4));
       const submission = data.submissions[0];
       if (!submission) {
         console.error('[InkbunnySourceChecker] No submission...');
@@ -105,9 +106,6 @@ export default class InkbunnySourceChecker extends SourceChecker {
 
         for (const urlData of urls) {
           if (!urlData.url) continue;
-
-          console.log(post);
-          console.log(urlData.url);
 
           const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, [submission.username]) as ScoredSourceData;
 
