@@ -46,10 +46,10 @@ export class SourceChecker {
   inUse: boolean = false;
 
   constructor(public name: string, public slug: string, public supported: RegExp[] = []) {
-    SourceChecker.setup(this);
+    SourceChecker._setup(this);
   }
 
-  static async setup(checker: SourceChecker) {
+  static async _setup(checker: SourceChecker) {
     const savedData = await Database.getSourceCheckerData(checker.slug);
 
     if (savedData) {
