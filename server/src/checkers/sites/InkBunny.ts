@@ -1,13 +1,41 @@
 import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 import { config } from '../../config';
-import { Helper as InkbunnyHelper } from '../../ib-helper/dist/index.js';
 import { wait } from '../../modules';
 import { MIME_TYPE_TO_FILE_EXTENSION, SourceChecker } from '../SourceChecker';
 
-export default class InkbunnySourceChecker extends SourceChecker {
+type InkBunnyLoginResponse = {
+  sid: string;
+}
+
+type InkBunnyFile = {
+  file_id: number
+  mimetype: string
+  file_url_full: string
+  file_url_screen: string
+  file_url_preview: string
+  thumbnail_url_huge: string
+  thumbnail_url_huge_noncustom: string
+  thumbnail_url_large: string
+  thumbnail_url_large_noncustom: string
+  thumbnail_url_medium: string
+  thumbnail_url_medium_noncustom: string
+}
+
+type InkBunnySubmission = {
+  submission_id: string
+  username: string
+  files: InkBunnyFile[]
+}
+
+type InkBunnySubmissionsDetails = {
+  submissions: InkBunnySubmission[]
+}
+
+export default class InkBunnySourceChecker extends SourceChecker {
   private inkbunnyReady = false;
   private disabled = false;
-  private inkbunnyHelper: InkbunnyHelper;
+
+  private sid: string | undefined;
 
   constructor() {
     super('Inkbunny', 'inkbunny', [
@@ -15,26 +43,21 @@ export default class InkbunnySourceChecker extends SourceChecker {
       /^https?:\/\/(?:www\.)?inkbunny\.net\/submissionview\.php\?.*id=(\d+).*/,
     ]);
 
-    this.inkbunnyHelper = new InkbunnyHelper();
     console.log('[InkbunnySourceChecker] Calling setup...');
-    this.setup();
   }
 
   async setup() {
     try {
       console.log('[InkbunnySourceChecker] Logging in to InkBunny...');
-      await this.inkbunnyHelper.login(config.INKBUNNY_USERNAME, config.INKBUNNY_PASSWORD);
+      const res = await fetch(`https://inkbunny.net/api_login.php?username=${encodeURIComponent(config.INKBUNNY_USERNAME!)}&password=${encodeURIComponent(config.INKBUNNY_PASSWORD!)}`);
+      const data = await res.json() as InkBunnyLoginResponse;
+
+      this.sid = data.sid;
       console.log('[InkbunnySourceChecker] Successfully logged in...');
-      this.inkbunnyReady = true;
+
       this.disabled = false;
     } catch (e) {
-      console.error('[InkbunnySourceChecker] Got error while logging into inkbunny. Disabling. Retrying in 5 minutes.');
-      console.error(e);
       this.disabled = true;
-
-      setTimeout(() => {
-        this.setup();
-      }, 1000 * 60 * 5);
     }
   }
 
@@ -69,8 +92,8 @@ export default class InkbunnySourceChecker extends SourceChecker {
         };
       }
 
-      const data = await this.inkbunnyHelper.details(id, false, false, false);
-      console.log(JSON.stringify(data, null, 4));
+      const res = await fetch(`https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`);
+      const data = await res.json() as InkBunnySubmissionsDetails;
       const submission = data.submissions[0];
       if (!submission) {
         console.error('[InkbunnySourceChecker] No submission...');
