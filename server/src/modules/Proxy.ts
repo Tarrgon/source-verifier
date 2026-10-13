@@ -17,7 +17,7 @@ function connectToProxy(hostname: string, secure: boolean = true): Promise<Strea
       host: PROXY_IP,
       port: PROXY_PORT,
       method: 'CONNECT',
-      path: `${hostname}${secure ? '[[]]:443' : ''}`,
+      path: `${hostname}${secure ? ':443' : ''}`,
       headers: {
         'Proxy-Authorization': PROXY_AUTHENTICATION
       }
