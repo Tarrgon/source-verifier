@@ -106,6 +106,9 @@ export default class InkbunnySourceChecker extends SourceChecker {
         for (const urlData of urls) {
           if (!urlData.url) continue;
 
+          console.log(post);
+          console.log(urlData.url);
+
           const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, [submission.username]) as ScoredSourceData;
 
           if (urlData.isPreview) {
@@ -125,6 +128,7 @@ export default class InkbunnySourceChecker extends SourceChecker {
       }
 
       if (matchData.length > 0) {
+        console.log(matchData);
         matchData.sort((a, b) => b.score! - a.score!);
 
         return matchData[0];
@@ -135,6 +139,8 @@ export default class InkbunnySourceChecker extends SourceChecker {
     } catch (e) {
       console.error(e);
     }
+
+    console.error('[InkbunnySourceChecker] Fell out...');
 
     return {
       unknown: true,
