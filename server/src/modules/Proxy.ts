@@ -38,68 +38,75 @@ function connectToProxy(hostname: string, secure: boolean = true): Promise<Strea
 
 export function fetchProxy(url: string, options?: { headers?: { [header: string]: string } }, retry = 0): Promise<Response> {
   return new Promise(async (resolve, reject) => {
-    const _url = new URL(url);
-    const secure = _url.protocol == 'https:';
-
-    if (!agent) {
-      // const socket = await connectToProxy(_url.hostname, secure);
-
-      // if (!socket) return reject('Could not connect to proxy');
-
-      console.log(`Creating agent with URI: http://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`);
-
-      agent = new https.Agent({
-        proxyEnv: {
-          // http_proxy: `http://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`,
-          https_proxy: `http://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`
-        },
-        keepAlive: true
-      });
-    }
-
-    const _http = secure ? https : http;
-
     try {
-      _http.get({
-        host: _url.hostname,
-        path: _url.pathname,
-        headers: options?.headers ? options.headers : undefined,
-        agent
-      }, (res) => {
-        if (!res.statusCode || res.statusCode < 200 || res.statusCode >= 300) return reject(`Fetching on proxy had non-200 status code: ${res.statusCode}`);
+      const _url = new URL(url);
+      const secure = _url.protocol == 'https:';
 
-        const body: Buffer[] = [];
+      if (!agent) {
+        // const socket = await connectToProxy(_url.hostname, secure);
 
-        res.on('data', (d) => {
-          body.push(d);
+        // if (!socket) return reject('Could not connect to proxy');
+
+        console.log(`Creating agent with URI: http://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`);
+
+        agent = new https.Agent({
+          proxyEnv: {
+            // http_proxy: `http://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`,
+            https_proxy: `http://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`
+          },
+          keepAlive: true
         });
-
-        res.on('end', () => {
-          // @ts-ignore Typescript unfortunately doesn't have any idea how this works...
-          const headers = res.rawHeaders.reduce((acc, cur, index, arr) => {
-            if (index % 2 == 0) {
-              return [...acc, [arr[index].toLowerCase(), arr[index + 1]]];
-            }
-
-            return acc;
-          }, []) as [string, string][];
-
-          const result = new Response(new Uint8Array(Buffer.concat(body).buffer), {
-            status: res.statusCode,
-            headers: new Headers(headers)
-          });
-
-          return resolve(result);
-        });
-      });
-    } catch (e) {
-      if (retry == 0) {
-        agent = null;
-        fetchProxy(url, options, retry++).then(resolve).catch(reject);
       }
 
+      const _http = secure ? https : http;
+
+      try {
+        _http.get({
+          host: _url.hostname,
+          path: _url.pathname,
+          headers: options?.headers ? options.headers : undefined,
+          agent
+        }, (res) => {
+          if (!res.statusCode || res.statusCode < 200 || res.statusCode >= 300) return reject(`Fetching on proxy had non-200 status code: ${res.statusCode}`);
+
+          const body: Buffer[] = [];
+
+          res.on('data', (d) => {
+            body.push(d);
+          });
+
+          res.on('end', () => {
+            // @ts-ignore Typescript unfortunately doesn't have any idea how this works...
+            const headers = res.rawHeaders.reduce((acc, cur, index, arr) => {
+              if (index % 2 == 0) {
+                return [...acc, [arr[index].toLowerCase(), arr[index + 1]]];
+              }
+
+              return acc;
+            }, []) as [string, string][];
+
+            const result = new Response(new Uint8Array(Buffer.concat(body).buffer), {
+              status: res.statusCode,
+              headers: new Headers(headers)
+            });
+
+            return resolve(result);
+          });
+        });
+      } catch (e) {
+        if (retry == 0) {
+          agent = null;
+          fetchProxy(url, options, retry++).then(resolve).catch(reject);
+        }
+
+        console.error(`Error fetching: ${url} with proxy:`);
+        console.error(e);
+        return reject('Error fetching with proxy...');
+      }
+    } catch (e) {
       console.error(`Error fetching: ${url} with proxy:`);
       console.error(e);
+
       return reject('Error fetching with proxy...');
     }
   });
