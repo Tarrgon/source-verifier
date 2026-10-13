@@ -128,6 +128,9 @@ export default class InkbunnySourceChecker extends SourceChecker {
         matchData.sort((a, b) => b.score! - a.score!);
 
         return matchData[0];
+      } else {
+        console.error('[InkbunnySourceChecker] No match data...');
+        console.log(data);
       }
     } catch (e) {
       console.error(e);
