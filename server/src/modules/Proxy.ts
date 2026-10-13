@@ -10,6 +10,8 @@ const PROXY_PORT = parseInt(config.PROXY_URI!.split(':')[1]);
 let agent: https.Agent | null;
 
 function connectToProxy(hostname: string, secure: boolean = true): Promise<Stream.Duplex | null> {
+  const _http = secure ? https : http;
+
   return new Promise((resolve) => {
     const options = {
       host: PROXY_IP,
@@ -20,7 +22,7 @@ function connectToProxy(hostname: string, secure: boolean = true): Promise<Strea
         'Proxy-Authorization': PROXY_AUTHENTICATION
       }
     };
-    http.request(options).on('connect', (res, socket) => {
+    _http.request(options).on('connect', (res, socket) => {
       if (res.statusCode == 200) return resolve(socket);
       console.error(`Error connecting to proxy: ${hostname} (${secure}) (non-200 response code: ${res.statusCode}):`);
       console.error(res);
