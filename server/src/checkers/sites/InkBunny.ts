@@ -100,10 +100,12 @@ export default class InkBunnySourceChecker extends SourceChecker {
         };
       }
 
-      console.log(`https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`);
-      const res = await fetch(`https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`);
+      const res = await fetch(`https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0'
+        }
+      });
       const data = await res.json() as InkBunnySubmissionsDetails;
-      console.log(JSON.stringify(data, null, 4));
       const submission = data.submissions[0];
       if (!submission) {
         console.error('[InkbunnySourceChecker] No submission...');
@@ -161,6 +163,12 @@ export default class InkBunnySourceChecker extends SourceChecker {
 
       if (matchData.length > 0) {
         matchData.sort((a, b) => b.score! - a.score!);
+
+        if (matchData[0].score == 0) {
+          console.error('All matches have 0 score...');
+          console.error(matchData);
+          console.error(JSON.stringify(data, null, 4));
+        }
 
         return matchData[0];
       } else {
