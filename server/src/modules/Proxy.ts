@@ -10,8 +10,6 @@ const PROXY_PORT = parseInt(config.PROXY_URI!.split(':')[1]);
 let agent: https.Agent | null;
 
 function connectToProxy(hostname: string, secure: boolean = true): Promise<Stream.Duplex | null> {
-  const _http = secure ? https : http;
-
   return new Promise((resolve) => {
     const options = {
       host: PROXY_IP,
@@ -23,7 +21,7 @@ function connectToProxy(hostname: string, secure: boolean = true): Promise<Strea
       }
     };
 
-    _http.request(options).on('connect', (res, socket) => {
+    http.request(options).on('connect', (res, socket) => {
       if (res.statusCode == 200) return resolve(socket);
       console.error(`Error connecting to proxy: ${hostname} (${secure}) (non-200 response code: ${res.statusCode}):`);
       console.error(res);
@@ -44,11 +42,19 @@ export function fetchProxy(url: string, options?: { headers?: { [header: string]
     const secure = _url.protocol == 'https:';
 
     if (!agent) {
-      const socket = await connectToProxy(_url.hostname, secure);
+      // const socket = await connectToProxy(_url.hostname, secure);
 
-      if (!socket) return reject('Could not connect to proxy');
+      // if (!socket) return reject('Could not connect to proxy');
 
-      agent = new https.Agent({ socket, keepAlive: true });
+      console.log(`Creating agent with URI: https://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`)
+
+      agent = new https.Agent({
+        proxyEnv: {
+          http_proxy: `http://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`,
+          https_proxy: `https://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`
+        },
+        keepAlive: true
+      });
     }
 
     const _http = secure ? https : http;
