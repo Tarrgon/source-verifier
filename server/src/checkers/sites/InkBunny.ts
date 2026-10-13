@@ -26,6 +26,7 @@ export default class InkbunnySourceChecker extends SourceChecker {
       await this.inkbunnyHelper.login(config.INKBUNNY_USERNAME, config.INKBUNNY_PASSWORD);
       console.log('[InkbunnySourceChecker] Successfully logged in...');
       this.inkbunnyReady = true;
+      this.disabled = false;
     } catch (e) {
       console.error('[InkbunnySourceChecker] Got error while logging into inkbunny. Disabling. Retrying in 5 minutes.');
       console.error(e);
@@ -49,6 +50,7 @@ export default class InkbunnySourceChecker extends SourceChecker {
 
   async _internalProcessPost(post: SourceCheckQueueItem, source: string): Promise<SourceData> {
     if (this.disabled) {
+      console.error('[InkbunnySourceChecker] Disabled...');
       return {
         unknown: true,
         error: true
@@ -60,6 +62,7 @@ export default class InkbunnySourceChecker extends SourceChecker {
     try {
       const id = this.getIdFromSource(source);
       if (!id) {
+        console.error('[InkbunnySourceChecker] ID not parsed...');
         return {
           unknown: true,
           error: true
@@ -69,6 +72,8 @@ export default class InkbunnySourceChecker extends SourceChecker {
       const data = await this.inkbunnyHelper.details(id, false, false, false);
       const submission = data.submissions[0];
       if (!submission) {
+        console.error('[InkbunnySourceChecker] No submission...');
+        console.log(data);
         return {
           unknown: true,
           error: true,

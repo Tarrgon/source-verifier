@@ -95,6 +95,10 @@ export function fetchProxy(url: string, options?: { headers?: { [header: string]
         });
       } catch (e) {
         if (retry == 0) {
+          if (agent != null) {
+            agent.destroy();
+          }
+
           agent = null;
           fetchProxy(url, options, retry++).then(resolve).catch(reject);
         }
