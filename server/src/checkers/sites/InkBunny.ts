@@ -16,12 +16,15 @@ export default class InkbunnySourceChecker extends SourceChecker {
     ]);
 
     this.inkbunnyHelper = new InkbunnyHelper();
+    console.log('[InkbunnySourceChecker] Calling setup...');
     this.setup();
   }
 
   async setup() {
     try {
+      console.log('[InkbunnySourceChecker] Logging in to InkBunny...');
       await this.inkbunnyHelper.login(config.INKBUNNY_USERNAME, config.INKBUNNY_PASSWORD);
+      console.log('[InkbunnySourceChecker] Successfully logged in...');
       this.inkbunnyReady = true;
     } catch (e) {
       console.error('[InkbunnySourceChecker] Got error while logging into inkbunny. Disabling. Retrying in 5 minutes.');
