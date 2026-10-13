@@ -53,6 +53,12 @@ export default class InkBunnySourceChecker extends SourceChecker {
       const res = await fetch(`https://inkbunny.net/api_login.php?username=${encodeURIComponent(config.INKBUNNY_USERNAME!)}&password=${encodeURIComponent(config.INKBUNNY_PASSWORD!)}`);
       const data = await res.json() as InkBunnyLoginResponse;
 
+      if (!data.sid) {
+        console.error(`No SID in inkbunny login response (https://inkbunny.net/api_login.php?username=${encodeURIComponent(config.INKBUNNY_USERNAME!)}&password=${encodeURIComponent(config.INKBUNNY_PASSWORD!)}):`);
+        console.error(data);
+        return;
+      }
+
       this.sid = data.sid;
       console.log('[InkbunnySourceChecker] Successfully logged in...');
 
@@ -94,10 +100,8 @@ export default class InkBunnySourceChecker extends SourceChecker {
         };
       }
 
-      console.log(`Fetching https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`);
       const res = await fetch(`https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`);
       const data = await res.json() as InkBunnySubmissionsDetails;
-      console.log(data);
       const submission = data.submissions[0];
       if (!submission) {
         console.error('[InkbunnySourceChecker] No submission...');
