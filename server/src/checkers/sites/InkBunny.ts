@@ -1,6 +1,6 @@
 import type { SourceCheckQueueItem, SourceData, ScoredSourceData } from '../../shared';
 import { config } from '../../config';
-import { wait } from '../../modules';
+import { fetchProxy, wait } from '../../modules';
 import { MIME_TYPE_TO_FILE_EXTENSION, SourceChecker } from '../SourceChecker';
 
 type InkBunnyLoginResponse = {
@@ -143,7 +143,7 @@ export default class InkBunnySourceChecker extends SourceChecker {
         for (const urlData of urls) {
           if (!urlData.url) continue;
 
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, [submission.username]) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, [submission.username], {}, fetchProxy) as ScoredSourceData;
 
           if (urlData.isPreview) {
             data.originalUrl = urls[0].url;
