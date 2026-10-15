@@ -100,7 +100,7 @@ export function fetchProxy(url: string, options?: { headers?: { [header: string]
           }
 
           agent = null;
-          fetchProxy(url, options, retry++).then(resolve).catch(reject);
+          fetchProxy(url, options, retry + 1).then(resolve).catch(reject);
         }
 
         console.error(`Error fetching: ${url} with proxy:`);
