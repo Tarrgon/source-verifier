@@ -1,40 +1,8 @@
 import http from 'http';
 import https from 'https';
 import { config } from '../config';
-import type Stream from 'stream';
-
-const PROXY_AUTHENTICATION = `Basic ${btoa(`${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}`)}`;
-const PROXY_IP = config.PROXY_URI!.split(':')[0];
-const PROXY_PORT = parseInt(config.PROXY_URI!.split(':')[1]);
 
 let agent: https.Agent | null;
-
-function connectToProxy(hostname: string, secure: boolean = true): Promise<Stream.Duplex | null> {
-  return new Promise((resolve) => {
-    const options = {
-      host: PROXY_IP,
-      port: PROXY_PORT,
-      method: 'CONNECT',
-      path: `${hostname}${secure ? ':443' : ''}`,
-      headers: {
-        'Proxy-Authorization': PROXY_AUTHENTICATION
-      }
-    };
-
-    http.request(options).on('connect', (res, socket) => {
-      if (res.statusCode == 200) return resolve(socket);
-      console.error(`Error connecting to proxy: ${hostname} (${secure}) (non-200 response code: ${res.statusCode}):`);
-      console.error(res);
-      console.error(options);
-      return resolve(null);
-    }).on('error', (e) => {
-      console.error(`Error connecting to proxy: ${hostname} (${secure}):`);
-      console.error(e);
-      console.error(options);
-      return resolve(null);
-    });
-  });
-}
 
 export function fetchProxy(url: string, options?: { headers?: { [header: string]: string } }, retry = 0): Promise<Response> {
   return new Promise(async (resolve, reject) => {
