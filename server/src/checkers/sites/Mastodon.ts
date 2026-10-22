@@ -37,7 +37,7 @@ export default class MastodonSourceChecker extends SourceChecker {
         await sensitive.evaluate(b => b.click());
       }
 
-      const authorName = document.querySelector('.detailed-status .display-name__account')?.textContent;
+      const authorName = await (await main.$$('display-name__html'))?.evaluate(e => e.textContent) ?? '';
 
       let allImages = (await main.$$('.media-gallery__item-thumbnail > img'));
 
