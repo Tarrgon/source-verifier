@@ -70,6 +70,7 @@ export default class DirectSourceChecker extends SourceChecker {
     this.headersRegex = new Map();
 
     this.headersRegex.set(/^https?:\/\/i\.pximg\.net\/.*\.(png|jpg|jpeg|gif).*/, { Referer: 'https://www.pixiv.net/' });
+    this.headersRegex.set(/^https?:\/\/.*\.ib\.metapix\.net\/files\/.*\.(png|jpg|jpeg|webp|gif|webm|mp4).*/, { Referer: 'https://inkbunny.net' });
 
     this.useProxyRegex = [
       /^https?:\/\/d\.furaffinity\.net\/art\/.*\.(png|jpg|jpeg|webp|gif).*/

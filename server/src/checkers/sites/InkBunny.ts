@@ -102,7 +102,7 @@ export default class InkBunnySourceChecker extends SourceChecker {
 
       const res = await fetch(`https://inkbunny.net/api_submissions.php?sid=${this.sid}&submission_ids=${id}&show_description=no&show_description_bbcode_parsed=no&show_pools=no&show_writing=no&show_writing_bbcode_parsed=no&sort_keywords_by=alphabetical`, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0'
+          'Content-Type': 'application/json'
         }
       });
       const data = await res.json() as InkBunnySubmissionsDetails;
@@ -129,21 +129,21 @@ export default class InkBunnySourceChecker extends SourceChecker {
         }
 
         const urls = [
-          { url: file.file_url_full?.replace('tx.', 'qc.'), isPreview: false },
-          { url: file.file_url_preview?.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.file_url_screen?.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_huge?.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_huge_noncustom?.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_large?.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_large_noncustom?.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_medium?.replace('tx.', 'qc.'), isPreview: true },
-          { url: file.thumbnail_url_medium_noncustom?.replace('tx.', 'qc.'), isPreview: true }
+          { url: file.file_url_full, isPreview: false },
+          { url: file.file_url_preview, isPreview: true },
+          { url: file.file_url_screen, isPreview: true },
+          { url: file.thumbnail_url_huge, isPreview: true },
+          { url: file.thumbnail_url_huge_noncustom, isPreview: true },
+          { url: file.thumbnail_url_large, isPreview: true },
+          { url: file.thumbnail_url_large_noncustom, isPreview: true },
+          { url: file.thumbnail_url_medium, isPreview: true },
+          { url: file.thumbnail_url_medium_noncustom, isPreview: true }
         ];
 
         for (const urlData of urls) {
           if (!urlData.url) continue;
 
-          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, [submission.username], {}, fetchProxy) as ScoredSourceData;
+          const data = await SourceChecker.processDirectLink(post, urlData.url, urlData.isPreview, [submission.username], { Referer: 'https://inkbunny.net' }) as ScoredSourceData;
 
           if (urlData.isPreview) {
             data.originalUrl = urls[0].url;
