@@ -54,8 +54,10 @@ export default class SourceCheckerManager {
     if (this.queue.length > 0) this.queueRoutine();
   }
 
-  static async queueRoutine() {
+  static async queueRoutine(forced = false) {
     try {
+      if (forced) console.log('[SourceCheckerManager] Queue routine forced.');
+
       if (!this.queue.hasMoreItems()) {
         this.queueRunning = false;
         return;
@@ -83,9 +85,10 @@ export default class SourceCheckerManager {
         }
       }
 
-      this.lastProcessed = { entry: queueItem, timestamp: new Date() };
       await Database.removeFromQueue(queueItem._id);
       await Database.updateSourceData(queueItem._id, data);
+
+      this.lastProcessed = { entry: queueItem, timestamp: new Date() };
 
       console.log(`[SourceCheckerManager] Processed post ${queueItem._id}. Remaining: ${this.queue.length}`);
     } catch (e) {
@@ -208,7 +211,11 @@ export default class SourceCheckerManager {
     if (sourceBulk.batches.length > 0) await sourceBulk.execute();
     if (queueBulk.batches.length > 0) await queueBulk.execute();
 
-    if (!this.queueRunning) this.queueRoutine();
+    const now = new Date();
+    const lastProcessedTime = this.lastProcessed?.timestamp ?? now;
+    const forceStart = this.queueRunning && (now.getTime() - lastProcessedTime.getTime()) > 1000 * 60 * 5;
+
+    if (!this.queueRunning || forceStart) this.queueRoutine(forceStart);
   }
 
   static async processPost(queueItem: SourceCheckQueueItem): Promise<SourceDataMap> {
