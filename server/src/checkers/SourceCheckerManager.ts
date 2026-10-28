@@ -9,8 +9,18 @@ import { getFluffleData } from '../modules/Fluffle';
 import Queue, { Priority } from '../modules/Queue';
 import { SourceChecker } from './SourceChecker';
 
+const PROCESSING_STEPS = [
+  'Processing',
+  'Processed',
+  'Callbacks complete',
+  'Removed from database queue',
+  'Source data updated',
+  'NULL'
+];
+
 export default class SourceCheckerManager {
   private static queue: Queue<SourceCheckQueueItem> = new Queue();
+  private static lastAttempted: { entry: SourceCheckQueueItem, timestamp: Date, step: number } | null = null;
   private static lastProcessed: { entry: SourceCheckQueueItem, timestamp: Date } | null = null;
   private static queueRunning: boolean = false;
 
@@ -56,7 +66,7 @@ export default class SourceCheckerManager {
 
   static async queueRoutine(forced = false) {
     try {
-      if (forced) console.log('[SourceCheckerManager] Queue routine forced.');
+      if (forced) console.log(`[SourceCheckerManager] Queue routine forced. Last attempted post: ${this.lastAttempted?.entry._id} at ${this.lastAttempted?.timestamp}. Step: ${PROCESSING_STEPS[this.lastAttempted?.step ?? 5]}`);
 
       if (!this.queue.hasMoreItems()) {
         this.queueRunning = false;
@@ -66,7 +76,12 @@ export default class SourceCheckerManager {
       this.queueRunning = true;
 
       const queueItem = this.queue.pop();
+
+      this.lastAttempted = { entry: queueItem, timestamp: new Date(), step: 0 };
+
       const data = await this.processPost(queueItem);
+
+      this.lastAttempted.step++;
 
       if (queueItem.callbacks && queueItem.callbacks.length > 0) {
         for (const callback of queueItem.callbacks) {
@@ -85,8 +100,13 @@ export default class SourceCheckerManager {
         }
       }
 
+      this.lastAttempted.step++;
+
       await Database.removeFromQueue(queueItem._id);
+      this.lastAttempted.step++;
+
       await Database.updateSourceData(queueItem._id, data);
+      this.lastAttempted.step++;
 
       this.lastProcessed = { entry: queueItem, timestamp: new Date() };
 
