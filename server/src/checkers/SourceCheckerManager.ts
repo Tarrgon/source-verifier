@@ -233,7 +233,8 @@ export default class SourceCheckerManager {
 
     const now = new Date();
     const lastProcessedTime = this.lastProcessed?.timestamp ?? now;
-    const forceStart = this.queueRunning && (now.getTime() - lastProcessedTime.getTime()) > 1000 * 60 * 5;
+    const minutesToWait = _checkActive ? 0.5 : 2;
+    const forceStart = this.queueRunning && (now.getTime() - lastProcessedTime.getTime()) > 1000 * 60 * minutesToWait;
 
     if (!this.queueRunning || forceStart) this.queueRoutine(forceStart);
   }
