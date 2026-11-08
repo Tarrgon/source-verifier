@@ -161,7 +161,7 @@ let additions: HTMLElement[] = [];
 
 let interval;
 
-function checkForNewPosts(mutationList: MutationRecord[], observer: MutationObserver) {
+function checkForNewPosts(mutationList: MutationRecord[]) {
   for (const mutation of mutationList) {
     if (mutation.type === 'childList') {
       for (const addedNode of mutation.addedNodes) {
@@ -201,7 +201,7 @@ async function main() {
 
   console.log(`[Janitor Source Verifier] Running on version ${Version}`);
 
-  if (window.location.href.startsWith('https://e621.net/post_replacements/')) {
+  if (window.location.href.startsWith('https://e621.net/post_replacements/') || window.location.href.startsWith('https://e926.net/post_replacements/')) {
     const params = new URLSearchParams(window.location.search);
 
     const urlField = await waitForSelector<HTMLInputElement>("#replacement-uploader > * input[type='text']");

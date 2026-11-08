@@ -1,10 +1,14 @@
 import type { ServerResponse } from './shared';
 import { BACKEND_URL_BASE } from './Constants';
-import { getCSRFToken, wait } from './Utilities';
+import { wait } from './Utilities';
 
-export function getData(id: number | string, force = false, updatePost = false): Promise<ServerResponse> {
+function getCSRFToken(): string {
+  return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+}
+
+export function getData(id: number | string, updatePost = false): Promise<ServerResponse> {
   return new Promise((resolve, reject) => {
-    const path = force || updatePost ? `checksources/update/${id}?forcepostupdate=${updatePost}&waitfordata=true` : `checksources/${id}`;
+    const path = updatePost ? `checksources/update/${id}?forcepostupdate=${updatePost}&waitfordata=true` : `checksources/${id}`;
 
     GM.xmlHttpRequest({
       method: 'GET',
@@ -127,7 +131,7 @@ export async function sendSources(sourcesToAdd: string[]) {
     if (res.ok) {
       Danbooru.notice('Successfully added sources.');
 
-      await getData(id, true, true);
+      await getData(id, true);
       await wait(50);
       window.location.reload();
     } else {

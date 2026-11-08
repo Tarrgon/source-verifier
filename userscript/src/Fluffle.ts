@@ -2,7 +2,40 @@ import { normalizeURL, type FluffleResponse, type FluffleResult } from './shared
 import { anyLinksSupported, checkFluffleLinks } from './Backend';
 import { FluffleFaces, FluffleMessages, UserAgent } from './Constants';
 import { spinner } from './icons';
-import { createSidebarList, createSourceItem, getBlueskyDid, getImageBlob, normalizeSourceLinks, processData } from './Utilities';
+import { createSidebarList, createSourceItem, getBlueskyDid, normalizeSourceLinks, processData } from './Utilities';
+
+function getImageBlob(fileUrl: string | null): Promise<Blob | null> {
+  return new Promise((resolve, reject) => {
+    try {
+      if (fileUrl == null) return null;
+
+      const container = document.getElementById('image-container')!;
+      const image = new Image();
+
+      const width = Number(container.getAttribute('data-width'));
+      const height = Number(container.getAttribute('data-height'));
+      const ratio = width < height ? 256 / width : 256 / height;
+      const calculatedWidth = Math.floor(width * ratio);
+      const calculatedHeight = Math.floor(height * ratio);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = calculatedWidth;
+      canvas.height = calculatedHeight;
+
+      image.onload = () => {
+        const ctx = canvas.getContext('2d')!;
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(image, 0, 0, calculatedWidth, calculatedHeight);
+        setTimeout(() => { canvas.toBlob(resolve, 'image/png'); });
+      };
+
+      image.crossOrigin = '';
+      image.src = fileUrl;
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
 
 export function getFluffleData(blob: Blob): Promise<FluffleResponse> {
   return new Promise((resolve, reject) => {

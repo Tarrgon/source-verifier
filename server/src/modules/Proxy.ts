@@ -15,7 +15,7 @@ export function fetchProxy(url: string, options?: { headers?: { [header: string]
 
         // if (!socket) return reject('Could not connect to proxy');
 
-        console.log(`Creating agent with URI: http://${config.PROXY_USERNAME}:${config.PROXY_PASSWORD}@${config.PROXY_URI}`);
+        console.log('Creating proxy agent...');
 
         agent = new https.Agent({
           proxyEnv: {

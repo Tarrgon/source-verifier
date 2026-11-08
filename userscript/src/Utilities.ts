@@ -4,15 +4,11 @@ import { addSourceSign, aspectRatioMatch, bvas, dimensionAndFileTypeMatch, dimen
 import { getKemonoDataFromUrl } from './Kemono';
 import { BACKEND_URL_BASE } from './Constants';
 
-export function getCSRFToken(): string {
-  return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
-}
-
 export function wait(ms: number): Promise<void> {
   return new Promise(r => setTimeout(r, ms));
 }
 
-export function waitForSelector<T extends Element>(selector, timeout = 5000): Promise<T | null> {
+export function waitForSelector<T extends Element>(selector: string, timeout = 5000): Promise<T | null> {
   return new Promise(async (resolve) => {
     let waited = 0;
     while (true) {
@@ -25,65 +21,14 @@ export function waitForSelector<T extends Element>(selector, timeout = 5000): Pr
   });
 }
 
-export function getImageBlob(fileUrl: string | null): Promise<Blob | null> {
-  return new Promise((resolve, reject) => {
-    try {
-      if (fileUrl == null) return null;
-
-      const container = document.getElementById('image-container')!;
-      const image = new Image();
-
-      const width = Number(container.getAttribute('data-width'));
-      const height = Number(container.getAttribute('data-height'));
-      const ratio = width < height ? 256 / width : 256 / height;
-      const calculatedWidth = Math.floor(width * ratio);
-      const calculatedHeight = Math.floor(height * ratio);
-
-      const canvas = document.createElement('canvas');
-      canvas.width = calculatedWidth;
-      canvas.height = calculatedHeight;
-
-      image.onload = () => {
-        const ctx = canvas.getContext('2d')!;
-        ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(image, 0, 0, calculatedWidth, calculatedHeight);
-        setTimeout(() => { canvas.toBlob(resolve, 'image/png'); });
-      };
-
-      image.crossOrigin = '';
-      image.src = fileUrl;
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
 export async function getFaviconBlob(hostname: string): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    GM.xmlHttpRequest({
-      method: 'GET',
-      url: `${BACKEND_URL_BASE}/favicons/${hostname}.png`,
-      responseType: 'blob',
-      onload: function (response) {
-        try {
-          resolve(response.response);
-        } catch (e) {
-          reject(e);
-        }
-      },
-      onerror: function (e) {
-        reject(e);
-      }
-    });
+  const response = await GM.xmlHttpRequest({
+    method: 'GET',
+    url: `${BACKEND_URL_BASE}/favicons/${hostname}.png`,
+    responseType: 'blob'
   });
-}
 
-function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.readAsDataURL(blob);
-  });
+  return response.response;
 }
 
 function gcd(a: number, b: number): number {
@@ -104,26 +49,12 @@ export function roundTo(x, n) {
 
 export async function getBlueskyDid(handle: string): Promise<string | null> {
   try {
-    const data: { did: string } = await new Promise((resolve, reject) => {
-      GM.xmlHttpRequest({
-        method: 'GET',
-        url: `https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${handle}`,
-        onload: function (response) {
-          try {
-            const data = JSON.parse(response.responseText);
-
-            resolve(data);
-          } catch (e) {
-            reject(e);
-          }
-        },
-        onerror: function (e) {
-          reject(e);
-        }
-      });
+    const response = await GM.xmlHttpRequest({
+      method: 'GET',
+      url: `https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${handle}`,
     });
 
-    return data.did;
+    return JSON.parse(response.responseText).did;
   } catch (e) {
     console.error(e);
   }
@@ -213,7 +144,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
 
         const spinny = spinner.cloneNode(true) as HTMLElement;
         container.firstElementChild?.appendChild(spinny);
-        const data = await getData(id, true, true);
+        const data = await getData(id, true);
         spinny.remove();
         processData(data, links);
       });
@@ -226,7 +157,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
   if (!_isCompleteResponse && (data.queued || data.notIndexed) && refreshable) {
     container.firstElementChild?.appendChild(spinner.cloneNode(true));
 
-    getData(id, true, true).then(async (data) => {
+    getData(id, true).then(async (data) => {
       for (const ele of container.querySelectorAll('.jsv-icon')) {
         ele.remove();
       }
@@ -249,7 +180,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
 
           const spinny = spinner.cloneNode(true) as HTMLElement;
           container.firstElementChild?.appendChild(spinny);
-          const data = await getData(id, true, true);
+          const data = await getData(id, true);
           spinny.remove();
           processData(data, links);
         });
@@ -274,7 +205,7 @@ export async function processData(data: ServerResponse, links: string[], refresh
       const spinny = spinner.cloneNode(true) as HTMLElement;
       container.firstElementChild?.appendChild(spinny);
       try {
-        const data = await getData(id, true, true);
+        const data = await getData(id, true);
         spinny.remove();
         processData(data, links);
       } catch (e) {
@@ -745,6 +676,14 @@ function addSource(result: { url: string }, immediate: boolean, event: PointerEv
   }
 }
 
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.readAsDataURL(blob);
+  });
+}
+
 export function createSidebarList(id: string, title: string): HTMLUListElement {
   const list = document.createElement('ul');
   list.id = id;
@@ -802,7 +741,7 @@ export async function createSourceItem(result: { url: string }, immediate: boole
 }
 
 export async function normalizeSourceLinks(a: HTMLElement): Promise<string | null> {
-  let url;
+  let url: URL;
   if (a.tagName == 'S') {
     try {
       url = new URL(a.innerText);

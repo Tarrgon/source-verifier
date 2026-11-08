@@ -43,13 +43,17 @@ export class SourceChecker {
 
   enabled: boolean = true;
   ready: boolean = false;
+  readyPromise: Promise<void>;
   inUse: boolean = false;
+  inUseTimestamp: number = Date.now();
 
   constructor(public name: string, public slug: string, public supported: RegExp[] = []) {
-    SourceChecker._setup(this);
+    this.readyPromise = new Promise((resolve) => {
+      SourceChecker._setup(this, resolve);
+    });
   }
 
-  static async _setup(checker: SourceChecker) {
+  static async _setup(checker: SourceChecker, ready: () => void) {
     const savedData = await Database.getSourceCheckerData(checker.slug);
 
     if (savedData) {
@@ -60,6 +64,7 @@ export class SourceChecker {
     await Database.saveSourceCheckerData(checker);
 
     checker.ready = true;
+    ready();
   }
 
   static async initializePuppet() {
@@ -194,13 +199,17 @@ export class SourceChecker {
   }
 
   async processPost(post: SourceCheckQueueItem, current: BaseSourceData | null): Promise<SourceDataMap> {
-    while (this.inUse) await wait(100);
+    while (this.inUse && !((Date.now() - this.inUseTimestamp) > 60000)) await wait(100);
+
+    if (this.inUse && !((Date.now() - this.inUseTimestamp) > 60000)) console.warn(`[SourceChecker] ${this.name} hanging for ${Date.now() - this.inUseTimestamp}ms... Allowing next queue item...`);
+
     try {
       const data: SourceDataMap = {};
       for (const source of post.sources) {
         if (current?.sources?.[source]) continue;
         if (this.supportsSource(source)) {
           this.inUse = true;
+          this.inUseTimestamp = Date.now();
           const processedData = await this._internalProcessPost(post, source);
           data[source] = processedData;
           if (processedData.error || processedData.unknown) await Database.incrementFailure(this.slug);

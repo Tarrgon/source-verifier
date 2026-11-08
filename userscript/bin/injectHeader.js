@@ -1,18 +1,18 @@
 import fs from 'fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import Package from '../package.json' with { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const packageData = JSON.parse(fs.readFileSync(path.resolve(`${__dirname}/../package.json`), { encoding: 'utf-8' }));
 const headerData = JSON.parse(fs.readFileSync(path.resolve(`${__dirname}/userscriptHeader.json`), { encoding: 'utf-8' }));
 
 const header = `// ==UserScript==
 // @name            Janitor Source Verifier
-// @version         ${packageData.version}
-// @description     ${packageData.description}
-// @author          ${packageData.author.name}
+// @version         ${Package.version}
+// @description     ${Package.description}
+// @author          ${Package.author.name}
 ${Object.keys(headerData).map((key) => {
   const padding = 20;
   if (Array.isArray(headerData[key])) {

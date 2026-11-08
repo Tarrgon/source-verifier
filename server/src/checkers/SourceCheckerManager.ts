@@ -39,22 +39,7 @@ export default class SourceCheckerManager {
       this.sourceCheckers.push(new sourceChecker() as SourceChecker);
     }
 
-    await wait(100);
-
-    while (true) {
-      let allReady = true;
-
-      for (const checker of this.sourceCheckers) {
-        if (!checker.ready) {
-          allReady = false;
-          console.log(`[SourceCheckerManager] ${checker.name} not ready.`);
-        }
-      }
-
-      if (allReady) break;
-
-      await wait(500);
-    }
+    await Promise.all(this.sourceCheckers.map(s => s.readyPromise));
 
     console.log('[SourceCheckerManager] All checkers ready.');
 
@@ -254,47 +239,48 @@ export default class SourceCheckerManager {
         // console.log(`[SourceChecker] Calculating phash of ${queueItem._id}`);
         const e6Url = `https://static1.e621.net/data/${queueItem.md5.slice(0, 2)}/${queueItem.md5.slice(2, 4)}/${queueItem.md5}.${queueItem.fileType}`;
         const res = await fetch(e6Url);
-        if (res.ok) {
-          if (res.headers.get('Content-Type')?.startsWith('image/')) {
-            let phash: string;
-            // console.log(`[SourceChecker] Fetched data of ${queueItem._id}`);
-            const data = await res.arrayBuffer();
-            // console.log(`[SourceChecker] Got arraybuffer data for ${queueItem._id}`);
+        if (res.ok && res.headers.get('Content-Type')?.startsWith('image/')) {
+          let phash: string;
+          // console.log(`[SourceChecker] Fetched data of ${queueItem._id}`);
+          const data = await res.arrayBuffer();
+          // console.log(`[SourceChecker] Got arraybuffer data for ${queueItem._id}`);
 
-            try {
-              const resized = new Uint8Array(await sharp(data).resize(256, 256, {
-                fit: 'outside'
-              }).png().toBuffer());
+          // the amount of try catch in this function makes it very difficult to read.
+          // I usually check the type in catch so I specify which exception I expect,
+          // which makes it easier to reason about (I know the failure cases and when they dont apply anymore)
+          //
+          // if all of these processes are independant it might also make sense to move them into their own subfunctions.
+          try {
+            const resized = new Uint8Array(await sharp(data).resize(256, 256, {
+              fit: 'outside'
+            }).png().toBuffer());
 
-              const fluffleData = await getFluffleData(new Blob([resized]));
+            const fluffleData = await getFluffleData(new Blob([resized]));
 
-              if (fluffleData.results) {
-                const urls = (await Promise.all(fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621')
-                  .map(r => normalizeURL(r.url, getBlueskyDid))))
-                  .filter(u => u && !queueItem.sources.includes(u)).filter(e => e != null);
+            if (fluffleData.results) {
+              const urls = (await Promise.all(fluffleData.results.filter(r => r.match == 'exact' && r.platform != 'e621')
+                .map(r => normalizeURL(r.url, getBlueskyDid))))
+                .filter(u => u && !queueItem.sources.includes(u)).filter(e => e != null);
 
-                queueItem.sources.push(...urls);
-                fluffleSources.push(...urls);
-              }
-            } catch (e) {
-              console.error(`[SourceCheckerManager] Error while getting fluffle data (${queueItem._id}):`);
-              console.error(e);
+              queueItem.sources.push(...urls);
+              fluffleSources.push(...urls);
             }
-
-            try {
-              // console.log(`[SourceChecker] Doing phash calculation for ${queueItem._id}`);
-              phash = await calcPhash(data);
-            } catch (e) {
-              console.error(`[SourceCheckerManager] Error while calculating phash (${queueItem._id}):`);
-              console.error(e);
-              phash = '9'.repeat(64);
-            }
-            queueItem.phash = phash;
-          } else {
-            queueItem.phash = '9'.repeat(64);
+          } catch (e) {
+            console.error(`[SourceCheckerManager] Error while getting fluffle data (${queueItem._id}):`);
+            console.error(e);
           }
+
+          try {
+            // console.log(`[SourceChecker] Doing phash calculation for ${queueItem._id}`);
+            phash = await calcPhash(data);
+          } catch (e) {
+            console.error(`[SourceCheckerManager] Error while calculating phash (${queueItem._id}):`);
+            console.error(e);
+            phash = '9'.repeat(64); // the catch logic here is repeated 4 times. a central catch and specific Error objects could solve that.
+          }
+          queueItem.phash = phash;
         } else {
-          console.error(`[SourceCheckerManager] Failed to fetch e621 post image for ${queueItem._id}`);
+          if (!res.ok) console.error(`[SourceCheckerManager] Failed to fetch e621 post image for ${queueItem._id}`);
           queueItem.phash = '9'.repeat(64);
         }
       } catch (e) {
@@ -369,7 +355,7 @@ export default class SourceCheckerManager {
   }
 
   static update(id: number, waitForData = false, forcePostUpdate = false): Promise<Result> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       if (forcePostUpdate) {
         console.log(`[SourceCheckerManager] Forcefully updating post: ${id} from source checker`);
         await E621Handler.updatePost(id, true);
